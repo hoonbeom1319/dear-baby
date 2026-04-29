@@ -1,5 +1,5 @@
-import Container from '@/hbds/layout/container';
+'use client';
 
 export default function AppProvider({ children }: { children: React.ReactNode }) {
-    return <Container variant="mobile">{children}</Container>;
+    return <>{children}</>;
 }
