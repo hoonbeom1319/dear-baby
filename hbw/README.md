@@ -27,3 +27,7 @@
 - `hbw/lib/number`
 - `hbw/lib/object`
 - `hbw/lib/string`
+
+## Module guide
+
+- 신규 모듈 추가 규칙: `CONTRIBUTING.md`

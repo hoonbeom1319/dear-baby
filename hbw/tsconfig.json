@@ -10,8 +10,8 @@
     "skipLibCheck": true
   },
   "include": [
-    "api/**/*.ts",
-    "lib/**/*.ts",
+    "api/*.ts",
+    "lib/*.ts",
     "src/**/*.ts",
     "src/types/**/*.d.ts"
   ]
