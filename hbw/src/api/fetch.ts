@@ -2,6 +2,7 @@ import { resolveRequestMethod, resolveRequestUrl, resolveResponse } from './help
 
 class FetchError<TData = unknown> extends Error {
     override name = 'FetchError';
+    cause?: unknown;
 
     readonly status: number;
     readonly statusText: string;
@@ -57,4 +58,4 @@ const FETCH = async <T = unknown>(input: string | URL, init?: RequestInit) => {
     return resolveResponse<T>(response);
 };
 
-export { FETCH };
+export { FETCH, FetchError };

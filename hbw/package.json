@@ -1,0 +1,38 @@
+{
+  "name": "hbw",
+  "version": "0.0.1",
+  "private": true,
+  "description": "HB toolkit",
+  "type": "module",
+  "main": "./dist/api/fetch.cjs",
+  "module": "./dist/api/fetch.js",
+  "types": "./dist/api/fetch.d.ts",
+  "exports": {
+    "./api/*": {
+      "types": "./dist/api/*.d.ts",
+      "import": "./dist/api/*.js",
+      "require": "./dist/api/*.cjs"
+    },
+    "./lib/*": {
+      "types": "./dist/lib/*.d.ts",
+      "import": "./dist/lib/*.js",
+      "require": "./dist/lib/*.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "tsup --clean"
+  },
+  "files": [
+    "dist",
+    "config"
+  ],
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "ua-parser-js": "^2.0.9"
+  }
+}
