@@ -1,5 +1,8 @@
-export class FetchError<TData = unknown> extends Error {
+import { resolveRequestMethod, resolveRequestUrl, resolveResponse } from './helper';
+
+class FetchError<TData = unknown> extends Error {
     override name = 'FetchError';
+
     readonly status: number;
     readonly statusText: string;
     readonly url: string;
@@ -28,41 +31,30 @@ export class FetchError<TData = unknown> extends Error {
     }
 }
 
-export const FETCH = async (input: string | URL | globalThis.Request, init?: RequestInit) => {
-    const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
-    const method = init?.method ?? 'GET';
+const FETCH = async <T = unknown>(input: string | URL, init?: RequestInit) => {
+    let response: Response;
+
+    const url = resolveRequestUrl(input);
+    const method = resolveRequestMethod(init);
 
     try {
-        const response = await fetch(input, init);
-
-        if (!response.ok) {
-            const cloned = response.clone();
-            const data = await cloned.text();
-
-            const message = `Request failed with status code ${response.status}`;
-
-            throw new FetchError({
-                message,
-                status: response.status,
-                statusText: response.statusText,
-                url,
-                method,
-                data,
-                response
-            });
-        }
-
-        return response;
+        response = await fetch(input, init);
     } catch (cause) {
         const message = cause instanceof Error ? cause.message : 'Fetch failed';
-
-        throw new FetchError({
-            message,
-            status: 0,
-            statusText: 'FETCH_FAILED',
-            url,
-            method,
-            cause
-        });
+        throw new FetchError({ message, status: 0, statusText: 'FETCH_FAILED', url, method, cause });
     }
+
+    if (!response.ok) {
+        const cloned = response.clone();
+        const data = await cloned.text();
+        const status = response.status;
+        const statusText = response.statusText;
+        const message = `Request failed with status code ${status}`;
+
+        throw new FetchError({ message, status, statusText, url, method, data, response });
+    }
+
+    return resolveResponse<T>(response);
 };
+
+export { FETCH };
