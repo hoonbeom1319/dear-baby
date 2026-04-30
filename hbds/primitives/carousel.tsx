@@ -105,7 +105,7 @@ const CarouselContent = ({ className, ...props }: HTMLAttributes<HTMLDivElement>
 };
 
 const CarouselItem = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
-    return <div role="group" aria-roledescription="slide" className={cn('min-w-0 shrink-0 grow-0 basis-full', className)} {...props} />;
+    return <div role="group" aria-roledescription="slide" className={className} {...props} />;
 };
 
 const CarouselPrevious = ({ disabled, ...props }: ComponentProps<typeof ButtonPrimitive.Button>) => {

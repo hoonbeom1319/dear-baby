@@ -1,7 +1,9 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 import { REGIONS, type RegionCode } from '@/entities/geolocation/lib/resion';
+import { Carousel, CarouselContent, CarouselItem } from '@/hbds/display/carousel';
 
 export default function Home() {
     const [regionCode, setRegionCode] = useState<RegionCode>('SEOUL');
@@ -33,59 +35,58 @@ export default function Home() {
                 <div className="flex flex-col gap-1">
                     <span className="mb-1 text-[10px] font-black tracking-[0.16em] text-stone-400">지역 선택</span>
 
-                    <div className="no-scrollbar flex gap-2 overflow-x-auto py-2">
-                        {regionEntries.map(([code, region]) => {
-                            const isSelected = regionCode === code;
-                            return (
-                                <button
-                                    key={code}
-                                    type="button"
-                                    onClick={() => {
-                                        setRegionCode(code);
-                                        setSubRegionName('');
-                                    }}
-                                    className={`shrink-0 whitespace-nowrap rounded-full px-6 py-2 text-sm transition-colors ${
-                                        isSelected ? 'bg-amber-600 text-white shadow-sm' : 'bg-stone-100 text-stone-500 hover:bg-stone-200'
-                                    }`}
-                                >
-                                    {region.displayName}
-                                </button>
-                            );
-                        })}
-                    </div>
+                    <Carousel aria-label="지역 선택" spacing={10}>
+                        <CarouselContent>
+                            {regionEntries.map(([code, region]) => {
+                                const isSelected = regionCode === code;
 
-                    <div className="no-scrollbar mt-1 flex gap-2 overflow-x-auto border-t border-stone-50 py-2">
-                        {selectedRegion.sub.map((sub) => {
-                            const isSelected = subRegionName === sub.displayName;
-                            return (
-                                <button
-                                    key={sub.displayName}
-                                    type="button"
-                                    onClick={() => setSubRegionName(sub.displayName)}
-                                    className={`shrink-0 whitespace-nowrap rounded-full px-5 py-1.5 text-sm transition-colors ${
-                                        isSelected
-                                            ? 'border-2 border-amber-600 bg-amber-50/50 font-bold text-amber-600'
-                                            : 'border-2 border-transparent bg-stone-50 font-medium text-stone-500 hover:bg-stone-100'
-                                    }`}
-                                >
-                                    {sub.displayName}
-                                </button>
-                            );
-                        })}
-                    </div>
+                                return (
+                                    <CarouselItem key={code}>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setRegionCode(code);
+                                                setSubRegionName('');
+                                            }}
+                                            aria-pressed={isSelected}
+                                            className={`min-w-max rounded-full px-6 py-2 text-sm transition-colors ${
+                                                isSelected ? 'bg-amber-600 text-white shadow-sm' : 'bg-stone-100 text-stone-500 hover:bg-stone-200'
+                                            }`}
+                                        >
+                                            {region.displayName}
+                                        </button>
+                                    </CarouselItem>
+                                );
+                            })}
+                        </CarouselContent>
+                    </Carousel>
+
+                    <Carousel aria-label="세부 지역 선택">
+                        <CarouselContent className="border-stone-50">
+                            {selectedRegion.sub.map((sub) => {
+                                const isSelected = subRegionName === sub.displayName;
+
+                                return (
+                                    <CarouselItem key={sub.displayName}>
+                                        <button
+                                            type="button"
+                                            onClick={() => setSubRegionName(sub.displayName)}
+                                            aria-pressed={isSelected}
+                                            className={`min-w-max rounded-full border-2 px-5 py-1.5 text-sm transition-colors ${
+                                                isSelected
+                                                    ? 'border-amber-600 bg-amber-50/50 font-bold text-amber-600'
+                                                    : 'border-transparent bg-stone-50 font-medium text-stone-500 hover:bg-stone-100'
+                                            }`}
+                                        >
+                                            {sub.displayName}
+                                        </button>
+                                    </CarouselItem>
+                                );
+                            })}
+                        </CarouselContent>
+                    </Carousel>
                 </div>
             </section>
-
-            <style jsx global>{`
-                .no-scrollbar::-webkit-scrollbar {
-                    display: none;
-                }
-
-                .no-scrollbar {
-                    -ms-overflow-style: none;
-                    scrollbar-width: none;
-                }
-            `}</style>
         </main>
     );
 }
