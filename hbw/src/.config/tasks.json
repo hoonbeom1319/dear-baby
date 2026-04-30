@@ -1,0 +1,159 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Commit: ✨ Feat",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "✨ Feat: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+      {
+        "label": "Commit: 🐛 Fix",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "🐛 Fix: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+      {
+        "label": "Commit: ♻️ Refactor",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "♻️ Refactor: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+      {
+        "label": "Commit: 💄 Style",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "💄 Style: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+      {
+        "label": "Commit: 💬 Text",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "💬 Text: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+      {
+        "label": "Commit: 🚑️ HotFix",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "🚑️ HotFix: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+      {
+        "label": "Commit: ⬆️ Upgrade",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "⬆️ Upgrade: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+      {
+        "label": "Commit: 👔 Update",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "👔 Update: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+      {
+        "label": "Commit: 🔥 Remove",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "🔥 Remove: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+      {
+        "label": "Commit: 🚧 WIP",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "🚧 WIP: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+      {
+        "label": "Commit: 🚚 Rename",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "🚚 Rename: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+      {
+        "label": "Commit:🔧 Chore",
+        "type": "shell",
+        "command": "git",
+        "args": ["commit", "-m", "🔧 Chore: ${input:message}", "-q"],
+        "problemMatcher": [],
+        "presentation": {
+          "close": true,
+          "showReuseMessage": false,
+          "clear": true,
+        },
+      },
+    ],
+    "inputs": [
+      {
+        "id": "message",
+        "type": "promptString",
+        "description": "Commit message 입력",
+      },
+    ],
+  }
+  
