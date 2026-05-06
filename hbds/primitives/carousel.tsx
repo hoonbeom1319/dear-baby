@@ -31,10 +31,9 @@ type CarouselProps = HTMLAttributes<HTMLDivElement> &
         'aria-label': string;
         options?: EmblaOptionsType;
         plugins?: EmblaPluginType[];
-        setApi?: (api: EmblaCarouselType) => void;
     }>;
 
-const Carousel = ({ className, children, options, plugins, setApi, onKeyDown, ...props }: CarouselProps) => {
+const Carousel = ({ className, children, options, plugins, onKeyDown, ...props }: CarouselProps) => {
     const [carouselRef, emblaApi] = useEmblaCarousel(options, plugins);
     const [canScrollPrev, setCanScrollPrev] = useState(false);
     const [canScrollNext, setCanScrollNext] = useState(false);
@@ -71,11 +70,6 @@ const Carousel = ({ className, children, options, plugins, setApi, onKeyDown, ..
             emblaApi.off('select', sync);
         };
     }, [emblaApi, sync]);
-
-    useEffect(() => {
-        if (!emblaApi || !setApi) return;
-        setApi(emblaApi);
-    }, [emblaApi, setApi]);
 
     return (
         <CarouselContext.Provider

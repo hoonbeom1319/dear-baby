@@ -1,6 +1,5 @@
 'use client';
 
-import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 import { REGIONS, type RegionCode } from '@/entities/geolocation/lib/resion';
 import { Carousel, CarouselContent, CarouselItem } from '@/hbds/display/carousel';
@@ -23,25 +22,19 @@ export default function Home() {
                     </span>
                     <h1 className="text-xl font-black tracking-tight text-stone-900">육아똑똑</h1>
                 </div>
-
-                <button type="button" aria-label="검색" className="flex size-10 items-center justify-center rounded-full text-stone-500 hover:bg-stone-100">
-                    <svg viewBox="0 0 24 24" className="size-5 fill-current">
-                        <path d="M10 2a8 8 0 1 0 4.9 14.32l5.39 5.39a1 1 0 0 0 1.42-1.42l-5.39-5.39A8 8 0 0 0 10 2Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z" />
-                    </svg>
-                </button>
             </header>
 
             <section className="bg-white px-4 py-4 shadow-sm">
                 <div className="flex flex-col gap-1">
                     <span className="mb-1 text-[10px] font-black tracking-[0.16em] text-stone-400">지역 선택</span>
 
-                    <Carousel aria-label="지역 선택" spacing={10}>
+                    <Carousel aria-label="지역 선택" autoPlay spacing={1}>
                         <CarouselContent>
                             {regionEntries.map(([code, region]) => {
                                 const isSelected = regionCode === code;
 
                                 return (
-                                    <CarouselItem key={code}>
+                                    <CarouselItem key={code} size="auto">
                                         <button
                                             type="button"
                                             onClick={() => {
