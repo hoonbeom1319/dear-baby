@@ -1,15 +1,63 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { REGIONS, type RegionCode } from '@/entities/geolocation/lib/resion';
+import { useEffect, useMemo, useState } from 'react';
 import { Carousel, CarouselContent, CarouselItem } from '@/hbds/display/carousel';
 
-export default function Home() {
-    const [regionCode, setRegionCode] = useState<RegionCode>('SEOUL');
-    const [subRegionName, setSubRegionName] = useState<string>('');
+type ApiRegion = {
+    code: string;
+    displayName: string;
+    sub: { code: string; displayName: string }[];
+};
 
-    const selectedRegion = REGIONS[regionCode];
-    const regionEntries = useMemo(() => Object.entries(REGIONS) as [RegionCode, (typeof REGIONS)[RegionCode]][], []);
+export default function Home() {
+    const [regions, setRegions] = useState<ApiRegion[]>([]);
+    const [regionCode, setRegionCode] = useState<string>('');
+    const [subRegionName, setSubRegionName] = useState<string>('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        async function run() {
+            setLoading(true);
+            setError(null);
+            try {
+                const res = await fetch('/api/regions', { method: 'GET' });
+                const json = (await res.json().catch(() => null)) as
+                    | { ok: true; regions: ApiRegion[] }
+                    | { ok: false; error?: { message?: string } }
+                    | null;
+
+                if (!res.ok || !json?.ok) {
+                    const message = json && 'error' in json ? json.error?.message : undefined;
+                    throw new Error(message ?? '지역 목록을 불러오지 못했어요.');
+                }
+
+                if (cancelled) return;
+                setRegions(json.regions);
+
+                // 초기 선택: 첫 번째 region
+                if (!regionCode && json.regions.length > 0) {
+                    setRegionCode(json.regions[0].code);
+                }
+            } catch (e) {
+                if (cancelled) return;
+                setError(e instanceof Error ? e.message : '알 수 없는 오류가 발생했어요.');
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        }
+
+        run();
+        return () => {
+            cancelled = true;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const selectedRegion = useMemo(() => regions.find((r) => r.code === regionCode) ?? null, [regions, regionCode]);
+    const regionEntries = useMemo(() => regions.map((r) => [r.code, r] as const), [regions]);
 
     return (
         <main className="min-h-screen bg-stone-50 pb-32">
@@ -27,6 +75,10 @@ export default function Home() {
             <section className="bg-white px-4 py-4 shadow-sm">
                 <div className="flex flex-col gap-1">
                     <span className="mb-1 text-[10px] font-black tracking-[0.16em] text-stone-400">지역 선택</span>
+
+                    {error ? (
+                        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>
+                    ) : null}
 
                     <Carousel aria-label="지역 선택" autoPlay spacing={1}>
                         <CarouselContent>
@@ -56,11 +108,11 @@ export default function Home() {
 
                     <Carousel aria-label="세부 지역 선택">
                         <CarouselContent className="border-stone-50">
-                            {selectedRegion.sub.map((sub) => {
+                            {(selectedRegion?.sub ?? []).map((sub) => {
                                 const isSelected = subRegionName === sub.displayName;
 
                                 return (
-                                    <CarouselItem key={sub.displayName}>
+                                    <CarouselItem key={sub.code}>
                                         <button
                                             type="button"
                                             onClick={() => setSubRegionName(sub.displayName)}
@@ -78,6 +130,8 @@ export default function Home() {
                             })}
                         </CarouselContent>
                     </Carousel>
+
+                    {loading ? <div className="pt-2 text-xs font-semibold text-stone-400">지역 데이터를 불러오는 중…</div> : null}
                 </div>
             </section>
         </main>
