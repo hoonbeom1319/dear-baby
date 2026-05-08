@@ -14,6 +14,6 @@ export const resolveResponse = async <T>(response: Response) => {
     try {
         return (await response.json()) as T;
     } catch {
-        return (await response.text()) as string;
+        return await response.text();
     }
 };

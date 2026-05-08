@@ -21,10 +21,10 @@ const FETCH = async <T = unknown>(input: string | URL, init?: RequestInit) => {
         const statusText = response.statusText;
         const message = `Request failed with status code ${status}`;
 
-        throw new FetchError({ message, status, statusText, url, method, error: data });
+        throw new FetchError({ message, status, statusText, url, method, error: data as string });
     }
 
-    return data;
+    return data as T;
 };
 
 export { FETCH, FetchError };

@@ -1,6 +1,7 @@
 'use client';
 
 import { useContext, useSyncExternalStore } from 'react';
+
 import { confirmContext } from './context';
 import { confirmStore, type ConfirmStore } from './store';
 

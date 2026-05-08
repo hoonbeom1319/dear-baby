@@ -6,8 +6,8 @@ import { Dialog, DialogClose, DialogContent, DialogTitle, DialogOverlay, DialogP
 
 import * as ButtonPrimitive from '../button';
 
-import { useConfirm, useConfirmContext } from './use-confirm';
 import { confirmContext } from './context';
+import { useConfirm, useConfirmContext } from './use-confirm';
 
 type PButtonProps = PropsWithChildren<{ className?: string; name?: string; onClick?: MouseEventHandler<HTMLButtonElement>; asChild?: boolean }>;
 
