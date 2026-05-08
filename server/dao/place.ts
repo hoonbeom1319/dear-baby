@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+
 import type { Place, PlaceId, PlaceListQuery } from '@/server/types/place';
 
 type PlaceRow = {
@@ -42,9 +43,7 @@ export async function listPlaces(client: SupabaseClient, query: PlaceListQuery) 
 
     let q = client
         .from('places')
-        .select(
-            'id, region_code, sub_region, kind, name, short_description, honey_tip, address, lat, lng, map_links, images, created_at, updated_at'
-        )
+        .select('id, region_code, sub_region, kind, name, short_description, honey_tip, address, lat, lng, map_links, images, created_at, updated_at')
         .order('created_at', { ascending: false })
         .limit(limit);
 
@@ -65,9 +64,7 @@ export async function listPlaces(client: SupabaseClient, query: PlaceListQuery) 
 export async function getPlace(client: SupabaseClient, id: PlaceId) {
     const { data, error } = await client
         .from('places')
-        .select(
-            'id, region_code, sub_region, kind, name, short_description, honey_tip, address, lat, lng, map_links, images, created_at, updated_at'
-        )
+        .select('id, region_code, sub_region, kind, name, short_description, honey_tip, address, lat, lng, map_links, images, created_at, updated_at')
         .eq('id', id)
         .maybeSingle();
 
@@ -75,4 +72,3 @@ export async function getPlace(client: SupabaseClient, id: PlaceId) {
     if (!data) return null;
     return toPlace(data as PlaceRow);
 }
-

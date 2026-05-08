@@ -9,22 +9,22 @@ const FETCH = async <T = unknown>(input: string | URL, init?: RequestInit) => {
 
     try {
         response = await fetch(input, init);
-    } catch (cause) {
-        const message = cause instanceof Error ? cause.message : 'Fetch failed';
-        throw new FetchError({ message, status: 0, statusText: 'FETCH_FAILED', url, method, cause });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Fetch failed';
+        throw new FetchError({ message, status: 0, statusText: 'FETCH_FAILED', url, method });
     }
 
+    const data = await resolveResponse<T>(response);
+
     if (!response.ok) {
-        const cloned = response.clone();
-        const data = await cloned.text();
         const status = response.status;
         const statusText = response.statusText;
         const message = `Request failed with status code ${status}`;
 
-        throw new FetchError({ message, status, statusText, url, method, data, response });
+        throw new FetchError({ message, status, statusText, url, method, error: data });
     }
 
-    return resolveResponse<T>(response);
+    return data;
 };
 
 export { FETCH, FetchError };

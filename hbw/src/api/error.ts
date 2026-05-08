@@ -1,12 +1,11 @@
-class FetchError<TData = unknown> extends Error {
+class FetchError<TError = unknown> extends Error {
     override name = 'FetchError';
-    cause?: unknown;
 
     readonly status: number;
     readonly statusText: string;
     readonly url: string;
     readonly method: string;
-    readonly data?: TData;
+    readonly error?: TError;
     readonly response?: Response;
 
     constructor(args: {
@@ -15,17 +14,16 @@ class FetchError<TData = unknown> extends Error {
         statusText: string;
         url: string;
         method: string;
-        data?: TData;
+        error?: TError;
         response?: Response;
         cause?: unknown;
     }) {
         super(args.message);
-        this.cause = args.cause;
         this.status = args.status;
         this.statusText = args.statusText;
         this.url = args.url;
         this.method = args.method;
-        this.data = args.data;
+        this.error = args.error;
         this.response = args.response;
     }
 }

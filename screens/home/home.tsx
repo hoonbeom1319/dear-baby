@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+
 import { Carousel, CarouselContent, CarouselItem } from '@/hbds/display/carousel';
 
 type ApiRegion = {
@@ -24,10 +25,7 @@ export default function Home() {
             setError(null);
             try {
                 const res = await fetch('/api/regions', { method: 'GET' });
-                const json = (await res.json().catch(() => null)) as
-                    | { ok: true; regions: ApiRegion[] }
-                    | { ok: false; error?: { message?: string } }
-                    | null;
+                const json = (await res.json().catch(() => null)) as { ok: true; items: ApiRegion[] } | { ok: false; error?: { message?: string } } | null;
 
                 if (!res.ok || !json?.ok) {
                     const message = json && 'error' in json ? json.error?.message : undefined;
@@ -35,11 +33,11 @@ export default function Home() {
                 }
 
                 if (cancelled) return;
-                setRegions(json.regions);
+                setRegions(json.items);
 
                 // 초기 선택: 첫 번째 region
-                if (!regionCode && json.regions.length > 0) {
-                    setRegionCode(json.regions[0].code);
+                if (!regionCode && json.items.length > 0) {
+                    setRegionCode(json.items[0].code);
                 }
             } catch (e) {
                 if (cancelled) return;
@@ -76,9 +74,7 @@ export default function Home() {
                 <div className="flex flex-col gap-1">
                     <span className="mb-1 text-[10px] font-black tracking-[0.16em] text-stone-400">지역 선택</span>
 
-                    {error ? (
-                        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>
-                    ) : null}
+                    {error ? <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div> : null}
 
                     <Carousel aria-label="지역 선택" autoPlay spacing={1}>
                         <CarouselContent>
