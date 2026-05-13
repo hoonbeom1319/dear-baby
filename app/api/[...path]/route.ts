@@ -1,7 +1,7 @@
 import { NotFoundError } from '@/server/lib/error';
 import { toResponseError } from '@/server/lib/response';
 
-const notFound = () => toResponseError(new NotFoundError());
+const notFound = () => toResponseError(NotFoundError);
 
 export const GET = notFound;
 export const POST = notFound;

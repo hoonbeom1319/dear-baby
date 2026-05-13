@@ -10,7 +10,7 @@ export default function Home() {
     const [regionCode, setRegionCode] = useState<string>('');
     const [subRegionName, setSubRegionName] = useState<string>('');
 
-    const { list, isPending, isError } = useRegionList();
+    const { list, isPending } = useRegionList();
     const effectiveRegionCode = regionCode || list[0]?.code || '';
 
     const selectedRegion = useMemo(() => list.find((r) => r.code === effectiveRegionCode) ?? null, [effectiveRegionCode, list]);

@@ -14,7 +14,7 @@ export default function NewPlacePage() {
                         / 신규 등록
                     </div>
                     <h1 className="mt-2 text-2xl font-black tracking-tight">신규 장소 등록</h1>
-                    <p className="mt-2 text-sm text-neutral-600">REGIONS 필터링에 사용할 장소 데이터를 등록합니다.</p>
+                    <p className="mt-2 text-sm text-neutral-600">지역·카테고리·시설 정보를 포함한 장소 데이터를 등록합니다.</p>
                 </div>
                 <Link className="rounded-full border border-neutral-300 px-5 py-3 text-sm font-bold hover:bg-neutral-100" href="/admin/places">
                     목록으로

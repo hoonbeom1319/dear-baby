@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { createSupabaseAnon } from '@/server/db/supabase';
+
 import { listPlacesController } from '@/server/controllers/place';
+import { createSupabaseAnon } from '@/server/db/supabase';
 
 function toErrorPayload(e: unknown) {
     if (e && typeof e === 'object') {
@@ -19,16 +20,15 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
 
         const regionCode = searchParams.get('regionCode') ?? undefined;
-        const subRegion = searchParams.get('subRegion') ?? undefined;
+        const subRegionCode = searchParams.get('subRegionCode') ?? searchParams.get('subRegion') ?? undefined;
         const limit = searchParams.get('limit') ? Number(searchParams.get('limit')) : undefined;
         const cursor = searchParams.get('cursor') ?? undefined;
 
         const supabase = createSupabaseAnon();
-        const result = await listPlacesController(supabase, { regionCode, subRegion, limit, cursor });
+        const result = await listPlacesController(supabase, { regionCode, subRegionCode, limit, cursor });
 
         return NextResponse.json({ ok: true, ...result });
     } catch (e) {
         return NextResponse.json({ ok: false, error: toErrorPayload(e) }, { status: 500 });
     }
 }
-
