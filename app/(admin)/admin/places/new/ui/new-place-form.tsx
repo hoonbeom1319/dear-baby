@@ -304,6 +304,22 @@ export default function NewPlaceForm() {
                     />
                 </div>
 
+                <div className="col-span-2 rounded-xl border border-neutral-100 bg-neutral-50 px-4 py-3 text-xs leading-relaxed text-neutral-600">
+                    <span className="font-bold text-neutral-700">위도·경도는 어디서 구하나요?</span>
+                    <ul className="mt-2 list-inside list-disc space-y-1">
+                        <li>
+                            <span className="font-semibold text-neutral-700">지도 앱/웹</span>: 카카오맵·네이버지도·구글맵에서 해당 장소를 연 뒤, 공유 링크나 URL에 포함된{' '}
+                            <code className="rounded bg-white px-1 py-0.5 text-[11px]">lat</code>, <code className="rounded bg-white px-1 py-0.5 text-[11px]">lng</code>/
+                            <code className="rounded bg-white px-1 py-0.5 text-[11px]">x</code>, <code className="rounded bg-white px-1 py-0.5 text-[11px]">y</code> 같은 쿼리값을
+                            복사하거나, 구글맵은 핀을 찍으면 좌표가 표시됩니다.
+                        </li>
+                        <li>
+                            <span className="font-semibold text-neutral-700">지오코딩 API</span>: 주소만 있다면 카카오 로컬·네이버 클라우드 지도·구글 Geocoding 등으로 주소 → 좌표 변환을 할 수 있습니다(별도 키·연동 필요).
+                        </li>
+                        <li>한국에서 쓰는 값은 보통 WGS84(GPS와 동일)입니다. 비워 두어도 등록은 됩니다.</li>
+                    </ul>
+                </div>
+
                 <div className="col-span-2">
                     <label className="mb-2 block text-xs font-bold text-neutral-600">지도 링크</label>
                     <div className="grid gap-3 sm:grid-cols-3">
