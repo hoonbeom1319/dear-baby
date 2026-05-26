@@ -1,3 +1,3 @@
-export default function Course() {
+export const Course = () => {
     return <>HI Course</>;
-}
+};

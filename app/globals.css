@@ -1,6 +1,1 @@
 @import 'tailwindcss';
-@import '../application/theme/token.css';
-
-html {
-    font-family: var(--font-pretendard);
-}
