@@ -1,1 +1,106 @@
 @import 'tailwindcss';
+
+/* Pretendard (Korean-first webfont) is loaded via <link> in app/layout.tsx —
+   a remote @import here would land after Tailwind's expanded output and break
+   the CSS rule that @import must precede all other rules. */
+
+/* ============================================================
+   hb-kit Design System tokens (Dear Baby brand)
+   Source: hoonbeom1319/hb-kit (packages/ds/src/tokens) + Claude Design
+   handoff. Primary is overridden from hb-kit's default indigo to a warm
+   Tangerine ramp per the Dear Baby brand decision.
+
+   Only the brand-custom tokens live here. Neutrals(slate), secondary
+   (violet), tertiary(sky) and status hues reuse Tailwind v4 defaults
+   directly in components (text-slate-500, bg-violet-600 ...).
+   ============================================================ */
+@theme {
+    --font-sans:
+        'Pretendard Variable', Pretendard, 'Noto Sans KR', 'Apple SD Gothic Neo', -apple-system,
+        BlinkMacSystemFont, ui-sans-serif, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+        sans-serif;
+
+    /* Primary → Tangerine (interactive / brand) */
+    --color-primary-50: oklch(97% 0.025 60);
+    --color-primary-100: oklch(94% 0.06 58);
+    --color-primary-200: oklch(88% 0.11 55);
+    --color-primary-300: oklch(82% 0.16 52);
+    --color-primary-400: oklch(76% 0.19 50);
+    --color-primary-500: oklch(73% 0.2 50);
+    --color-primary-600: oklch(68% 0.2 48);
+    --color-primary-700: oklch(58% 0.18 45);
+    --color-primary-800: oklch(48% 0.15 42);
+    --color-primary-900: oklch(40% 0.12 40);
+    --color-primary-950: oklch(26% 0.08 38);
+
+    /* Semantic surface tokens (slate-derived, inlined so they resolve in @theme) */
+    --color-surface: #ffffff;
+    --color-surface-foreground: oklch(20.8% 0.042 265.755); /* slate-900 */
+    --color-border: oklch(92.9% 0.013 255.508); /* slate-200 */
+    --color-muted: oklch(55.4% 0.046 257.417); /* slate-500 */
+
+    /* Status (Tailwind 500s — never substitute) */
+    --color-info: oklch(68.5% 0.169 237.323); /* sky-500 */
+    --color-success: oklch(69.6% 0.17 162.48); /* emerald-500 */
+    --color-warning: oklch(76.9% 0.188 70.08); /* amber-500 */
+    --color-danger: oklch(64.5% 0.246 16.439); /* rose-500 */
+
+    /* Semantic elevation aliases — components reach for these by intent */
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-popover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-modal: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+    /* Deceleration curve — sheet / toast entrances */
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+    body {
+        background: var(--color-surface);
+        color: var(--color-slate-700);
+        font-family: var(--font-sans);
+        letter-spacing: -0.01em;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+@keyframes sheet-up {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modal-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
