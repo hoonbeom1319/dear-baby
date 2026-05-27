@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
-import { pretendard } from '@/application/font';
 import { AppProvider } from '@/application/providers';
 import { InstallBanner } from '@/features/install-prompt';
 import { ServiceWorkerRegistrar } from '@/features/install-prompt/ui/sw-registrar';
@@ -31,7 +30,13 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     const initialPlaces = await fetchAllPlaces();
 
     return (
-        <html lang="ko" className={pretendard.variable}>
+        <html lang="ko">
+            <head>
+                <link
+                    rel="stylesheet"
+                    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css"
+                />
+            </head>
             <body>
                 <AppProvider initialPlaces={initialPlaces}>{children}</AppProvider>
                 <ServiceWorkerRegistrar />
