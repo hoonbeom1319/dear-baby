@@ -2,23 +2,132 @@
 
 import { useState, type ReactNode } from 'react';
 
+import { useRouter } from 'next/navigation';
+
+import { useApp } from '@/application/providers';
+
 import { AdChip, AdField, AdIconButton, AdInput, AdSelect, AdTextarea, AdminPage, AdminShell } from '@/widgets/admin-shell';
 
-import { COURSES } from '@/entities/course';
-import { getPlace } from '@/entities/place';
+import type { Course } from '@/entities/course';
+import type { PlaceAdmin } from '@/entities/place';
 
-import { getArea, getCategory } from '@/shared/config';
+import { AREAS, getArea, getCategory } from '@/shared/config';
 import { cn } from '@/shared/lib';
 import { Button, Icon, Pill } from '@/shared/ui';
+
+import { createCourse, deleteCourse, replaceCourseStops, updateCourse } from '@/server/actions/courses';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (
     <th className={cn('border-b border-border bg-slate-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
 );
 
-/** 코스 관리 (PRD A-4). 좌측 목록 선택 → 우측 에디터 라이브 갱신. 자동 생성 안 함. */
-export const AdminCourses = () => {
+type StopDraft = { placeId: string; comment: string };
+
+type Props = {
+    initialCourses: Course[];
+    allPlaces: PlaceAdmin[];
+};
+
+/** 코스 관리 (PRD A-4). 좌측 목록 선택 → 우측 에디터 라이브 갱신. */
+export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
+    const router = useRouter();
+    const { toast } = useApp();
     const [selected, setSelected] = useState(0);
-    const course = COURSES[selected];
+    const [saving, setSaving] = useState(false);
+    const [areaFilter, setAreaFilter] = useState<string>('all');
+
+    const filteredCourses = areaFilter === 'all'
+        ? initialCourses
+        : initialCourses.filter((c) => c.area === areaFilter);
+
+    const course = filteredCourses[selected] ?? initialCourses[selected];
+
+    // 에디터 로컬 상태 (선택 변경 시 course로 초기화)
+    const [draftTitle, setDraftTitle] = useState(course?.title ?? '');
+    const [draftDuration, setDraftDuration] = useState(course?.duration ?? '');
+    const [draftDesc, setDraftDesc] = useState(course?.description ?? '');
+    const [draftStops, setDraftStops] = useState<StopDraft[]>(
+        course?.stopIds.map((id, i) => ({ placeId: id, comment: course.comments[i] ?? '' })) ?? []
+    );
+
+    const syncEditor = (c: Course) => {
+        setDraftTitle(c.title);
+        setDraftDuration(c.duration);
+        setDraftDesc(c.description);
+        setDraftStops(c.stopIds.map((id, i) => ({ placeId: id, comment: c.comments[i] ?? '' })));
+    };
+
+    const handleSelect = (idx: number) => {
+        setSelected(idx);
+        const c = filteredCourses[idx];
+        if (c) syncEditor(c);
+    };
+
+    const moveStop = (idx: number, dir: -1 | 1) => {
+        const next = [...draftStops];
+        const swap = idx + dir;
+        if (swap < 0 || swap >= next.length) return;
+        [next[idx], next[swap]] = [next[swap], next[idx]];
+        setDraftStops(next);
+    };
+
+    const removeStop = (idx: number) => {
+        setDraftStops((prev) => prev.filter((_, i) => i !== idx));
+    };
+
+    const addStop = (placeId: string) => {
+        if (!placeId || draftStops.some((s) => s.placeId === placeId)) return;
+        setDraftStops((prev) => [...prev, { placeId, comment: '' }]);
+    };
+
+    const handleSave = async () => {
+        if (!course) return;
+        setSaving(true);
+        try {
+            await updateCourse(course.id, {
+                title: draftTitle,
+                duration: draftDuration,
+                description: draftDesc,
+            });
+            await replaceCourseStops(course.id, draftStops);
+            toast('변경사항을 저장했어요');
+            router.refresh();
+        } catch {
+            toast('저장에 실패했어요');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleDelete = async (c: Course) => {
+        if (!confirm(`"${c.title}" 코스를 삭제할까요?`)) return;
+        try {
+            await deleteCourse(c.id);
+            toast('삭제했어요');
+            setSelected(0);
+            router.refresh();
+        } catch {
+            toast('삭제에 실패했어요');
+        }
+    };
+
+    const handleNewCourse = async () => {
+        try {
+            await createCourse({
+                area: 'songpa',
+                title: '새 코스',
+                duration: '',
+                season: '사계절',
+                description: '',
+                sortOrder: initialCourses.length,
+                stops: [],
+            });
+            toast('새 코스를 만들었어요. 우측 에디터에서 편집하세요.');
+            router.refresh();
+        } catch {
+            toast('생성에 실패했어요');
+        }
+    };
 
     return (
         <AdminShell>
@@ -26,7 +135,7 @@ export const AdminCourses = () => {
                 title="코스 관리"
                 subtitle="큐레이션 영역 — 자동 생성 안 함 · A-4"
                 actions={
-                    <Button size="sm">
+                    <Button size="sm" onClick={handleNewCourse}>
                         <Icon name="plus" size={14} /> 새 코스 추가
                     </Button>
                 }>
@@ -34,9 +143,10 @@ export const AdminCourses = () => {
                     {/* 좌측: 목록 */}
                     <div>
                         <div className="mb-3 flex gap-2">
-                            <AdChip active>전체 동네</AdChip>
-                            <AdChip>송파</AdChip>
-                            <AdChip>운정</AdChip>
+                            <AdChip active={areaFilter === 'all'} onClick={() => { setAreaFilter('all'); setSelected(0); }}>전체 동네</AdChip>
+                            {AREAS.map((a) => (
+                                <AdChip key={a.id} active={areaFilter === a.id} onClick={() => { setAreaFilter(a.id); setSelected(0); }}>{a.name}</AdChip>
+                            ))}
                         </div>
                         <div className="overflow-hidden rounded-xl border border-border bg-surface">
                             <table className="w-full border-collapse text-[13.5px]">
@@ -50,10 +160,10 @@ export const AdminCourses = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {COURSES.map((item, i) => (
+                                    {filteredCourses.map((item, i) => (
                                         <tr
                                             key={item.id}
-                                            onClick={() => setSelected(i)}
+                                            onClick={() => handleSelect(i)}
                                             className={cn('cursor-pointer transition-colors', selected === i ? 'bg-primary-50' : 'hover:bg-slate-50')}>
                                             <td className="border-b border-border px-4 py-3.5 font-medium text-surface-foreground">{item.title}</td>
                                             <td className="border-b border-border px-4 py-3.5 text-muted">{getArea(item.area)?.name}</td>
@@ -61,89 +171,117 @@ export const AdminCourses = () => {
                                             <td className="border-b border-border px-4 py-3.5 text-muted">{item.duration}</td>
                                             <td className="border-b border-border px-4 py-3.5">
                                                 <div className="flex justify-end gap-1">
-                                                    <AdIconButton name="edit" />
-                                                    <AdIconButton name="trash" />
+                                                    <AdIconButton name="trash" onClick={(e) => { e.stopPropagation(); handleDelete(item); }} />
                                                 </div>
                                             </td>
                                         </tr>
                                     ))}
+                                    {filteredCourses.length === 0 && (
+                                        <tr>
+                                            <td colSpan={5} className="py-8 text-center text-[13px] text-muted">코스가 없어요</td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    {/* 우측: 에디터 (선택 변경 시 remount) */}
-                    <div key={course.id} className="overflow-hidden rounded-xl border border-border bg-surface">
-                        <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
-                            <div>
-                                <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-surface-foreground">편집 중</h3>
-                                <p className="mt-0.5 text-xs text-muted">{course.title}</p>
+                    {/* 우측: 에디터 */}
+                    {course ? (
+                        <div className="overflow-hidden rounded-xl border border-border bg-surface">
+                            <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
+                                <div>
+                                    <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-surface-foreground">편집 중</h3>
+                                    <p className="mt-0.5 text-xs text-muted">{course.title}</p>
+                                </div>
+                                <Pill tone="primary">저장 전</Pill>
                             </div>
-                            <Pill tone="primary">초안</Pill>
-                        </div>
-                        <div className="flex flex-col gap-3.5 p-5">
-                            <AdField label="이름">
-                                <AdInput defaultValue={course.title} />
-                            </AdField>
-                            <div className="grid grid-cols-2 gap-4">
-                                <AdField label="동네">
-                                    <AdSelect value={getArea(course.area)?.name} />
+                            <div className="flex flex-col gap-3.5 p-5">
+                                <AdField label="이름">
+                                    <AdInput value={draftTitle} onChange={(e) => setDraftTitle(e.target.value)} />
                                 </AdField>
-                                <AdField label="예상 소요">
-                                    <AdInput defaultValue={course.duration} />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <AdField label="동네">
+                                        <AdSelect value={getArea(course.area)?.name} />
+                                    </AdField>
+                                    <AdField label="예상 소요">
+                                        <AdInput value={draftDuration} onChange={(e) => setDraftDuration(e.target.value)} />
+                                    </AdField>
+                                </div>
+                                <AdField label="설명">
+                                    <AdTextarea rows={2} value={draftDesc} onChange={(e) => setDraftDesc(e.target.value)} />
                                 </AdField>
-                            </div>
-                            <AdField label="설명">
-                                <AdTextarea rows={2} defaultValue={course.description} />
-                            </AdField>
 
-                            <div className="flex flex-col gap-2">
-                                <div className="flex items-center justify-between text-[12.5px] font-medium text-surface-foreground">
-                                    <span>정거장 순서</span>
-                                    <Button size="sm" variant="ghost">
-                                        <Icon name="plus" size={13} /> 정거장 추가
-                                    </Button>
-                                </div>
                                 <div className="flex flex-col gap-2">
-                                    {course.stopIds.map((id, n) => {
-                                        const place = getPlace(id);
-                                        return (
-                                            <div key={id} className="flex items-center gap-2.5 rounded-[10px] border border-border bg-surface p-2.5">
-                                                <div className="inline-flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-primary-600 text-xs font-semibold tabular-nums text-white">
-                                                    {n + 1}
-                                                </div>
-                                                <div className="min-w-0 flex-1">
-                                                    <div className="text-[13.5px] font-medium text-surface-foreground">{place?.name}</div>
-                                                    <div className="mt-0.5 text-[11.5px] text-muted">
-                                                        {place ? `${getCategory(place.category)?.name} · ${getArea(place.area)?.name}` : ''}
+                                    <div className="flex items-center justify-between text-[12.5px] font-medium text-surface-foreground">
+                                        <span>정거장 순서</span>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        {draftStops.map((stop, n) => {
+                                            const place = allPlaces.find((p) => p.id === stop.placeId);
+                                            return (
+                                                <div key={stop.placeId} className="flex items-center gap-2.5 rounded-[10px] border border-border bg-surface p-2.5">
+                                                    <div className="inline-flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-primary-600 text-xs font-semibold tabular-nums text-white">
+                                                        {n + 1}
                                                     </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="text-[13.5px] font-medium text-surface-foreground">{place?.name ?? stop.placeId}</div>
+                                                        <div className="mt-0.5 text-[11.5px] text-muted">
+                                                            {place ? `${getCategory(place.category)?.name} · ${getArea(place.area)?.name}` : ''}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => moveStop(n, -1)}
+                                                            className="flex h-[18px] w-6 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-100 hover:text-surface-foreground">
+                                                            <Icon name="up-arrow" size={14} />
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => moveStop(n, 1)}
+                                                            className="flex h-[18px] w-6 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-100 hover:text-surface-foreground">
+                                                            <Icon name="down" size={14} />
+                                                        </button>
+                                                    </div>
+                                                    <AdIconButton name="trash" onClick={() => removeStop(n)} />
                                                 </div>
-                                                <div className="flex flex-col">
-                                                    <button
-                                                        type="button"
-                                                        className="flex h-[18px] w-6 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-100 hover:text-surface-foreground">
-                                                        <Icon name="up-arrow" size={14} />
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        className="flex h-[18px] w-6 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-100 hover:text-surface-foreground">
-                                                        <Icon name="down" size={14} />
-                                                    </button>
-                                                </div>
-                                                <AdIconButton name="trash" />
-                                            </div>
-                                        );
-                                    })}
+                                            );
+                                        })}
+                                    </div>
+
+                                    {/* 정거장 추가 드롭다운 */}
+                                    <div className="mt-1">
+                                        <select
+                                            defaultValue=""
+                                            onChange={(e) => { addStop(e.target.value); e.target.value = ''; }}
+                                            className="h-8 w-full rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 text-[13px] text-muted">
+                                            <option value="" disabled>+ 정거장 추가</option>
+                                            {allPlaces
+                                                .filter((p) => !draftStops.some((s) => s.placeId === p.id))
+                                                .map((p) => (
+                                                    <option key={p.id} value={p.id}>
+                                                        {p.name} ({getArea(p.area)?.name})
+                                                    </option>
+                                                ))}
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
+                            <div className="flex justify-end gap-2 border-t border-border bg-slate-50 p-4">
+                                <Button size="sm" variant="outline" onClick={() => syncEditor(course)}>
+                                    되돌리기
+                                </Button>
+                                <Button size="sm" onClick={handleSave} disabled={saving}>
+                                    {saving ? '저장 중…' : '변경사항 저장'}
+                                </Button>
+                            </div>
                         </div>
-                        <div className="flex justify-end gap-2 border-t border-border bg-slate-50 p-4">
-                            <Button size="sm" variant="outline">
-                                취소
-                            </Button>
-                            <Button size="sm">변경사항 저장</Button>
+                    ) : (
+                        <div className="flex items-center justify-center rounded-xl border border-dashed border-border p-10 text-[13px] text-muted">
+                            좌측에서 코스를 선택하세요
                         </div>
-                    </div>
+                    )}
                 </div>
             </AdminPage>
         </AdminShell>

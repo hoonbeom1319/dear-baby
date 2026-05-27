@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 
 import { AppProvider } from '@/application/providers';
 
+import { fetchAllPlaces } from '@/server/actions/places';
+
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -9,7 +11,9 @@ export const metadata: Metadata = {
     description: 'Dear Baby is a platform for parents to share ...'
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+    const initialPlaces = await fetchAllPlaces();
+
     return (
         <html lang="ko">
             <head>
@@ -19,7 +23,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 />
             </head>
             <body className="font-sans antialiased">
-                <AppProvider>{children}</AppProvider>
+                <AppProvider initialPlaces={initialPlaces}>{children}</AppProvider>
             </body>
         </html>
     );

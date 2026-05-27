@@ -6,23 +6,24 @@ import { useRouter } from 'next/navigation';
 
 import { useApp } from '@/application/providers';
 
-import { listCoursesByArea } from '@/entities/course';
-import { getPlace } from '@/entities/place';
+import type { Course } from '@/entities/course';
 
 import { getArea } from '@/shared/config';
 import { AppHeader, Card, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const Dot = () => <span className="h-0.5 w-0.5 rounded-full bg-slate-300" />;
 
+type Props = { allCourses: Course[] };
+
 /**
  * 코스 목록 (PRD F-9). 마지막으로 본 동네의 코스 카드만 나열한다.
  * 코스는 큐레이터가 직접 묶은 것 — 자동 생성하지 않는다.
  */
-export const CourseList = () => {
+export const CourseList = ({ allCourses }: Props) => {
     const router = useRouter();
-    const { area } = useApp();
+    const { area, getPlaceById } = useApp();
 
-    const courses = listCoursesByArea(area);
+    const courses = allCourses.filter((c) => c.area === area);
     const areaName = getArea(area)?.name;
 
     return (
@@ -58,7 +59,7 @@ export const CourseList = () => {
                             {course.stopIds.map((id, idx) => (
                                 <Fragment key={id}>
                                     <span className="rounded-full bg-slate-100 px-2.5 py-[3px] text-[11px] font-medium text-surface-foreground">
-                                        {idx + 1}. {getPlace(id)?.name.split(' ')[0]}
+                                        {idx + 1}. {getPlaceById(id)?.name.split(' ')[0]}
                                     </span>
                                     {idx < course.stopIds.length - 1 && <span className="text-[11px] text-slate-400">→</span>}
                                 </Fragment>

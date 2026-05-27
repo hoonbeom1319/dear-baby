@@ -4,21 +4,20 @@ import { useRouter } from 'next/navigation';
 
 import { useApp } from '@/application/providers';
 
-import { PlaceCard, getPlace } from '@/entities/place';
+import { PlaceCard } from '@/entities/place';
 
 import { AppHeader, Button, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 /**
- * 즐겨찾기 목록 (PRD F-8). 첫 화면과 같은 카드 디자인 재사용, 최근 추가순 자동 정렬.
- * 진입은 첫 화면 우상단 ★ 한 곳에서만. 필터/칩 없음.
+ * 즐겨찾기 목록 (PRD F-8). 최근 추가순 자동 정렬.
+ * 장소 조회는 AppProvider 컨텍스트(getPlaceById)를 사용한다.
  */
 export const Favorites = () => {
     const router = useRouter();
-    const { favoriteIds, isFavorite, toggleFavorite } = useApp();
+    const { favoriteIds, isFavorite, toggleFavorite, getPlaceById } = useApp();
 
-    // favoriteIds는 newest-first로 유지된다 (AppProvider).
     const places = favoriteIds.flatMap((id) => {
-        const place = getPlace(id);
+        const place = getPlaceById(id);
         return place ? [place] : [];
     });
 

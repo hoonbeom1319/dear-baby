@@ -1,5 +1,8 @@
 import { AdminReports } from '@/screens/admin-reports/admin-reports';
 
-export default function Page() {
-    return <AdminReports />;
+import { fetchReportsAdmin } from '@/server/actions/reports';
+
+export default async function Page() {
+    const initialReports = await fetchReportsAdmin();
+    return <AdminReports initialReports={initialReports} />;
 }

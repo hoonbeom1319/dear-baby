@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 
 import { useApp } from '@/application/providers';
 
-import { listCoursesByArea } from '@/entities/course';
-import { PLACES, PlaceCard } from '@/entities/place';
+import { PlaceCard } from '@/entities/place';
+import type { Course } from '@/entities/course';
 
 import { AREAS, CATEGORIES, getArea, type CategoryId } from '@/shared/config';
 import { AppHeader, Brand, Card, Chip, ChipRow, Icon, IconButton, MobileShell } from '@/shared/ui';
@@ -17,23 +17,41 @@ const SectionLabel = ({ children }: { children: ReactNode }) => (
 );
 
 /**
- * 첫 화면 (PRD F-1~F-5). 마지막으로 본 동네(전역 area)의 장소를 카드로 보여주고,
- * 동네/카테고리 칩과 (카테고리=전체일 때만) 코스 진입 카드를 노출한다.
+ * 첫 화면 (PRD F-1~F-5). 동네/카테고리 칩으로 필터링.
+ * 장소는 AppProvider 컨텍스트(layout에서 서버 패치)에서, 코스는 page.tsx RSC에서 전달받는다.
  */
-export const Home = () => {
+export const Home = ({ allCourses }: { allCourses: Course[] }) => {
     const router = useRouter();
-    const { area, setArea, isFavorite, toggleFavorite } = useApp();
+    const { area, setArea, allPlaces, isFavorite, toggleFavorite, loggedIn, openLogin, logout, toast } = useApp();
     const [category, setCategory] = useState<CategoryId>('all');
 
-    const places = PLACES.filter((place) => place.area === area && (category === 'all' || place.category === category));
-    const courseCount = listCoursesByArea(area).length;
+    const places = allPlaces.filter(
+        (place) => place.area === area && (category === 'all' || place.category === category)
+    );
+    const courseCount = allCourses.filter((c) => c.area === area).length;
     const areaName = getArea(area)?.name;
 
     return (
         <MobileShell>
             <AppHeader
                 lead={<Brand />}
-                right={<IconButton name="star" title="즐겨찾기" onClick={() => router.push('/favorites')} />}
+                right={
+                    <>
+                        <IconButton name="star" title="즐겨찾기" onClick={() => router.push('/favorites')} />
+                        <IconButton
+                            name="user"
+                            title={loggedIn ? '로그아웃' : '로그인'}
+                            onClick={() => {
+                                if (loggedIn) {
+                                    logout();
+                                    toast('로그아웃 했어요');
+                                } else {
+                                    openLogin();
+                                }
+                            }}
+                        />
+                    </>
+                }
             />
 
             <div className="flex-1 pb-8">

@@ -4,23 +4,24 @@ import { useRouter } from 'next/navigation';
 
 import { useApp } from '@/application/providers';
 
-import { getCourse } from '@/entities/course';
-import { PlaceCard, getPlace } from '@/entities/place';
+import { PlaceCard } from '@/entities/place';
+import type { Course } from '@/entities/course';
 
 import { getArea } from '@/shared/config';
 import { AppHeader, Button, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const MetaDot = () => <span className="h-0.5 w-0.5 rounded-full bg-slate-300" />;
 
+type Props = { course: Course | null };
+
 /**
  * 코스 상세 (PRD F-10). 정거장을 순서대로 나열하고 사이를 화살표로 잇는다.
- * 각 정거장은 장소 카드(재사용) + 순서 번호 + 큐레이터 코멘트. 큰 액션은 없다.
+ * course는 RSC page.tsx에서 Supabase로 패치해 전달받는다.
+ * 장소 조회는 AppProvider 컨텍스트(getPlaceById)를 사용한다.
  */
-export const CourseDetail = ({ courseId }: { courseId: string }) => {
+export const CourseDetail = ({ course }: Props) => {
     const router = useRouter();
-    const { isFavorite, toggleFavorite, toast } = useApp();
-
-    const course = getCourse(courseId);
+    const { isFavorite, toggleFavorite, toast, getPlaceById } = useApp();
 
     const goBack = () => {
         if (typeof window !== 'undefined' && window.history.length > 1) router.back();
@@ -40,7 +41,7 @@ export const CourseDetail = ({ courseId }: { courseId: string }) => {
     }
 
     const area = getArea(course.area);
-    const stops = course.stopIds.map(getPlace);
+    const stops = course.stopIds.map(getPlaceById);
 
     return (
         <MobileShell>

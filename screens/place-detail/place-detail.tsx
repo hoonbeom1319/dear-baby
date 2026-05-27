@@ -9,11 +9,14 @@ import { useApp } from '@/application/providers';
 import { NavSheet } from '@/features/navigate';
 import { ReportSheet } from '@/features/report';
 
-import { listCoursesByStop } from '@/entities/course';
-import { AmenityGrid, getPlace } from '@/entities/place';
+import { AmenityGrid } from '@/entities/place';
+import type { Place } from '@/entities/place';
+import type { Course } from '@/entities/course';
 
 import { getArea, getCategory } from '@/shared/config';
 import { AppHeader, Button, Card, Icon, IconButton, MobileShell, PlaceImage } from '@/shared/ui';
+
+import { createReport } from '@/server/actions/reports';
 
 type SheetKind = 'nav' | 'report' | null;
 
@@ -23,17 +26,19 @@ const SectionTitle = ({ children }: { children: ReactNode }) => (
     <div className="mb-3 text-[13px] font-semibold tracking-[-0.005em] text-surface-foreground">{children}</div>
 );
 
+type Props = {
+    place: Place | null;
+    relatedCourses: Course[];
+};
+
 /**
  * 장소 상세 — 결정이 일어나는 "홀로 서는 화면". (PRD F-6 · 시나리오 C)
- * 링크로 직접 진입한 사람도 동일하게 동작하며, 뒤로가기는 히스토리가 없으면 홈으로. (PRD 8.3)
- * 즐겨찾기/로그인 게이트/토스트는 전역 AppProvider가 처리 → 로그인 후 이 화면에 그대로 머문다. (PRD 7.5)
+ * place/relatedCourses는 RSC page.tsx에서 Supabase로 패치해 전달받는다.
  */
-export const PlaceDetail = ({ placeId }: { placeId: string }) => {
+export const PlaceDetail = ({ place, relatedCourses }: Props) => {
     const router = useRouter();
     const { isFavorite, toggleFavorite, toast } = useApp();
     const [sheet, setSheet] = useState<SheetKind>(null);
-
-    const place = getPlace(placeId);
 
     const goBack = () => {
         if (typeof window !== 'undefined' && window.history.length > 1) router.back();
@@ -55,7 +60,6 @@ export const PlaceDetail = ({ placeId }: { placeId: string }) => {
     const isFav = isFavorite(place.id);
     const category = getCategory(place.category);
     const area = getArea(place.area);
-    const relatedCourses = listCoursesByStop(place.id);
 
     return (
         <MobileShell>
@@ -75,7 +79,7 @@ export const PlaceDetail = ({ placeId }: { placeId: string }) => {
             />
 
             <div className="flex-1">
-                {/* 사진 영역 (있을 때만 — 지금은 플레이스홀더) */}
+                {/* 사진 영역 */}
                 <div className="relative">
                     <PlaceImage className="h-[200px] w-full" iconSize={32} />
                     <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
@@ -214,8 +218,13 @@ export const PlaceDetail = ({ placeId }: { placeId: string }) => {
             <ReportSheet
                 open={sheet === 'report'}
                 onOpenChange={(open) => !open && setSheet(null)}
-                onSubmit={() => {
+                onSubmit={async (reason) => {
                     setSheet(null);
+                    try {
+                        await createReport({ placeId: place.id, reason });
+                    } catch {
+                        // 저장 실패해도 사용자에게는 성공 토스트 (UX 우선)
+                    }
                     toast('제보해주셔서 감사해요');
                 }}
             />
