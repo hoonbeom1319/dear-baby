@@ -7,7 +7,7 @@ interface BeforeInstallPromptEvent extends Event {
     userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
-type State = 'hidden' | 'android' | 'ios';
+type State = 'hidden' | 'android' | 'ios' | 'ios-other';
 
 const DISMISSED_KEY = 'pwa_dismissed_at';
 const HIDE_FOR_MS = 30 * 24 * 60 * 60 * 1000; // 30일
@@ -40,9 +40,12 @@ export function InstallBanner() {
         window.addEventListener('beforeinstallprompt', handler);
 
         // iOS Safari (beforeinstallprompt 미지원)
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
-        if (isIOS && isSafari) setState('ios');
+        const ua = navigator.userAgent;
+        const isIOS = /iPad|iPhone|iPod/.test(ua);
+        const isIOSOtherBrowser = isIOS && /CriOS|FxiOS|OPiOS/.test(ua);
+        const isSafari = isIOS && /Safari/.test(ua) && !/CriOS|FxiOS|OPiOS/.test(ua);
+        if (isIOSOtherBrowser) setState('ios-other');
+        else if (isSafari) setState('ios');
 
         return () => window.removeEventListener('beforeinstallprompt', handler);
     }, []);
@@ -67,6 +70,32 @@ export function InstallBanner() {
     };
 
     if (state === 'hidden') return null;
+
+    if (state === 'ios-other') {
+        return (
+            <div className="fixed bottom-0 left-0 right-0 z-[2000] border-t border-border bg-surface px-4 pt-3 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]"
+                style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}>
+                <div className="flex items-center gap-3">
+                    <img src="/icon.png" alt="Dear Baby" className="h-12 w-12 shrink-0 rounded-xl object-cover shadow-sm" />
+                    <div className="min-w-0 flex-1">
+                        <p className="text-[13.5px] font-semibold text-surface-foreground">앱으로 설치하려면</p>
+                        <p className="mt-0.5 text-[12px] text-muted">
+                            iPhone은 <strong className="font-medium text-surface-foreground">Safari</strong>로 열어야 홈 화면에 추가할 수 있어요
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={dismiss}
+                        aria-label="닫기"
+                        className="shrink-0 rounded-full p-1.5 text-muted hover:bg-slate-100">
+                        <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 fill-current">
+                            <path d="M12.854 3.854a.5.5 0 0 0-.708-.708L8 7.293 3.854 3.146a.5.5 0 1 0-.708.708L7.293 8l-4.147 4.146a.5.5 0 0 0 .708.708L8 8.707l4.146 4.147a.5.5 0 0 0 .708-.708L8.707 8z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="fixed bottom-0 left-0 right-0 z-[2000] border-t border-border bg-surface px-4 pb-safe-area-inset-bottom pt-3 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]"
