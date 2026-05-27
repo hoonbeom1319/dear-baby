@@ -1,5 +1,8 @@
-import Home from '@/screens/home/home';
+import { Home } from '@/screens/home/home';
 
-export default function Page() {
-    return <Home />;
+import { fetchAllCourses } from '@/server/actions/courses';
+
+export default async function Page() {
+    const allCourses = await fetchAllCourses();
+    return <Home allCourses={allCourses} />;
 }

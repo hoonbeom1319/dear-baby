@@ -2,9 +2,11 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 import { pretendard } from '@/application/font';
-import AppProvider from '@/application/providers/app-provider';
+import { AppProvider } from '@/application/providers';
 import { InstallBanner } from '@/features/install-prompt';
 import { ServiceWorkerRegistrar } from '@/features/install-prompt/ui/sw-registrar';
+
+import { fetchAllPlaces } from '@/server/actions/places';
 
 export const metadata: Metadata = {
     title: 'Dear Baby',
@@ -25,11 +27,13 @@ export const viewport: Viewport = {
     userScalable: false,
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+    const initialPlaces = await fetchAllPlaces();
+
     return (
         <html lang="ko" className={pretendard.variable}>
             <body>
-                <AppProvider>{children}</AppProvider>
+                <AppProvider initialPlaces={initialPlaces}>{children}</AppProvider>
                 <ServiceWorkerRegistrar />
                 <InstallBanner />
             </body>
