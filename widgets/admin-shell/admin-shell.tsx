@@ -15,14 +15,11 @@ const NAV: { href: string; label: string; icon: IconName; key: string }[] = [
     { href: '/admin/reports', label: '정보 제보', icon: 'inbox', key: 'reports' }
 ];
 
-/** 대기 중 제보 수(사이드바 뱃지). 데모용 정적값 — Supabase 연동 시 집계로 대체. */
-const PENDING_REPORTS = 4;
-
 /**
  * 관리자 데스크톱 셸 — 좌측 사이드바 + 본문. (PRD 8.2)
  * 시안의 브라우저 창 크롬(점·URL바)은 디자인 캔버스용이라 제외한다.
  */
-export const AdminShell = ({ children }: { children: ReactNode }) => {
+export const AdminShell = ({ children, pendingReports = 0 }: { children: ReactNode; pendingReports?: number }) => {
     const pathname = usePathname();
     const isActive = (href: string) => (href === '/admin' ? pathname === '/admin' : pathname.startsWith(href));
 
@@ -55,9 +52,9 @@ export const AdminShell = ({ children }: { children: ReactNode }) => {
                                     <Icon name={item.icon} size={16} />
                                 </span>
                                 <span>{item.label}</span>
-                                {item.key === 'reports' && PENDING_REPORTS > 0 && (
+                                {item.key === 'reports' && pendingReports > 0 && (
                                     <span className="ml-auto rounded-full bg-primary-600 px-[7px] py-0.5 text-[11px] font-semibold leading-tight tabular-nums text-white">
-                                        {PENDING_REPORTS}
+                                        {pendingReports}
                                     </span>
                                 )}
                             </Link>

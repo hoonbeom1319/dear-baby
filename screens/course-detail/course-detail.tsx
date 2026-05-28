@@ -7,7 +7,7 @@ import { useApp } from '@/application/providers';
 import { PlaceCard } from '@/entities/place';
 import type { Course } from '@/entities/course';
 
-import { getArea } from '@/shared/config';
+import { useCatalog } from '@/shared/lib';
 import { AppHeader, Button, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const MetaDot = () => <span className="h-0.5 w-0.5 rounded-full bg-slate-300" />;
@@ -22,6 +22,7 @@ type Props = { course: Course | null };
 export const CourseDetail = ({ course }: Props) => {
     const router = useRouter();
     const { isFavorite, toggleFavorite, toast, getPlaceById } = useApp();
+    const { getArea } = useCatalog();
 
     const goBack = () => {
         if (typeof window !== 'undefined' && window.history.length > 1) router.back();

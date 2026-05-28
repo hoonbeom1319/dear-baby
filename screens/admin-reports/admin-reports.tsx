@@ -8,7 +8,7 @@ import { Dialog } from 'radix-ui';
 
 import { useApp } from '@/application/providers';
 
-import { AdChip, AdInput, AdminPage, AdminShell } from '@/widgets/admin-shell';
+import { AdChip, AdInput, AdminPage } from '@/widgets/admin-shell';
 
 import type { ReportRow } from '@/server/actions/reports';
 import { updateReportStatus } from '@/server/actions/reports';
@@ -104,8 +104,8 @@ export const AdminReports = ({ initialReports }: Props) => {
     };
 
     return (
-        <AdminShell>
-            <AdminPage title="정보 제보" subtitle="자동 반영 금지 · 운영자가 검토 후 [반영]을 클릭 · A-5 · 부록 15.1-7">
+        <>
+        <AdminPage title="정보 제보" subtitle="자동 반영 금지 · 운영자가 검토 후 [반영]을 클릭 · A-5 · 부록 15.1-7">
                 <div className="mb-4 flex items-center gap-2">
                     <AdChip active={statusFilter === 'pending'} onClick={() => setStatusFilter('pending')}>
                         대기 중 <span className="ml-0.5 font-semibold">{pendingCount}</span>
@@ -219,6 +219,6 @@ export const AdminReports = ({ initialReports }: Props) => {
                     </Dialog.Content>
                 </Dialog.Portal>
             </Dialog.Root>
-        </AdminShell>
+        </>
     );
 };

@@ -24,6 +24,16 @@ export async function createReport(input: { placeId: string; reason: string; use
     if (error) throw new Error(error.message);
 }
 
+export async function fetchPendingReportsCount(): Promise<number> {
+    const supabase = createSupabaseAdmin();
+    const { count, error } = await supabase
+        .from('reports')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'pending');
+    if (error) return 0;
+    return count ?? 0;
+}
+
 export async function fetchReportsAdmin(): Promise<ReportRow[]> {
     const supabase = createSupabaseAdmin();
     const { data, error } = await supabase

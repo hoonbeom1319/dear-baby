@@ -6,13 +6,13 @@ import { useRouter } from 'next/navigation';
 
 import { useApp } from '@/application/providers';
 
-import { AdChip, AdField, AdIconButton, AdInput, AdTextarea, AdminPage, AdminShell } from '@/widgets/admin-shell';
+import { AdChip, AdField, AdIconButton, AdInput, AdTextarea, AdminPage } from '@/widgets/admin-shell';
 
 import type { PlaceAdmin } from '@/entities/place';
 
-import { AMENITIES, AREAS, CATEGORIES, type AmenityId, type AreaId, type CategoryId } from '@/shared/config';
-import { cn } from '@/shared/lib';
-import { Button, Icon, Pill } from '@/shared/ui';
+import type { AmenityId, AreaId, CategoryId } from '@/shared/config';
+import { cn, useCatalog } from '@/shared/lib';
+import { Button, Icon, type IconName, Pill } from '@/shared/ui';
 
 import { createPlace, deletePlace, updatePlace, updatePlaceStatus } from '@/server/actions/places';
 
@@ -33,11 +33,6 @@ type FormState = {
     amenities: AmenityId[];
 };
 
-const DEFAULT_FORM: FormState = {
-    name: '', area: 'songpa', category: 'cafe',
-    address: '', phone: '', ageRangeStart: '', ageRangeEnd: '',
-    sortOrder: '0', description: '', amenities: [],
-};
 
 function buildAgeRange(start: string, end: string): string {
     if (!start && !end) return '전 연령';
@@ -78,10 +73,18 @@ type Props = { initialPlaces: PlaceAdmin[] };
 export const AdminPlaces = ({ initialPlaces }: Props) => {
     const router = useRouter();
     const { toast } = useApp();
+    const { areas, categories, amenities } = useCatalog();
+
+    const makeDefaultForm = (): FormState => ({
+        name: '', area: areas[0]?.id ?? '', category: categories[0]?.id ?? '',
+        address: '', phone: '', ageRangeStart: '', ageRangeEnd: '',
+        sortOrder: '0', description: '', amenities: [],
+    });
+
     const [mode, setMode] = useState<Mode>('list');
     const [editingId, setEditingId] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
-    const [form, setForm] = useState<FormState>(DEFAULT_FORM);
+    const [form, setForm] = useState<FormState>(makeDefaultForm);
     const [areaFilter, setAreaFilter] = useState<AreaId | 'all'>('all');
     const [search, setSearch] = useState('');
 
@@ -91,7 +94,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
         return true;
     });
 
-    const openCreate = () => { setForm(DEFAULT_FORM); setEditingId(null); setMode('create'); };
+    const openCreate = () => { setForm(makeDefaultForm()); setEditingId(null); setMode('create'); };
     const openEdit = (place: PlaceAdmin) => { setForm(placeToForm(place)); setEditingId(place.id); setMode('edit'); };
     const closeForm = () => { setMode('list'); setEditingId(null); };
 
@@ -156,8 +159,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
     // ── 폼 (create / edit 공용) ────────────────────────────────────────────
     if (mode !== 'list') {
         return (
-            <AdminShell>
-                <AdminPage
+            <AdminPage
                     title={mode === 'edit' ? '장소 수정' : '새 장소 추가'}
                     subtitle="운영자가 직접 채우는 데이터의 본진 · A-3">
                     <button
@@ -177,13 +179,13 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                                 <AdField label="동네">
                                     <select value={form.area} onChange={(e) => set('area', e.target.value as AreaId)}
                                         className="h-9 w-full rounded-lg border border-border bg-surface px-3 text-[13.5px] text-surface-foreground">
-                                        {AREAS.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                                        {areas.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                                     </select>
                                 </AdField>
                                 <AdField label="카테고리">
                                     <select value={form.category} onChange={(e) => set('category', e.target.value as CategoryId)}
                                         className="h-9 w-full rounded-lg border border-border bg-surface px-3 text-[13.5px] text-surface-foreground">
-                                        {CATEGORIES.filter((c) => c.id !== 'all').map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                        {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                                     </select>
                                 </AdField>
                             </div>
@@ -213,7 +215,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
 
                             <AdField label="편의시설" hint="다중 선택">
                                 <div className="flex flex-wrap gap-2">
-                                    {AMENITIES.map((amenity) => {
+                                    {amenities.map((amenity) => {
                                         const on = form.amenities.includes(amenity.id);
                                         return (
                                             <label key={amenity.id} className={cn(
@@ -225,7 +227,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                                                     on ? 'bg-primary-600 text-white' : 'border-[1.5px] border-slate-300 text-transparent')}>
                                                     <Icon name="check" size={11} stroke={3} />
                                                 </span>
-                                                <Icon name={amenity.icon} size={14} stroke={1.8} />
+                                                <Icon name={amenity.icon as IconName} size={14} stroke={1.8} />
                                                 {amenity.short}
                                             </label>
                                         );
@@ -241,14 +243,12 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                         </div>
                     </div>
                 </AdminPage>
-            </AdminShell>
         );
     }
 
     // ── 목록 ──────────────────────────────────────────────────────────────
     return (
-        <AdminShell>
-            <AdminPage
+        <AdminPage
                 title="장소 관리"
                 subtitle={`전체 ${initialPlaces.length}곳`}
                 actions={
@@ -258,7 +258,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                 }>
                 <div className="mb-4 flex flex-wrap items-center gap-2">
                     <AdChip active={areaFilter === 'all'} onClick={() => setAreaFilter('all')}>전체 동네</AdChip>
-                    {AREAS.map((a) => (
+                    {areas.map((a) => (
                         <AdChip key={a.id} active={areaFilter === a.id} onClick={() => setAreaFilter(a.id)}>{a.name}</AdChip>
                     ))}
                     <div className="flex-1" />
@@ -289,8 +289,8 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                                 <tr key={place.id} className="transition-colors hover:bg-slate-50">
                                     <td className="border-b border-border px-4 py-3.5 tabular-nums text-surface-foreground">{place.sortOrder}</td>
                                     <td className="border-b border-border px-4 py-3.5 font-medium text-surface-foreground">{place.name}</td>
-                                    <td className="border-b border-border px-4 py-3.5 text-muted">{AREAS.find((a) => a.id === place.area)?.name}</td>
-                                    <td className="border-b border-border px-4 py-3.5 text-muted">{CATEGORIES.find((c) => c.id === place.category)?.name}</td>
+                                    <td className="border-b border-border px-4 py-3.5 text-muted">{areas.find((a) => a.id === place.area)?.name}</td>
+                                    <td className="border-b border-border px-4 py-3.5 text-muted">{categories.find((c) => c.id === place.category)?.name}</td>
                                     <td className="border-b border-border px-4 py-3.5 text-muted">{place.ageRange}</td>
                                     <td className="border-b border-border px-4 py-3.5">
                                         <div className="flex items-center gap-1">
@@ -325,6 +325,5 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                     <span className="text-[12.5px] text-muted">총 {initialPlaces.length}곳 · {filtered.length}개 표시 중</span>
                 </div>
             </AdminPage>
-        </AdminShell>
     );
 };

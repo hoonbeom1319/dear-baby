@@ -2,7 +2,7 @@ import type { AmenityId, AreaId, CategoryId } from '@/shared/config';
 
 import type { Place, PlaceAdmin, PlaceStatus } from './types';
 
-/** Supabase places 테이블 row. */
+/** Supabase places 테이블 row (place_amenities 조인 포함). */
 export type PlaceRow = {
     id: string;
     area: string;
@@ -12,7 +12,7 @@ export type PlaceRow = {
     phone: string;
     age_range: string;
     description: string;
-    amenities: string[];
+    place_amenities: { amenity_id: string }[];
     sort_order: number;
     status: string;
 };
@@ -27,7 +27,7 @@ export function mapPlaceRow(row: PlaceRow): Place {
         phone: row.phone,
         ageRange: row.age_range,
         description: row.description,
-        amenities: row.amenities as AmenityId[],
+        amenities: (row.place_amenities ?? []).map((r) => r.amenity_id as AmenityId),
     };
 }
 

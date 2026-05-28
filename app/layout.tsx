@@ -5,6 +5,7 @@ import { AppProvider } from '@/application/providers';
 import { InstallBanner } from '@/features/install-prompt';
 import { ServiceWorkerRegistrar } from '@/features/install-prompt/ui/sw-registrar';
 
+import { fetchAmenities, fetchAreas, fetchCategories } from '@/server/actions/catalog';
 import { fetchAllPlaces } from '@/server/actions/places';
 
 export const metadata: Metadata = {
@@ -27,7 +28,12 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-    const initialPlaces = await fetchAllPlaces();
+    const [initialPlaces, areas, categories, amenities] = await Promise.all([
+        fetchAllPlaces(),
+        fetchAreas(),
+        fetchCategories(),
+        fetchAmenities(),
+    ]);
 
     return (
         <html lang="ko">
@@ -38,7 +44,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 />
             </head>
             <body>
-                <AppProvider initialPlaces={initialPlaces}>{children}</AppProvider>
+                <AppProvider initialPlaces={initialPlaces} areas={areas} categories={categories} amenities={amenities}>{children}</AppProvider>
                 <ServiceWorkerRegistrar />
                 <InstallBanner />
             </body>

@@ -9,7 +9,8 @@ import { useApp } from '@/application/providers';
 import { PlaceCard } from '@/entities/place';
 import type { Course } from '@/entities/course';
 
-import { AREAS, CATEGORIES, getArea, type CategoryId } from '@/shared/config';
+import type { CategoryId } from '@/shared/config';
+import { useCatalog } from '@/shared/lib';
 import { AppHeader, Brand, Card, Chip, ChipRow, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const SectionLabel = ({ children }: { children: ReactNode }) => (
@@ -23,6 +24,7 @@ const SectionLabel = ({ children }: { children: ReactNode }) => (
 export const Home = ({ allCourses }: { allCourses: Course[] }) => {
     const router = useRouter();
     const { area, setArea, allPlaces, isFavorite, toggleFavorite, loggedIn, openLogin, logout, toast } = useApp();
+    const { areas, categories, getArea } = useCatalog();
     const [category, setCategory] = useState<CategoryId>('all');
 
     const places = allPlaces.filter(
@@ -67,7 +69,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
                 <section className="pb-1.5 pt-4">
                     <SectionLabel>동네</SectionLabel>
                     <ChipRow>
-                        {AREAS.map((item) => (
+                        {areas.map((item) => (
                             <Chip key={item.id} active={area === item.id} onClick={() => setArea(item.id)}>
                                 {item.name}
                             </Chip>
@@ -79,7 +81,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
                 <section className="pb-3.5 pt-2">
                     <SectionLabel>카테고리</SectionLabel>
                     <ChipRow>
-                        {CATEGORIES.map((item) => (
+                        {[{ id: 'all', name: '전체' }, ...categories].map((item) => (
                             <Chip key={item.id} active={category === item.id} onClick={() => setCategory(item.id)}>
                                 {item.name}
                             </Chip>

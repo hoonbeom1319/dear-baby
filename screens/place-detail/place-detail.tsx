@@ -13,7 +13,7 @@ import { AmenityGrid } from '@/entities/place';
 import type { Place } from '@/entities/place';
 import type { Course } from '@/entities/course';
 
-import { getArea, getCategory } from '@/shared/config';
+import { useCatalog } from '@/shared/lib';
 import { AppHeader, Button, Card, Icon, IconButton, MobileShell, PlaceImage } from '@/shared/ui';
 
 import { createReport } from '@/server/actions/reports';
@@ -57,6 +57,7 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
         );
     }
 
+    const { getArea, getCategory } = useCatalog();
     const isFav = isFavorite(place.id);
     const category = getCategory(place.category);
     const area = getArea(place.area);
@@ -153,15 +154,7 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                         </div>
                         <IconButton name="copy" size={18} onClick={() => toast('주소를 복사했어요')} title="주소 복사" />
                     </div>
-                    <div className="flex items-center justify-between gap-2 py-3">
-                        <div>
-                            <div className="mb-0.5 flex items-center gap-1 text-[11px] text-muted">
-                                <Icon name="phone" size={11} stroke={2} /> 전화번호
-                            </div>
-                            <div className="text-[13px] text-slate-700">{place.phone}</div>
-                        </div>
-                        <IconButton name="phone" size={18} onClick={() => toast('전화 앱을 열어요')} title="전화 걸기" />
-                    </div>
+
                 </section>
 
                 {/* 함께 가면 좋은 코스 */}
@@ -199,7 +192,6 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                     <Icon name="nav" size={18} stroke={2} /> 길찾기
                 </Button>
                 <IconButton name="copy" onClick={() => toast('주소를 복사했어요')} title="주소 복사" />
-                <IconButton name="phone" onClick={() => toast('전화 앱을 열어요')} title="전화 걸기" />
                 <IconButton name={isFav ? 'star-fill' : 'star'} fav={isFav} onClick={() => toggleFavorite(place.id)} title="즐겨찾기" />
             </div>
 

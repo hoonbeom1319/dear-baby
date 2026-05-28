@@ -8,7 +8,7 @@ import { useApp } from '@/application/providers';
 
 import type { Course } from '@/entities/course';
 
-import { getArea } from '@/shared/config';
+import { useCatalog } from '@/shared/lib';
 import { AppHeader, Card, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const Dot = () => <span className="h-0.5 w-0.5 rounded-full bg-slate-300" />;
@@ -22,6 +22,7 @@ type Props = { allCourses: Course[] };
 export const CourseList = ({ allCourses }: Props) => {
     const router = useRouter();
     const { area, getPlaceById } = useApp();
+    const { getArea } = useCatalog();
 
     const courses = allCourses.filter((c) => c.area === area);
     const areaName = getArea(area)?.name;

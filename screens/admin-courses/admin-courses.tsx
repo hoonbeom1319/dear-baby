@@ -6,13 +6,12 @@ import { useRouter } from 'next/navigation';
 
 import { useApp } from '@/application/providers';
 
-import { AdChip, AdField, AdIconButton, AdInput, AdSelect, AdTextarea, AdminPage, AdminShell } from '@/widgets/admin-shell';
+import { AdChip, AdField, AdIconButton, AdInput, AdSelect, AdTextarea, AdminPage } from '@/widgets/admin-shell';
 
 import type { Course } from '@/entities/course';
 import type { PlaceAdmin } from '@/entities/place';
 
-import { AREAS, getArea, getCategory } from '@/shared/config';
-import { cn } from '@/shared/lib';
+import { cn, useCatalog } from '@/shared/lib';
 import { Button, Icon, Pill } from '@/shared/ui';
 
 import { createCourse, deleteCourse, replaceCourseStops, updateCourse } from '@/server/actions/courses';
@@ -32,6 +31,7 @@ type Props = {
 export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
     const router = useRouter();
     const { toast } = useApp();
+    const { areas, getArea, getCategory } = useCatalog();
     const [selected, setSelected] = useState(0);
     const [saving, setSaving] = useState(false);
     const [areaFilter, setAreaFilter] = useState<string>('all');
@@ -130,8 +130,7 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
     };
 
     return (
-        <AdminShell>
-            <AdminPage
+        <AdminPage
                 title="코스 관리"
                 subtitle="큐레이션 영역 — 자동 생성 안 함 · A-4"
                 actions={
@@ -144,7 +143,7 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
                     <div>
                         <div className="mb-3 flex gap-2">
                             <AdChip active={areaFilter === 'all'} onClick={() => { setAreaFilter('all'); setSelected(0); }}>전체 동네</AdChip>
-                            {AREAS.map((a) => (
+                            {areas.map((a) => (
                                 <AdChip key={a.id} active={areaFilter === a.id} onClick={() => { setAreaFilter(a.id); setSelected(0); }}>{a.name}</AdChip>
                             ))}
                         </div>
@@ -284,6 +283,5 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
                     )}
                 </div>
             </AdminPage>
-        </AdminShell>
     );
 };

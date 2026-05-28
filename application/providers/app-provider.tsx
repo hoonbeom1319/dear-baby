@@ -6,7 +6,8 @@ import { LoginSheet } from '@/features/login';
 
 import type { Place } from '@/entities/place';
 
-import type { AreaId } from '@/shared/config';
+import type { Amenity, Area, AreaId, Category } from '@/shared/config';
+import { CatalogContext } from '@/shared/lib/catalog-context';
 import { getSupabaseBrowser } from '@/shared/lib';
 import { Toast } from '@/shared/ui';
 
@@ -35,9 +36,12 @@ export const useApp = () => {
 type AppProviderProps = {
     children: ReactNode;
     initialPlaces: Place[];
+    areas: Area[];
+    categories: Category[];
+    amenities: Amenity[];
 };
 
-export const AppProvider = ({ children, initialPlaces }: AppProviderProps) => {
+export const AppProvider = ({ children, initialPlaces, areas, categories, amenities }: AppProviderProps) => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userId, setUserId] = useState<string | null>(null);
     const [area, setArea] = useState<AreaId>('songpa');
@@ -120,6 +124,15 @@ export const AppProvider = ({ children, initialPlaces }: AppProviderProps) => {
 
     const getPlaceById = useCallback((id: string) => initialPlaces.find((p) => p.id === id), [initialPlaces]);
 
+    const catalogValue = useMemo(() => ({
+        areas,
+        categories,
+        amenities,
+        getArea:     (id: string) => areas.find((a) => a.id === id),
+        getCategory: (id: string) => categories.find((c) => c.id === id),
+        getAmenity:  (id: string) => amenities.find((a) => a.id === id),
+    }), [areas, categories, amenities]);
+
     const isFavorite = useCallback((placeId: string) => favoriteIds.includes(placeId), [favoriteIds]);
 
     const toggleFavorite = useCallback(
@@ -153,10 +166,12 @@ export const AppProvider = ({ children, initialPlaces }: AppProviderProps) => {
     );
 
     return (
-        <AppContext.Provider value={value}>
-            {children}
-            <LoginSheet open={loginOpen} onOpenChange={(open) => !open && setLoginOpen(false)} onComplete={() => {}} />
-            {toastMsg && <Toast message={toastMsg} />}
-        </AppContext.Provider>
+        <CatalogContext.Provider value={catalogValue}>
+            <AppContext.Provider value={value}>
+                {children}
+                <LoginSheet open={loginOpen} onOpenChange={(open) => !open && setLoginOpen(false)} onComplete={() => {}} />
+                {toastMsg && <Toast message={toastMsg} />}
+            </AppContext.Provider>
+        </CatalogContext.Provider>
     );
 };
