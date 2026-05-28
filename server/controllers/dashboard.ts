@@ -2,7 +2,7 @@
 
 import type { IconName } from '@/shared/ui';
 
-import { createSupabaseAdmin } from '../db/supabase';
+import { countPendingReports, findAllPlaceAreas, findOldestPendingReport, findRecentCourses, findRecentPlaces, findRecentReports } from '../dao/dashboard';
 
 export type DashboardActivity = {
     icon: IconName;
@@ -28,49 +28,17 @@ function relativeTime(iso: string): string {
 }
 
 export async function fetchDashboardData(): Promise<DashboardData> {
-    const supabase = createSupabaseAdmin();
-
-    const [
-        { data: recentReports },
-        { data: recentPlaces },
-        { data: allPlaceAreas },
-        { data: recentCourses },
-        { count: pendingCount },
-        { data: oldestPending },
-    ] = await Promise.all([
-        supabase
-            .from('reports')
-            .select('reason, created_at, user_id, places(name)')
-            .order('created_at', { ascending: false })
-            .limit(10),
-        supabase
-            .from('places')
-            .select('name, created_at')
-            .order('created_at', { ascending: false })
-            .limit(10),
-        supabase
-            .from('places')
-            .select('area'),
-        supabase
-            .from('courses')
-            .select('title, created_at')
-            .order('created_at', { ascending: false })
-            .limit(10),
-        supabase
-            .from('reports')
-            .select('id', { count: 'exact', head: true })
-            .eq('status', 'pending'),
-        supabase
-            .from('reports')
-            .select('created_at')
-            .eq('status', 'pending')
-            .order('created_at', { ascending: true })
-            .limit(1)
-            .maybeSingle(),
+    const [recentReports, recentPlaces, allPlaceAreas, recentCourses, pendingCount, oldestPending] = await Promise.all([
+        findRecentReports(),
+        findRecentPlaces(),
+        findAllPlaceAreas(),
+        findRecentCourses(),
+        countPendingReports(),
+        findOldestPendingReport()
     ]);
 
     const placeCountByArea: Record<string, number> = {};
-    for (const p of allPlaceAreas ?? []) {
+    for (const p of allPlaceAreas) {
         placeCountByArea[p.area] = (placeCountByArea[p.area] ?? 0) + 1;
     }
 
@@ -80,33 +48,33 @@ export async function fetchDashboardData(): Promise<DashboardData> {
 
     type Raw = { createdAt: string; item: DashboardActivity };
     const raw: Raw[] = [
-        ...(recentReports ?? []).map((r) => ({
+        ...recentReports.map((r) => ({
             createdAt: r.created_at,
             item: {
                 icon: 'inbox' as IconName,
                 tone: 'bg-primary-50 text-primary-600',
                 title: `${(r.places as unknown as { name: string } | null)?.name ?? '알 수 없는 장소'} — '${r.reason}'`,
-                meta: `${relativeTime(r.created_at)} · ${r.user_id ? '회원' : '비회원'}`,
-            },
+                meta: `${relativeTime(r.created_at)} · ${r.user_id ? '회원' : '비회원'}`
+            }
         })),
-        ...(recentPlaces ?? []).map((p) => ({
+        ...recentPlaces.map((p) => ({
             createdAt: p.created_at,
             item: {
                 icon: 'plus' as IconName,
                 tone: 'bg-emerald-50 text-success',
                 title: `새 장소 등록: ${p.name}`,
-                meta: `${relativeTime(p.created_at)} · 운영자`,
-            },
+                meta: `${relativeTime(p.created_at)} · 운영자`
+            }
         })),
-        ...(recentCourses ?? []).map((c) => ({
+        ...recentCourses.map((c) => ({
             createdAt: c.created_at,
             item: {
                 icon: 'route' as IconName,
                 tone: 'bg-violet-50 text-violet-600',
                 title: `코스 등록: ${c.title}`,
-                meta: `${relativeTime(c.created_at)} · 운영자`,
-            },
-        })),
+                meta: `${relativeTime(c.created_at)} · 운영자`
+            }
+        }))
     ];
 
     const recentActivity = raw
@@ -115,10 +83,10 @@ export async function fetchDashboardData(): Promise<DashboardData> {
         .map((r) => r.item);
 
     return {
-        pendingReports: pendingCount ?? 0,
+        pendingReports: pendingCount,
         oldestPendingHours,
         placeCountByArea,
-        totalPlaces: (allPlaceAreas ?? []).length,
-        recentActivity,
+        totalPlaces: allPlaceAreas.length,
+        recentActivity
     };
 }

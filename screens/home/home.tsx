@@ -4,13 +4,13 @@ import { useState, type ReactNode } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useApp } from '@/application/providers';
+import { useAuth, useCatalog, useFavorite, usePlaces } from '@/application/providers';
+import { toast } from '@/shared/lib';
 
 import { PlaceCard } from '@/entities/place';
 import type { Course } from '@/entities/course';
 
 import type { CategoryId } from '@/shared/config';
-import { useCatalog } from '@/shared/lib';
 import { AppHeader, Brand, Card, Chip, ChipRow, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const SectionLabel = ({ children }: { children: ReactNode }) => (
@@ -23,8 +23,14 @@ const SectionLabel = ({ children }: { children: ReactNode }) => (
  */
 export const Home = ({ allCourses }: { allCourses: Course[] }) => {
     const router = useRouter();
-    const { area, setArea, allPlaces, isFavorite, toggleFavorite, loggedIn, openLogin, logout, toast } = useApp();
-    const { areas, categories, getArea } = useCatalog();
+    const area = usePlaces((s) => s.area);
+    const setArea = usePlaces((s) => s.setArea);
+    const allPlaces = usePlaces((s) => s.allPlaces);
+    const { isFavorite, toggleFavorite } = useFavorite();
+    const { loggedIn, openLogin, logout } = useAuth();
+    const areas = useCatalog((s) => s.areas);
+    const categories = useCatalog((s) => s.categories);
+    const getArea = useCatalog((s) => s.getArea);
     const [category, setCategory] = useState<CategoryId>('all');
 
     const places = allPlaces.filter(

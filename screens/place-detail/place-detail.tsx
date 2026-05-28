@@ -4,7 +4,8 @@ import { useState, type ReactNode } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useApp } from '@/application/providers';
+import { useCatalog, useFavorite } from '@/application/providers';
+import { toast } from '@/shared/lib';
 
 import { NavSheet } from '@/features/navigate';
 import { ReportSheet } from '@/features/report';
@@ -12,11 +13,9 @@ import { ReportSheet } from '@/features/report';
 import { AmenityGrid } from '@/entities/place';
 import type { Place } from '@/entities/place';
 import type { Course } from '@/entities/course';
-
-import { useCatalog } from '@/shared/lib';
 import { AppHeader, Button, Card, Icon, IconButton, MobileShell, PlaceImage } from '@/shared/ui';
 
-import { createReport } from '@/server/actions/reports';
+import { createReport } from '@/server/controllers/reports';
 
 type SheetKind = 'nav' | 'report' | null;
 
@@ -37,7 +36,7 @@ type Props = {
  */
 export const PlaceDetail = ({ place, relatedCourses }: Props) => {
     const router = useRouter();
-    const { isFavorite, toggleFavorite, toast } = useApp();
+    const { isFavorite, toggleFavorite } = useFavorite();
     const [sheet, setSheet] = useState<SheetKind>(null);
 
     const goBack = () => {
@@ -57,7 +56,8 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
         );
     }
 
-    const { getArea, getCategory } = useCatalog();
+    const getArea = useCatalog((s) => s.getArea);
+    const getCategory = useCatalog((s) => s.getCategory);
     const isFav = isFavorite(place.id);
     const category = getCategory(place.category);
     const area = getArea(place.area);

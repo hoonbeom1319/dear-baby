@@ -1,7 +1,7 @@
 import { PlaceDetail } from '@/screens/place-detail/place-detail';
 
-import { fetchCoursesByStop } from '@/server/actions/courses';
-import { fetchPlaceById } from '@/server/actions/places';
+import { fetchCoursesByStop } from '@/server/controllers/courses';
+import { fetchPlaceById } from '@/server/controllers/places';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;

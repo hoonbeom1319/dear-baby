@@ -4,17 +4,18 @@ import { useState, type ReactNode } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useApp } from '@/application/providers';
+import { toast } from '@/shared/lib';
 
 import { AdChip, AdField, AdIconButton, AdInput, AdTextarea, AdminPage } from '@/widgets/admin-shell';
 
 import type { PlaceAdmin } from '@/entities/place';
 
 import type { AmenityId, AreaId, CategoryId } from '@/shared/config';
-import { cn, useCatalog } from '@/shared/lib';
+import { useCatalog } from '@/application/providers';
+import { cn } from '@/shared/lib';
 import { Button, Icon, type IconName, Pill } from '@/shared/ui';
 
-import { createPlace, deletePlace, updatePlace, updatePlaceStatus } from '@/server/actions/places';
+import { createPlace, deletePlace, updatePlace, updatePlaceStatus } from '@/server/controllers/places';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (
     <th className={cn('border-b border-border bg-slate-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
@@ -72,8 +73,9 @@ type Props = { initialPlaces: PlaceAdmin[] };
 /** 장소 관리 (PRD A-3). 목록 테이블 + 새 장소 추가/수정 폼. */
 export const AdminPlaces = ({ initialPlaces }: Props) => {
     const router = useRouter();
-    const { toast } = useApp();
-    const { areas, categories, amenities } = useCatalog();
+    const areas = useCatalog((s) => s.areas);
+    const categories = useCatalog((s) => s.categories);
+    const amenities = useCatalog((s) => s.amenities);
 
     const makeDefaultForm = (): FormState => ({
         name: '', area: areas[0]?.id ?? '', category: categories[0]?.id ?? '',

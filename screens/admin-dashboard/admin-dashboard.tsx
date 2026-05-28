@@ -9,7 +9,7 @@ import { AdminPage } from '@/widgets/admin-shell';
 import { cn } from '@/shared/lib';
 import { Button, Icon, type IconName } from '@/shared/ui';
 
-import type { DashboardData } from '@/server/actions/dashboard';
+import type { DashboardData } from '@/server/controllers/dashboard';
 
 type StatProps = { label: string; value: string; suffix: ReactNode; percent: number; barClass?: string };
 

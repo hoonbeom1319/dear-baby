@@ -1,4 +1,5 @@
-import { cn, useCatalog } from '@/shared/lib';
+import { useCatalog } from '@/application/providers';
+import { cn } from '@/shared/lib';
 import { Icon, type IconName } from '@/shared/ui';
 
 import type { Place } from '../model/types';
@@ -9,7 +10,7 @@ import type { Place } from '../model/types';
  * "무엇이 있고 없는지"를 한눈에 비교하게 한다.
  */
 export const AmenityGrid = ({ place }: { place: Place }) => {
-    const { amenities } = useCatalog();
+    const amenities = useCatalog((s) => s.amenities);
 
     return (
         <div className="grid grid-cols-5 gap-3">

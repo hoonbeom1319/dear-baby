@@ -2,11 +2,11 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 import { AppProvider } from '@/application/providers';
+import { CatalogProvider } from '@/application/providers/catalog/provider';
+import { PlacesProvider } from '@/application/providers/places/provider';
+
 import { InstallBanner } from '@/features/install-prompt';
 import { ServiceWorkerRegistrar } from '@/features/install-prompt/ui/sw-registrar';
-
-import { fetchAmenities, fetchAreas, fetchCategories } from '@/server/actions/catalog';
-import { fetchAllPlaces } from '@/server/actions/places';
 
 export const metadata: Metadata = {
     title: 'Dear Baby',
@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     appleWebApp: {
         capable: true,
         statusBarStyle: 'default',
-        title: 'Dear Baby',
+        title: 'Dear Baby'
     },
-    formatDetection: { telephone: false },
+    formatDetection: { telephone: false }
 };
 
 export const viewport: Viewport = {
@@ -24,17 +24,10 @@ export const viewport: Viewport = {
     width: 'device-width',
     initialScale: 1,
     maximumScale: 1,
-    userScalable: false,
+    userScalable: false
 };
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-    const [initialPlaces, areas, categories, amenities] = await Promise.all([
-        fetchAllPlaces(),
-        fetchAreas(),
-        fetchCategories(),
-        fetchAmenities(),
-    ]);
-
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="ko">
             <head>
@@ -44,7 +37,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 />
             </head>
             <body>
-                <AppProvider initialPlaces={initialPlaces} areas={areas} categories={categories} amenities={amenities}>{children}</AppProvider>
+                <AppProvider>
+                    <PlacesProvider>
+                        <CatalogProvider>{children}</CatalogProvider>
+                    </PlacesProvider>
+                </AppProvider>
                 <ServiceWorkerRegistrar />
                 <InstallBanner />
             </body>

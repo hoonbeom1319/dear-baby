@@ -6,12 +6,12 @@ import { useRouter } from 'next/navigation';
 
 import { Dialog } from 'radix-ui';
 
-import { useApp } from '@/application/providers';
+import { toast } from '@/shared/lib';
 
 import { AdChip, AdInput, AdminPage } from '@/widgets/admin-shell';
 
-import type { ReportRow } from '@/server/actions/reports';
-import { updateReportStatus } from '@/server/actions/reports';
+import type { ReportRow } from '@/server/controllers/reports';
+import { updateReportStatus } from '@/server/controllers/reports';
 
 import { cn } from '@/shared/lib';
 import { Button, Icon, Pill } from '@/shared/ui';
@@ -46,7 +46,6 @@ type Props = { initialReports: ReportRow[] };
 /** 정보 제보 관리 (PRD A-5). 자동 반영 금지 — 운영자가 확인 모달을 거쳐 반영. */
 export const AdminReports = ({ initialReports }: Props) => {
     const router = useRouter();
-    const { toast } = useApp();
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('pending');
     const [search, setSearch] = useState('');
     const [confirmId, setConfirmId] = useState<string | null>(null);

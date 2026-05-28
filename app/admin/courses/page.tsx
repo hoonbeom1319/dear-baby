@@ -1,7 +1,7 @@
 import { AdminCourses } from '@/screens/admin-courses/admin-courses';
 
-import { fetchAllCourses } from '@/server/actions/courses';
-import { fetchAllPlacesAdmin } from '@/server/actions/places';
+import { fetchAllCourses } from '@/server/controllers/courses';
+import { fetchAllPlacesAdmin } from '@/server/controllers/places';
 
 export default async function Page() {
     const [courses, places] = await Promise.all([fetchAllCourses(), fetchAllPlacesAdmin()]);

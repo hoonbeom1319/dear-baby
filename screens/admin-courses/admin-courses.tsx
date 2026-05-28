@@ -4,17 +4,18 @@ import { useState, type ReactNode } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useApp } from '@/application/providers';
+import { toast } from '@/shared/lib';
 
 import { AdChip, AdField, AdIconButton, AdInput, AdSelect, AdTextarea, AdminPage } from '@/widgets/admin-shell';
 
 import type { Course } from '@/entities/course';
 import type { PlaceAdmin } from '@/entities/place';
 
-import { cn, useCatalog } from '@/shared/lib';
+import { useCatalog } from '@/application/providers';
+import { cn } from '@/shared/lib';
 import { Button, Icon, Pill } from '@/shared/ui';
 
-import { createCourse, deleteCourse, replaceCourseStops, updateCourse } from '@/server/actions/courses';
+import { createCourse, deleteCourse, replaceCourseStops, updateCourse } from '@/server/controllers/courses';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (
     <th className={cn('border-b border-border bg-slate-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
@@ -30,8 +31,9 @@ type Props = {
 /** 코스 관리 (PRD A-4). 좌측 목록 선택 → 우측 에디터 라이브 갱신. */
 export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
     const router = useRouter();
-    const { toast } = useApp();
-    const { areas, getArea, getCategory } = useCatalog();
+    const areas = useCatalog((s) => s.areas);
+    const getArea = useCatalog((s) => s.getArea);
+    const getCategory = useCatalog((s) => s.getCategory);
     const [selected, setSelected] = useState(0);
     const [saving, setSaving] = useState(false);
     const [areaFilter, setAreaFilter] = useState<string>('all');

@@ -1,6 +1,6 @@
 import { Home } from '@/screens/home/home';
 
-import { fetchAllCourses } from '@/server/actions/courses';
+import { fetchAllCourses } from '@/server/controllers/courses';
 
 export default async function Page() {
     const allCourses = await fetchAllCourses();

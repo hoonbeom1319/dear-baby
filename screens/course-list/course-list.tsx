@@ -4,11 +4,9 @@ import { Fragment } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useApp } from '@/application/providers';
+import { useCatalog, usePlaces } from '@/application/providers';
 
 import type { Course } from '@/entities/course';
-
-import { useCatalog } from '@/shared/lib';
 import { AppHeader, Card, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const Dot = () => <span className="h-0.5 w-0.5 rounded-full bg-slate-300" />;
@@ -21,8 +19,9 @@ type Props = { allCourses: Course[] };
  */
 export const CourseList = ({ allCourses }: Props) => {
     const router = useRouter();
-    const { area, getPlaceById } = useApp();
-    const { getArea } = useCatalog();
+    const area = usePlaces((s) => s.area);
+    const getPlaceById = usePlaces((s) => s.getPlaceById);
+    const getArea = useCatalog((s) => s.getArea);
 
     const courses = allCourses.filter((c) => c.area === area);
     const areaName = getArea(area)?.name;

@@ -1,55 +1,37 @@
-'use server';
-
-import { revalidatePath } from 'next/cache';
-
 import { mapCourseRow, type CourseRow } from '@/entities/course/model/db';
 import type { Course } from '@/entities/course/model/types';
+
 import type { AreaId } from '@/shared/config';
 
 import { createSupabaseAdmin } from '../db/supabase';
 
+const COURSE_SELECT = '*, course_stops(*)' as const;
+
 // ─── Queries ─────────────────────────────────────────────────────────────────
 
-export async function fetchAllCourses(): Promise<Course[]> {
+export async function findAllCourses(): Promise<Course[]> {
     const supabase = createSupabaseAdmin();
-    const { data, error } = await supabase
-        .from('courses')
-        .select('*, course_stops(*)')
-        .order('sort_order', { ascending: true });
-
+    const { data, error } = await supabase.from('courses').select(COURSE_SELECT).order('sort_order', { ascending: true });
     if (error) throw new Error(error.message);
     return (data as CourseRow[]).map(mapCourseRow);
 }
 
-export async function fetchCourseById(id: string): Promise<Course | null> {
+export async function findCourseById(id: string): Promise<Course | null> {
     const supabase = createSupabaseAdmin();
-    const { data, error } = await supabase
-        .from('courses')
-        .select('*, course_stops(*)')
-        .eq('id', id)
-        .maybeSingle();
-
+    const { data, error } = await supabase.from('courses').select(COURSE_SELECT).eq('id', id).maybeSingle();
     if (error || !data) return null;
     return mapCourseRow(data as CourseRow);
 }
 
 /** 이 장소가 정거장으로 포함된 코스 — "함께 가면 좋은 코스"용. */
-export async function fetchCoursesByStop(placeId: string): Promise<Course[]> {
+export async function findCoursesByStop(placeId: string): Promise<Course[]> {
     const supabase = createSupabaseAdmin();
 
-    const { data: stopRows, error: stopError } = await supabase
-        .from('course_stops')
-        .select('course_id')
-        .eq('place_id', placeId);
-
+    const { data: stopRows, error: stopError } = await supabase.from('course_stops').select('course_id').eq('place_id', placeId);
     if (stopError || !stopRows?.length) return [];
 
     const courseIds = stopRows.map((r) => r.course_id);
-    const { data, error } = await supabase
-        .from('courses')
-        .select('*, course_stops(*)')
-        .in('id', courseIds);
-
+    const { data, error } = await supabase.from('courses').select(COURSE_SELECT).in('id', courseIds);
     if (error || !data) return [];
     return (data as CourseRow[]).map(mapCourseRow);
 }
@@ -68,7 +50,7 @@ export type CreateCourseInput = {
     stops: CourseStop[];
 };
 
-export async function createCourse(input: CreateCourseInput): Promise<void> {
+export async function insertCourse(input: CreateCourseInput): Promise<void> {
     const supabase = createSupabaseAdmin();
     const { data, error } = await supabase
         .from('courses')
@@ -78,7 +60,7 @@ export async function createCourse(input: CreateCourseInput): Promise<void> {
             duration: input.duration,
             season: input.season,
             description: input.description,
-            sort_order: input.sortOrder,
+            sort_order: input.sortOrder
         })
         .select('id')
         .single();
@@ -91,20 +73,14 @@ export async function createCourse(input: CreateCourseInput): Promise<void> {
                 course_id: data.id,
                 place_id: stop.placeId,
                 stop_order: i,
-                comment: stop.comment,
+                comment: stop.comment
             }))
         );
         if (stopsError) throw new Error(stopsError.message);
     }
-
-    revalidatePath('/admin/courses');
-    revalidatePath('/course');
 }
 
-export async function updateCourse(
-    id: string,
-    fields: Partial<Omit<CreateCourseInput, 'stops'>>
-): Promise<void> {
+export async function updateCourse(id: string, fields: Partial<Omit<CreateCourseInput, 'stops'>>): Promise<void> {
     const supabase = createSupabaseAdmin();
     const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
     if (fields.area !== undefined) patch.area = fields.area;
@@ -116,8 +92,6 @@ export async function updateCourse(
 
     const { error } = await supabase.from('courses').update(patch).eq('id', id);
     if (error) throw new Error(error.message);
-    revalidatePath('/admin/courses');
-    revalidatePath(`/course/${id}`);
 }
 
 /** 코스의 정거장 전체를 교체 (삭제 후 재삽입). */
@@ -131,20 +105,15 @@ export async function replaceCourseStops(courseId: string, stops: CourseStop[]):
                 course_id: courseId,
                 place_id: stop.placeId,
                 stop_order: i,
-                comment: stop.comment,
+                comment: stop.comment
             }))
         );
         if (error) throw new Error(error.message);
     }
-
-    revalidatePath('/admin/courses');
-    revalidatePath(`/course/${courseId}`);
 }
 
 export async function deleteCourse(id: string): Promise<void> {
     const supabase = createSupabaseAdmin();
     const { error } = await supabase.from('courses').delete().eq('id', id);
     if (error) throw new Error(error.message);
-    revalidatePath('/admin/courses');
-    revalidatePath('/course');
 }

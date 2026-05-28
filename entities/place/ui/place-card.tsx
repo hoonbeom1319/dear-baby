@@ -1,4 +1,5 @@
-import { cn, useCatalog } from '@/shared/lib';
+import { useCatalog } from '@/application/providers';
+import { cn } from '@/shared/lib';
 import { AmenityBadge, Card, Icon, type IconName, PlaceImage } from '@/shared/ui';
 
 import type { Place } from '../model/types';
@@ -19,7 +20,9 @@ const Dot = () => <span className="h-0.5 w-0.5 rounded-full bg-slate-300" />;
  * 즐겨찾기/이동 같은 상호작용은 콜백으로 위에서 주입받는다.
  */
 export const PlaceCard = ({ place, isFavorite = false, onToggleFavorite, onSelect, stopNumber }: PlaceCardProps) => {
-    const { getArea, getCategory, getAmenity } = useCatalog();
+    const getArea = useCatalog((s) => s.getArea);
+    const getCategory = useCatalog((s) => s.getCategory);
+    const getAmenity = useCatalog((s) => s.getAmenity);
     const category = getCategory(place.category);
     const area = getArea(place.area);
 
