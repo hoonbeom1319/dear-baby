@@ -26,6 +26,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [userId, setUserId] = useState<string | null>(null);
     const [loginOpen, setLoginOpen] = useState(false);
 
+    const openLogin = useCallback(() => setLoginOpen(true), []);
+    const logout = useCallback(async () => {
+        const supabase = getSupabaseBrowser();
+        await supabase.auth.signOut();
+    }, []);
+
     useEffect(() => {
         const supabase = getSupabaseBrowser();
 
@@ -49,12 +55,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
 
         return () => subscription.unsubscribe();
-    }, []);
-
-    const openLogin = useCallback(() => setLoginOpen(true), []);
-    const logout = useCallback(async () => {
-        const supabase = getSupabaseBrowser();
-        await supabase.auth.signOut();
     }, []);
 
     const value = useMemo<AuthContextValue>(() => ({ loggedIn, userId, openLogin, logout }), [loggedIn, userId, openLogin, logout]);
