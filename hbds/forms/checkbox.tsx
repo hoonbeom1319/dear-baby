@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 
 import { cn } from '../lib/utils';
@@ -9,11 +10,11 @@ const Checkbox = ({ className, ref, ...props }: CheckboxProps) => (
     <CheckboxPrimitive.Root
         ref={ref}
         className={cn(
-            'border-border bg-surface peer inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border',
-            'focus-visible:ring-primary-500 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+            'peer inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border border-border bg-surface',
+            'focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none',
             'disabled:cursor-not-allowed disabled:opacity-50',
-            'data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600 data-[state=checked]:text-white',
-            'data-[state=indeterminate]:bg-primary-600 data-[state=indeterminate]:border-primary-600 data-[state=indeterminate]:text-white',
+            'data-[state=checked]:border-primary-600 data-[state=checked]:bg-primary-600 data-[state=checked]:text-white',
+            'data-[state=indeterminate]:border-primary-600 data-[state=indeterminate]:bg-primary-600 data-[state=indeterminate]:text-white',
             className
         )}
         {...props}

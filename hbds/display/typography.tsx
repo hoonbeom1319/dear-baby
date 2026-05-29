@@ -18,17 +18,11 @@ const H4 = ({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
     <h4 className={cn('scroll-m-20 text-xl font-semibold tracking-tight', className)} {...props} />
 );
 
-const P = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-    <p className={cn('leading-7', className)} {...props} />
-);
+const P = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => <p className={cn('leading-7', className)} {...props} />;
 
-const Lead = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-    <p className={cn('text-xl text-muted', className)} {...props} />
-);
+const Lead = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => <p className={cn('text-xl text-muted', className)} {...props} />;
 
-const Muted = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-    <p className={cn('text-sm text-muted', className)} {...props} />
-);
+const Muted = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => <p className={cn('text-sm text-muted', className)} {...props} />;
 
 const Code = ({ className, ...props }: HTMLAttributes<HTMLElement>) => (
     <code className={cn('relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold', className)} {...props} />

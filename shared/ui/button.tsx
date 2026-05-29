@@ -27,8 +27,8 @@ export const Button = ({ variant = 'primary', size = 'md', block, className, typ
     <button
         type={type}
         className={cn(
-            'inline-flex cursor-pointer select-none items-center justify-center whitespace-nowrap border font-medium transition-colors duration-100',
-            'focus-visible:ring-primary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+            'inline-flex cursor-pointer items-center justify-center border font-medium whitespace-nowrap transition-colors duration-100 select-none',
+            'focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none',
             'disabled:pointer-events-none disabled:opacity-50',
             variantClass[variant],
             sizeClass[size],

@@ -70,10 +70,18 @@ export const Icon = ({ name, size = 20, stroke = 1.75, ...props }: IconProps) =>
 
     switch (name) {
         case 'back':
-            return <svg {...common}><path d="m15 18-6-6 6-6" /></svg>;
+            return (
+                <svg {...common}>
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
+            );
         case 'close':
         case 'x':
-            return <svg {...common}><path d="M18 6 6 18M6 6l12 12" /></svg>;
+            return (
+                <svg {...common}>
+                    <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+            );
         case 'star':
             return (
                 <svg {...common}>
@@ -117,9 +125,17 @@ export const Icon = ({ name, size = 20, stroke = 1.75, ...props }: IconProps) =>
                 </svg>
             );
         case 'right':
-            return <svg {...common}><path d="m9 18 6-6-6-6" /></svg>;
+            return (
+                <svg {...common}>
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
+            );
         case 'down':
-            return <svg {...common}><path d="m6 9 6 6 6-6" /></svg>;
+            return (
+                <svg {...common}>
+                    <path d="m6 9 6 6 6-6" />
+                </svg>
+            );
         case 'down-arrow':
             return (
                 <svg {...common}>
@@ -128,7 +144,11 @@ export const Icon = ({ name, size = 20, stroke = 1.75, ...props }: IconProps) =>
                 </svg>
             );
         case 'check':
-            return <svg {...common}><polyline points="20 6 9 17 4 12" /></svg>;
+            return (
+                <svg {...common}>
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
+            );
         case 'thumb':
             return (
                 <svg {...common}>
@@ -242,7 +262,11 @@ export const Icon = ({ name, size = 20, stroke = 1.75, ...props }: IconProps) =>
                 </svg>
             );
         case 'plus':
-            return <svg {...common}><path d="M12 5v14M5 12h14" /></svg>;
+            return (
+                <svg {...common}>
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+            );
         case 'edit':
             return (
                 <svg {...common}>
@@ -266,7 +290,11 @@ export const Icon = ({ name, size = 20, stroke = 1.75, ...props }: IconProps) =>
                 </svg>
             );
         case 'up-arrow':
-            return <svg {...common}><path d="m18 15-6-6-6 6" /></svg>;
+            return (
+                <svg {...common}>
+                    <path d="m18 15-6-6-6 6" />
+                </svg>
+            );
         case 'bell':
             return (
                 <svg {...common}>

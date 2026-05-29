@@ -1,7 +1,8 @@
 ﻿import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
 
-import { cn } from '@/hbds/lib/utils';
 import { Icon, type IconName } from '@/shared/ui';
+
+import { cn } from '@/hbds/lib/utils';
 
 /** 관리자 필터 칩 — 활성 시 neutral-900(모바일 Chip의 primary와 구분). */
 export const AdChip = ({ active, className, type = 'button', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean }) => (
@@ -30,7 +31,7 @@ export const AdInput = ({ className, ...props }: InputHTMLAttributes<HTMLInputEl
     <input
         className={cn(
             'h-[38px] w-full rounded-lg border border-border bg-surface px-3 text-[13.5px] text-surface-foreground transition-colors',
-            'placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25',
+            'placeholder:text-neutral-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/25 focus:outline-none',
             className
         )}
         {...props}
@@ -41,7 +42,7 @@ export const AdTextarea = ({ className, ...props }: TextareaHTMLAttributes<HTMLT
     <textarea
         className={cn(
             'min-h-20 w-full resize-y rounded-lg border border-border bg-surface px-3 py-2.5 text-[13.5px] leading-normal text-surface-foreground transition-colors',
-            'placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25',
+            'placeholder:text-neutral-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/25 focus:outline-none',
             className
         )}
         {...props}
@@ -63,7 +64,8 @@ export const AdIconButton = ({ name, className, type = 'button', ...props }: But
             'inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-neutral-100 hover:text-surface-foreground',
             className
         )}
-        {...props}>
+        {...props}
+    >
         <Icon name={name} size={16} />
     </button>
 );

@@ -3,9 +3,8 @@
 import * as React from 'react';
 import { ComponentProps, MouseEventHandler, PropsWithChildren, ReactNode, useEffect, useRef } from 'react';
 
-import { Dialog, DialogClose, DialogContent, DialogTitle, DialogOverlay, DialogPortal } from '../dialog';
-
 import * as ButtonPrimitive from '../button';
+import { Dialog, DialogClose, DialogContent, DialogTitle, DialogOverlay, DialogPortal } from '../dialog';
 
 import { confirmContext } from './context';
 import { useConfirm, useConfirmContext } from './use-confirm';

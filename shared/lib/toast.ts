@@ -16,10 +16,8 @@ type ToastStore = {
 
 export const useToastStore = create<ToastStore>()((set) => ({
     toasts: [],
-    add: (message, variant = 'default') =>
-        set((s) => ({ toasts: [...s.toasts, { id: crypto.randomUUID(), message, variant }] })),
+    add: (message, variant = 'default') => set((s) => ({ toasts: [...s.toasts, { id: crypto.randomUUID(), message, variant }] })),
     remove: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) }))
 }));
 
-export const toast = (message: string, variant?: ToastVariant) =>
-    useToastStore.getState().add(message, variant);
+export const toast = (message: string, variant?: ToastVariant) => useToastStore.getState().add(message, variant);

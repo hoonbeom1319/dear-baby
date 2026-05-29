@@ -18,9 +18,7 @@ export const AppHeader = ({ left, lead, title, subtitle, right }: AppHeaderProps
             {lead}
             {title && (
                 <div className="min-w-0">
-                    <div className="truncate text-base font-semibold leading-tight tracking-[-0.01em] text-surface-foreground">
-                        {title}
-                    </div>
+                    <div className="truncate text-base leading-tight font-semibold tracking-[-0.01em] text-surface-foreground">{title}</div>
                     {subtitle && <div className="mt-0.5 text-xs leading-tight text-muted">{subtitle}</div>}
                 </div>
             )}

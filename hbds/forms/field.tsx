@@ -1,7 +1,9 @@
 import * as React from 'react';
+
 import { AlertCircle } from 'lucide-react';
 
 import { cn } from '../lib/utils';
+
 import { Label } from './label';
 
 type FieldContextValue = {
@@ -63,14 +65,14 @@ const FormControl = ({ children }: { children: React.ReactElement }) => {
 
 const FormDescription = ({ className, ref, ...props }: React.ComponentPropsWithRef<'p'>) => {
     const ctx = useFieldContext();
-    return <p ref={ref} id={ctx?.descriptionId} className={cn('text-muted text-xs', className)} {...props} />;
+    return <p ref={ref} id={ctx?.descriptionId} className={cn('text-xs text-muted', className)} {...props} />;
 };
 
 const FormError = ({ className, children, ref, ...props }: React.ComponentPropsWithRef<'p'>) => {
     const ctx = useFieldContext();
     if (!ctx?.invalid || !children) return null;
     return (
-        <p ref={ref} id={ctx.errorId} className={cn('text-danger flex items-center gap-1 text-xs', className)} {...props}>
+        <p ref={ref} id={ctx.errorId} className={cn('flex items-center gap-1 text-xs text-danger', className)} {...props}>
             <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             {children}
         </p>

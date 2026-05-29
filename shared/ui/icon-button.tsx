@@ -21,7 +21,8 @@ export const IconButton = ({ name, size = 22, iconStroke, fav, className, type =
             fav ? 'text-amber-500' : 'text-neutral-700',
             className
         )}
-        {...props}>
+        {...props}
+    >
         <Icon name={name} size={size} stroke={iconStroke} />
     </button>
 );

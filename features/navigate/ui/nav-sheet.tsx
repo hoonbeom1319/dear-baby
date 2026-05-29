@@ -17,21 +17,16 @@ const NAV_APPS: { id: string; name: string; mark: string; meta: string; style: R
 ];
 
 export const NavSheet = ({ open, onOpenChange, onPick, onCopyAddress }: NavSheetProps) => (
-    <Sheet
-        open={open}
-        onOpenChange={onOpenChange}
-        title="어떤 앱으로 갈까요?"
-        description="미설치 시 자동으로 주소 복사로 대체돼요">
+    <Sheet open={open} onOpenChange={onOpenChange} title="어떤 앱으로 갈까요?" description="미설치 시 자동으로 주소 복사로 대체돼요">
         <div className="flex flex-col gap-2">
             {NAV_APPS.map((app) => (
                 <button
                     key={app.id}
                     type="button"
                     onClick={() => onPick(app.name)}
-                    className="flex w-full items-center gap-3 rounded-[10px] border border-border bg-surface p-3 text-left transition-colors hover:border-neutral-300 hover:bg-neutral-50">
-                    <span
-                        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xs font-bold"
-                        style={app.style}>
+                    className="flex w-full items-center gap-3 rounded-[10px] border border-border bg-surface p-3 text-left transition-colors hover:border-neutral-300 hover:bg-neutral-50"
+                >
+                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xs font-bold" style={app.style}>
                         {app.mark}
                     </span>
                     <div className="min-w-0 flex-1">
@@ -46,7 +41,8 @@ export const NavSheet = ({ open, onOpenChange, onPick, onCopyAddress }: NavSheet
         <button
             type="button"
             onClick={onCopyAddress}
-            className="flex w-full items-center gap-3 rounded-[10px] border border-border bg-surface p-3 text-left transition-colors hover:border-neutral-300 hover:bg-neutral-50">
+            className="flex w-full items-center gap-3 rounded-[10px] border border-border bg-surface p-3 text-left transition-colors hover:border-neutral-300 hover:bg-neutral-50"
+        >
             <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-700">
                 <Icon name="copy" size={16} stroke={2} />
             </span>

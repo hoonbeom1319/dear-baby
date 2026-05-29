@@ -1,9 +1,15 @@
 import * as React from 'react';
 
-import * as PopoverPrimitive from '../primitives/popover';
 import { cn } from '../lib/utils';
+import * as PopoverPrimitive from '../primitives/popover';
 
-const PopoverContent = ({ className, align = 'center', sideOffset = 4, ref, ...props }: React.ComponentPropsWithRef<typeof PopoverPrimitive.PopoverContent>) => (
+const PopoverContent = ({
+    className,
+    align = 'center',
+    sideOffset = 4,
+    ref,
+    ...props
+}: React.ComponentPropsWithRef<typeof PopoverPrimitive.PopoverContent>) => (
     <PopoverPrimitive.PopoverPortal>
         <PopoverPrimitive.PopoverContent
             ref={ref}

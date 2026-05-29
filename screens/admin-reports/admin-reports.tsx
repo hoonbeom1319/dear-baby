@@ -3,18 +3,17 @@
 import { useState, type ReactNode } from 'react';
 
 import { useRouter } from 'next/navigation';
-
 import { Dialog } from 'radix-ui';
-
-import { toast } from '@/shared/lib';
-
-import { AdChip, AdInput, AdminPage } from '@/widgets/admin-shell';
 
 import type { ReportRow } from '@/server/controllers/reports';
 import { modifyReportStatus } from '@/server/controllers/reports';
 
-import { cn } from '@/hbds/lib/utils';
+import { AdChip, AdInput, AdminPage } from '@/widgets/admin-shell';
+
+import { toast } from '@/shared/lib';
 import { Button, Icon, Pill } from '@/shared/ui';
+
+import { cn } from '@/hbds/lib/utils';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (
     <th className={cn('border-b border-border bg-neutral-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
@@ -104,17 +103,23 @@ export const AdminReports = ({ initialReports }: Props) => {
 
     return (
         <>
-        <AdminPage title="정보 제보" subtitle="자동 반영 금지 · 운영자가 검토 후 [반영]을 클릭 · A-5 · 부록 15.1-7">
+            <AdminPage title="정보 제보" subtitle="자동 반영 금지 · 운영자가 검토 후 [반영]을 클릭 · A-5 · 부록 15.1-7">
                 <div className="mb-4 flex items-center gap-2">
                     <AdChip active={statusFilter === 'pending'} onClick={() => setStatusFilter('pending')}>
                         대기 중 <span className="ml-0.5 font-semibold">{pendingCount}</span>
                     </AdChip>
-                    <AdChip active={statusFilter === 'applied'} onClick={() => setStatusFilter('applied')}>반영됨</AdChip>
-                    <AdChip active={statusFilter === 'ignored'} onClick={() => setStatusFilter('ignored')}>무시</AdChip>
-                    <AdChip active={statusFilter === 'all'} onClick={() => setStatusFilter('all')}>전체</AdChip>
+                    <AdChip active={statusFilter === 'applied'} onClick={() => setStatusFilter('applied')}>
+                        반영됨
+                    </AdChip>
+                    <AdChip active={statusFilter === 'ignored'} onClick={() => setStatusFilter('ignored')}>
+                        무시
+                    </AdChip>
+                    <AdChip active={statusFilter === 'all'} onClick={() => setStatusFilter('all')}>
+                        전체
+                    </AdChip>
                     <div className="flex-1" />
                     <div className="relative min-w-[240px]">
-                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted">
+                        <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted">
                             <Icon name="search" size={14} />
                         </span>
                         <AdInput
@@ -154,9 +159,7 @@ export const AdminReports = ({ initialReports }: Props) => {
                                             <Pill tone={statusTone(report.status)}>{statusLabel(report.status)}</Pill>
                                         </td>
                                         <td className="border-b border-border px-4 py-3.5 text-neutral-700">{report.reason}</td>
-                                        <td className="border-b border-border px-4 py-3.5 text-muted">
-                                            {report.user_id ? '회원' : '비회원'}
-                                        </td>
+                                        <td className="border-b border-border px-4 py-3.5 text-muted">{report.user_id ? '회원' : '비회원'}</td>
                                         <td className="border-b border-border px-4 py-3.5">
                                             {report.status === 'pending' && (
                                                 <div className="flex justify-end gap-1.5">
@@ -174,12 +177,12 @@ export const AdminReports = ({ initialReports }: Props) => {
                             })}
                         </tbody>
                     </table>
-                    {filtered.length === 0 && (
-                        <div className="py-10 text-center text-[13px] text-muted">해당 조건에 제보가 없어요</div>
-                    )}
+                    {filtered.length === 0 && <div className="py-10 text-center text-[13px] text-muted">해당 조건에 제보가 없어요</div>}
                 </div>
                 <div className="mt-3.5">
-                    <span className="text-[12.5px] text-muted">총 {initialReports.length}건 · {filtered.length}개 표시 중</span>
+                    <span className="text-[12.5px] text-muted">
+                        총 {initialReports.length}건 · {filtered.length}개 표시 중
+                    </span>
                 </div>
             </AdminPage>
 
@@ -187,7 +190,7 @@ export const AdminReports = ({ initialReports }: Props) => {
             <Dialog.Root open={confirmId !== null} onOpenChange={(open) => !open && setConfirmId(null)}>
                 <Dialog.Portal>
                     <Dialog.Overlay className="fixed inset-0 z-[1040] animate-[fade-in_150ms_ease-out] bg-neutral-900/45" />
-                    <Dialog.Content className="fixed left-1/2 top-1/2 z-[1050] w-[440px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 animate-[modal-in_200ms_var(--ease-spring)] rounded-xl bg-surface p-6 shadow-modal focus:outline-none">
+                    <Dialog.Content className="fixed top-1/2 left-1/2 z-[1050] w-[440px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 animate-[modal-in_200ms_var(--ease-spring)] rounded-xl bg-surface p-6 shadow-modal focus:outline-none">
                         <div className="flex items-start gap-3">
                             <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] bg-amber-50 text-warning">
                                 <Icon name="alert" size={18} />
@@ -199,7 +202,8 @@ export const AdminReports = ({ initialReports }: Props) => {
                                 <Dialog.Description className="mt-1.5 text-[13.5px] leading-relaxed text-muted">
                                     {confirmingReport && (
                                         <>
-                                            <strong className="text-surface-foreground">{confirmingReport.places?.name ?? '(삭제된 장소)'}</strong>의 제보를 반영 처리해요.
+                                            <strong className="text-surface-foreground">{confirmingReport.places?.name ?? '(삭제된 장소)'}</strong>의 제보를
+                                            반영 처리해요.
                                             <br />
                                             운영자 실수 방지를 위한 한 번의 확인 단계예요. (10.3 데이터 무결성)
                                         </>

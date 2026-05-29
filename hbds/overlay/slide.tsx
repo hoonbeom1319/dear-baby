@@ -24,17 +24,22 @@ const Slide = ({ children, open = false, direction = 'down', timeout = 300, keep
     const [isEntered, setIsEntered] = useState(false);
 
     useEffect(() => {
+        let raf: number;
+
         if (open) {
-            setIsMounted(true);
-            let raf = requestAnimationFrame(() => {
+            raf = requestAnimationFrame(() => {
+                setIsMounted(true);
                 raf = requestAnimationFrame(() => {
                     setIsEntered(true);
                 });
             });
-            return () => cancelAnimationFrame(raf);
+        } else {
+            raf = requestAnimationFrame(() => {
+                setIsEntered(false);
+            });
         }
 
-        setIsEntered(false);
+        return () => cancelAnimationFrame(raf);
     }, [open]);
 
     if (!isMounted && !keepMounted) {

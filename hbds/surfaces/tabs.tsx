@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import * as TabsPrimitive from '../primitives/tabs';
 import { cn } from '../lib/utils';
+import * as TabsPrimitive from '../primitives/tabs';
 
 type TabsVariant = 'line' | 'pill';
 
@@ -24,13 +24,7 @@ const listVariant: Record<TabsVariant, string> = {
 
 const TabsList = ({ className, ref, ...props }: React.ComponentPropsWithRef<typeof TabsPrimitive.TabsList>) => {
     const variant = React.useContext(TabsVariantCtx);
-    return (
-        <TabsPrimitive.TabsList
-            ref={ref}
-            className={cn('inline-flex items-center', listVariant[variant], className)}
-            {...props}
-        />
-    );
+    return <TabsPrimitive.TabsList ref={ref} className={cn('inline-flex items-center', listVariant[variant], className)} {...props} />;
 };
 
 const triggerVariant: Record<TabsVariant, string> = {
@@ -44,8 +38,8 @@ const TabsTrigger = ({ className, ref, ...props }: React.ComponentPropsWithRef<t
         <TabsPrimitive.TabsTrigger
             ref={ref}
             className={cn(
-                'inline-flex items-center justify-center whitespace-nowrap px-3 py-1.5 text-sm font-medium text-muted transition-colors duration-fast',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
+                'duration-fast inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium whitespace-nowrap text-muted transition-colors',
+                'focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none',
                 'disabled:pointer-events-none disabled:opacity-50',
                 triggerVariant[variant],
                 className
@@ -58,11 +52,7 @@ const TabsTrigger = ({ className, ref, ...props }: React.ComponentPropsWithRef<t
 const TabsContent = ({ className, ref, ...props }: React.ComponentPropsWithRef<typeof TabsPrimitive.TabsContent>) => (
     <TabsPrimitive.TabsContent
         ref={ref}
-        className={cn(
-            'mt-4',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-            className
-        )}
+        className={cn('mt-4', 'focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none', className)}
         {...props}
     />
 );

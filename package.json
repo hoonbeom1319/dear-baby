@@ -1,42 +1,42 @@
 {
-  "name": "my-app",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "devs": "next dev --experimental-https",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "@radix-ui/react-icons": "^1.3.2",
-    "@supabase/supabase-js": "^2.105.3",
-    "@tanstack/react-query": "^5.99.2",
-    "clsx": "^2.1.1",
-    "embla-carousel": "^8.6.0",
-    "embla-carousel-autoplay": "^8.6.0",
-    "embla-carousel-react": "^8.6.0",
-    "hbw": "file:./hbw",
-    "lucide-react": "^1.17.0",
-    "next": "16.2.3",
-    "radix-ui": "^1.4.3",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "tailwind-merge": "^3.5.0",
-    "zustand": "^5.0.13"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.3",
-    "eslint-plugin-boundaries": "^6.0.2",
-    "eslint-plugin-import": "^2.32.0",
-    "prettier-plugin-tailwindcss": "^0.6.14",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "name": "my-app",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "devs": "next dev --experimental-https",
+        "build": "next build",
+        "start": "next start",
+        "lint": "eslint"
+    },
+    "dependencies": {
+        "@radix-ui/react-icons": "^1.3.2",
+        "@supabase/supabase-js": "^2.105.3",
+        "@tanstack/react-query": "^5.99.2",
+        "clsx": "^2.1.1",
+        "embla-carousel": "^8.6.0",
+        "embla-carousel-autoplay": "^8.6.0",
+        "embla-carousel-react": "^8.6.0",
+        "hbw": "file:./hbw",
+        "lucide-react": "^1.17.0",
+        "next": "16.2.3",
+        "radix-ui": "^1.4.3",
+        "react": "19.2.4",
+        "react-dom": "19.2.4",
+        "tailwind-merge": "^3.5.0",
+        "zustand": "^5.0.13"
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss": "^4",
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9",
+        "eslint-config-next": "16.2.3",
+        "eslint-plugin-boundaries": "^6.0.2",
+        "eslint-plugin-import": "^2.32.0",
+        "prettier-plugin-tailwindcss": "^0.6.14",
+        "tailwindcss": "^4",
+        "typescript": "^5"
+    }
 }

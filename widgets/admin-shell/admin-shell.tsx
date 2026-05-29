@@ -5,8 +5,9 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { cn } from '@/hbds/lib/utils';
 import { Icon, type IconName } from '@/shared/ui';
+
+import { cn } from '@/hbds/lib/utils';
 
 const NAV: { href: string; label: string; icon: IconName; key: string }[] = [
     { href: '/admin', label: '대시보드', icon: 'home', key: 'dashboard' },
@@ -26,7 +27,7 @@ export const AdminShell = ({ children, pendingReports = 0 }: { children: ReactNo
     return (
         <div className="flex min-h-dvh bg-neutral-50 text-neutral-700">
             <aside className="flex w-[232px] shrink-0 flex-col border-r border-border bg-surface px-3 py-[18px]">
-                <div className="flex items-center gap-2.5 px-2.5 pb-[18px] pt-1">
+                <div className="flex items-center gap-2.5 px-2.5 pt-1 pb-[18px]">
                     <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-xs font-bold tracking-[-0.02em] text-white">
                         db
                     </span>
@@ -36,7 +37,7 @@ export const AdminShell = ({ children, pendingReports = 0 }: { children: ReactNo
                     </div>
                 </div>
 
-                <div className="px-2.5 pb-1.5 pt-3.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">메뉴</div>
+                <div className="px-2.5 pt-3.5 pb-1.5 text-[11px] font-semibold tracking-[0.06em] text-muted uppercase">메뉴</div>
                 <nav className="flex flex-col gap-1">
                     {NAV.map((item) => {
                         const active = isActive(item.href);
@@ -47,13 +48,14 @@ export const AdminShell = ({ children, pendingReports = 0 }: { children: ReactNo
                                 className={cn(
                                     'flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium transition-colors',
                                     active ? 'bg-primary-50 text-primary-700' : 'text-neutral-700 hover:bg-neutral-100 hover:text-surface-foreground'
-                                )}>
+                                )}
+                            >
                                 <span className={active ? 'text-primary-600' : 'text-muted'}>
                                     <Icon name={item.icon} size={16} />
                                 </span>
                                 <span>{item.label}</span>
                                 {item.key === 'reports' && pendingReports > 0 && (
-                                    <span className="ml-auto rounded-full bg-primary-600 px-[7px] py-0.5 text-[11px] font-semibold leading-tight tabular-nums text-white">
+                                    <span className="ml-auto rounded-full bg-primary-600 px-[7px] py-0.5 text-[11px] leading-tight font-semibold text-white tabular-nums">
                                         {pendingReports}
                                     </span>
                                 )}
@@ -62,7 +64,7 @@ export const AdminShell = ({ children, pendingReports = 0 }: { children: ReactNo
                     })}
                 </nav>
 
-                <div className="mt-auto flex items-center gap-2.5 border-t border-border px-2.5 pb-1 pt-3">
+                <div className="mt-auto flex items-center gap-2.5 border-t border-border px-2.5 pt-3 pb-1">
                     <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-200 text-xs font-semibold text-neutral-700">
                         서
                     </span>
@@ -90,7 +92,7 @@ export const AdminPage = ({ title, subtitle, actions, children }: AdminPageProps
     <div className="px-8 py-7">
         <div className="mb-6 flex items-start justify-between gap-4">
             <div>
-                <h1 className="text-[26px] font-bold leading-tight tracking-[-0.025em] text-surface-foreground">{title}</h1>
+                <h1 className="text-[26px] leading-tight font-bold tracking-[-0.025em] text-surface-foreground">{title}</h1>
                 {subtitle && <p className="mt-1 text-[13px] text-muted">{subtitle}</p>}
             </div>
             {actions && <div className="flex shrink-0 gap-2">{actions}</div>}

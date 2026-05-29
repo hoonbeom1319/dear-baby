@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 
 import { cn } from '../lib/utils';
@@ -13,7 +14,7 @@ const TooltipContent = ({ className, sideOffset = 4, children, ref, ...props }: 
             ref={ref}
             sideOffset={sideOffset}
             className={cn(
-                'z-tooltip bg-neutral-900 text-white rounded-md px-2.5 py-1.5 text-xs shadow-md',
+                'z-tooltip rounded-md bg-neutral-900 px-2.5 py-1.5 text-xs text-white shadow-md',
                 'data-[state=delayed-open]:animate-fade-in data-[state=instant-open]:animate-fade-in data-[state=closed]:animate-fade-out',
                 className
             )}

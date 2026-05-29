@@ -4,11 +4,11 @@ import { useRouter } from 'next/navigation';
 
 import { useAuth, useCatalog, usePlaces } from '@/application/providers';
 
-import { useFavorite } from '@/entities/favorite';
-import { toast } from '@/shared/lib';
-
-import { PlaceCard } from '@/entities/place';
 import type { Course } from '@/entities/course';
+import { useFavorite } from '@/entities/favorite';
+import { PlaceCard } from '@/entities/place';
+
+import { toast } from '@/shared/lib';
 import { AppHeader, Button, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const MetaDot = () => <span className="h-0.5 w-0.5 rounded-full bg-neutral-300" />;
@@ -57,10 +57,8 @@ export const CourseDetail = ({ course }: Props) => {
 
             <div className="flex-1 px-4 pb-10">
                 {/* 핵심 정보 */}
-                <div className="border-b border-border pb-4 pt-3">
-                    <h1 className="text-[22px] font-bold leading-snug tracking-[-0.02em] text-surface-foreground">
-                        {course.title}
-                    </h1>
+                <div className="border-b border-border pt-3 pb-4">
+                    <h1 className="text-[22px] leading-snug font-bold tracking-[-0.02em] text-surface-foreground">{course.title}</h1>
                     <div className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-muted">
                         <span>{area?.name}</span>
                         <MetaDot />
@@ -87,7 +85,7 @@ export const CourseDetail = ({ course }: Props) => {
                                         onToggleFavorite={toggleFavorite}
                                         onSelect={(id) => router.push(`/place/${id}`)}
                                     />
-                                    <div className="ml-9 mt-2 flex items-start gap-2 py-2.5 pr-3 text-[12.5px] leading-relaxed text-muted">
+                                    <div className="mt-2 ml-9 flex items-start gap-2 py-2.5 pr-3 text-[12.5px] leading-relaxed text-muted">
                                         <Icon name="info" size={13} stroke={2} className="mt-0.5 shrink-0 text-neutral-400" />
                                         <span>{course.comments[i]}</span>
                                     </div>
@@ -100,9 +98,7 @@ export const CourseDetail = ({ course }: Props) => {
                             )
                     )}
 
-                    <div className="mt-4 rounded-[10px] border border-dashed border-border bg-neutral-50 p-3 text-center text-xs text-muted">
-                        ─ 코스 완료 ─
-                    </div>
+                    <div className="mt-4 rounded-[10px] border border-dashed border-border bg-neutral-50 p-3 text-center text-xs text-muted">─ 코스 완료 ─</div>
                 </div>
             </div>
         </MobileShell>

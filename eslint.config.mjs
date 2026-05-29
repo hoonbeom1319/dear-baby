@@ -125,7 +125,7 @@ const eslintConfig = defineConfig([
             'local/component-internal-order': 'warn'
         }
     },
-    globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts'])
+    globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'hbw/dist/**'])
 ]);
 
 export default eslintConfig;

@@ -5,8 +5,9 @@ import { createContext, useContext, useEffect, useCallback, useState, PropsWithC
 import type { EmblaCarouselType, EmblaOptionsType, EmblaPluginType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 
-import * as ButtonPrimitive from './button';
 import { cn } from '../lib/utils';
+
+import * as ButtonPrimitive from './button';
 
 type CarouselNavigationOverlap = 'overlay' | 'outside';
 
@@ -40,7 +41,7 @@ type CarouselProps = HTMLAttributes<HTMLDivElement> &
         navigationOverlap?: CarouselNavigationOverlap;
     }>;
 
-const Carousel = ({ className, children, options, plugins, navigationOverlap = 'overlay', onKeyDown: _onKeyDown, ...props }: CarouselProps) => {
+const Carousel = ({ className, children, options, plugins, navigationOverlap = 'overlay', ...props }: CarouselProps) => {
     const [carouselRef, emblaApi] = useEmblaCarousel(options, plugins);
     const [canScrollPrev, setCanScrollPrev] = useState(false);
     const [canScrollNext, setCanScrollNext] = useState(false);
@@ -74,10 +75,11 @@ const Carousel = ({ className, children, options, plugins, navigationOverlap = '
 
     useEffect(() => {
         if (!emblaApi) return;
-        sync();
+        const frameId = requestAnimationFrame(() => sync());
         emblaApi.on('reInit', sync);
         emblaApi.on('select', sync);
         return () => {
+            cancelAnimationFrame(frameId);
             emblaApi.off('reInit', sync);
             emblaApi.off('select', sync);
         };

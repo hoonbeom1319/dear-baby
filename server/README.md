@@ -1,4 +1,5 @@
 # 규칙 문서 만들기
+
 server는 controllers / dao / db로 나눌 예정
 
 dao는 table 단위로 파일을 생성할 예정

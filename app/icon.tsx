@@ -13,10 +13,11 @@ export default function Icon() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: '22%',
-            }}>
+                borderRadius: '22%'
+            }}
+        >
             <span style={{ fontSize: 96, lineHeight: 1 }}>🍼</span>
         </div>,
-        { ...size },
+        { ...size }
     );
 }

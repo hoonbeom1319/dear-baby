@@ -2,13 +2,14 @@
 
 import type { ComponentProps } from 'react';
 import { useMemo } from 'react';
+
+import type { EmblaOptionsType, EmblaPluginType } from 'embla-carousel';
 import Autoplay, { type AutoplayOptionsType } from 'embla-carousel-autoplay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+
 import { cn } from '../lib/utils';
 import * as CarouselPrimitive from '../primitives/carousel';
 import type { CarouselNavigationOverlap } from '../primitives/carousel';
-
-import type { EmblaOptionsType, EmblaPluginType } from 'embla-carousel';
 
 type CarouselProps = ComponentProps<typeof CarouselPrimitive.Carousel> & {
     'aria-label': string;
@@ -74,11 +75,7 @@ const Carousel = ({
 
 const CarouselContent = ({ className, style, ...props }: CarouselContentProps) => {
     return (
-        <CarouselPrimitive.CarouselContent
-            className={cn(className)}
-            style={{ ...style, marginLeft: `calc(var(${CAROUSEL_SPACING_VAR}) * -1)` }}
-            {...props}
-        />
+        <CarouselPrimitive.CarouselContent className={cn(className)} style={{ ...style, marginLeft: `calc(var(${CAROUSEL_SPACING_VAR}) * -1)` }} {...props} />
     );
 };
 
@@ -103,7 +100,7 @@ const CarouselPrevious = ({ className, children, ...props }: CarouselArrowProps)
         <CarouselPrimitive.CarouselPrevious
             aria-label="이전 슬라이드"
             className={cn(
-                'focus-visible:ring-primary-500 absolute top-1/2 z-10 inline-flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
+                'absolute top-1/2 z-10 inline-flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
                 navigationOverlap === 'outside' ? 'left-0 -translate-x-full' : 'left-2',
                 className
             )}
@@ -121,7 +118,7 @@ const CarouselNext = ({ className, children, ...props }: CarouselArrowProps) => 
         <CarouselPrimitive.CarouselNext
             aria-label="다음 슬라이드"
             className={cn(
-                'focus-visible:ring-primary-500 absolute top-1/2 z-10 inline-flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
+                'absolute top-1/2 z-10 inline-flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
                 navigationOverlap === 'outside' ? 'right-0 translate-x-full' : 'right-2',
                 className
             )}
@@ -151,7 +148,7 @@ const CarouselDots = ({ className, slideLabels, ...props }: CarouselDotsProps) =
                         aria-current={isActive ? 'true' : undefined}
                         onClick={() => scrollTo(index)}
                         className={cn(
-                            'focus-visible:ring-primary-500 h-2 w-2 shrink-0 cursor-pointer rounded-full border-2 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+                            'h-2 w-2 shrink-0 cursor-pointer rounded-full border-2 transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none',
                             isActive ? 'border-neutral-800 bg-neutral-800' : 'border-neutral-300 bg-neutral-300 hover:border-neutral-500'
                         )}
                     />

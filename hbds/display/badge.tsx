@@ -25,10 +25,7 @@ type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
 };
 
 const Badge = ({ className, variant = 'default', size = 'md', ...props }: BadgeProps) => (
-    <span
-        className={cn('inline-flex items-center rounded-full border font-medium', variantClass[variant], sizeClass[size], className)}
-        {...props}
-    />
+    <span className={cn('inline-flex items-center rounded-full border font-medium', variantClass[variant], sizeClass[size], className)} {...props} />
 );
 
 export { Badge };

@@ -1,6 +1,8 @@
 ﻿import { useCatalog } from '@/application/providers';
-import { cn } from '@/hbds/lib/utils';
+
 import { Icon, type IconName } from '@/shared/ui';
+
+import { cn } from '@/hbds/lib/utils';
 
 import type { Place } from '../model/types';
 
@@ -22,12 +24,11 @@ export const AmenityGrid = ({ place }: { place: Place }) => {
                             className={cn(
                                 'inline-flex h-11 w-11 items-center justify-center rounded-xl border',
                                 has ? 'border-primary-100 bg-primary-50 text-primary-600' : 'border-border bg-neutral-50 text-neutral-300'
-                            )}>
+                            )}
+                        >
                             <Icon name={amenity.icon as IconName} size={20} stroke={1.8} />
                         </div>
-                        <div className={cn('text-[11px] font-medium', has ? 'text-neutral-700' : 'text-neutral-400')}>
-                            {amenity.short}
-                        </div>
+                        <div className={cn('text-[11px] font-medium', has ? 'text-neutral-700' : 'text-neutral-400')}>{amenity.short}</div>
                     </div>
                 );
             })}

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import * as AvatarPrimitive from '../primitives/avatar';
 import { cn } from '../lib/utils';
+import * as AvatarPrimitive from '../primitives/avatar';
 
 type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
 

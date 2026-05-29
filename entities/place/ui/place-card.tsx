@@ -1,6 +1,8 @@
 ﻿import { useCatalog } from '@/application/providers';
-import { cn } from '@/hbds/lib/utils';
+
 import { AmenityBadge, Card, Icon, type IconName, PlaceImage } from '@/shared/ui';
+
+import { cn } from '@/hbds/lib/utils';
 
 import type { Place } from '../model/types';
 
@@ -30,7 +32,7 @@ export const PlaceCard = ({ place, isFavorite = false, onToggleFavorite, onSelec
         <Card interactive onClick={() => onSelect?.(place.id)}>
             <div className="flex items-stretch gap-3 p-3">
                 {stopNumber != null && (
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center self-center rounded-full bg-primary-600 text-xs font-semibold tabular-nums text-white">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center self-center rounded-full bg-primary-600 text-xs font-semibold text-white tabular-nums">
                         {stopNumber}
                     </div>
                 )}
@@ -38,9 +40,7 @@ export const PlaceCard = ({ place, isFavorite = false, onToggleFavorite, onSelec
                 <div className="flex min-w-0 flex-1 flex-col">
                     <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0 flex-1">
-                            <div className="truncate text-[15px] font-semibold leading-tight tracking-[-0.005em] text-surface-foreground">
-                                {place.name}
-                            </div>
+                            <div className="truncate text-[15px] leading-tight font-semibold tracking-[-0.005em] text-surface-foreground">{place.name}</div>
                             <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-muted">
                                 <span>{category?.name}</span>
                                 <Dot />
@@ -57,9 +57,10 @@ export const PlaceCard = ({ place, isFavorite = false, onToggleFavorite, onSelec
                                 onToggleFavorite?.(place.id);
                             }}
                             className={cn(
-                                '-mr-1 -mt-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-neutral-100',
+                                '-mt-1 -mr-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-neutral-100',
                                 isFavorite ? 'text-amber-500' : 'text-neutral-700'
-                            )}>
+                            )}
+                        >
                             <Icon name={isFavorite ? 'star-fill' : 'star'} size={18} stroke={2} />
                         </button>
                     </div>

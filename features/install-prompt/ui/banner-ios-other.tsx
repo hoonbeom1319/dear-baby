@@ -18,12 +18,7 @@ export function BannerIosOther({ onDismiss }: Props) {
                         iPhone은 <strong className="font-medium text-surface-foreground">Safari</strong>로 열어야 홈 화면에 추가할 수 있어요
                     </p>
                 </div>
-                <button
-                    type="button"
-                    onClick={onDismiss}
-                    aria-label="닫기"
-                    className="shrink-0 rounded-full p-1.5 text-muted hover:bg-neutral-100"
-                >
+                <button type="button" onClick={onDismiss} aria-label="닫기" className="shrink-0 rounded-full p-1.5 text-muted hover:bg-neutral-100">
                     <Icon name="x" size={14} />
                 </button>
             </div>

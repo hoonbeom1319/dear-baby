@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth, usePlaces } from '@/application/providers';
 
 import { useFavorite } from '@/entities/favorite';
-
 import { PlaceCard } from '@/entities/place';
 
 import { AppHeader, Button, Icon, IconButton, MobileShell } from '@/shared/ui';
@@ -34,7 +33,7 @@ export const Favorites = () => {
                 subtitle={places.length > 0 ? `${places.length}곳 · 최근 추가순` : undefined}
             />
 
-            <div className="flex-1 px-4 pb-8 pt-3">
+            <div className="flex-1 px-4 pt-3 pb-8">
                 {places.length === 0 ? (
                     <div className="flex flex-col items-center gap-3 px-8 pt-16 text-center">
                         <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary-50 text-primary-500">

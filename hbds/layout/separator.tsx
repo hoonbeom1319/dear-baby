@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import * as SeparatorPrimitive from '../primitives/separator';
 import { cn } from '../lib/utils';
+import * as SeparatorPrimitive from '../primitives/separator';
 
 type SeparatorProps = React.ComponentPropsWithRef<typeof SeparatorPrimitive.Separator>;
 

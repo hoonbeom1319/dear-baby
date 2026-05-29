@@ -6,7 +6,7 @@ export async function GET() {
         response_type: 'code',
         client_id: process.env.NAVER_CLIENT_ID!,
         redirect_uri: `${siteUrl}/api/auth/naver/callback`,
-        state: crypto.randomUUID(),
+        state: crypto.randomUUID()
     });
     return NextResponse.redirect(`https://nid.naver.com/oauth2.0/authorize?${params}`);
 }

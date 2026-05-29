@@ -1,8 +1,9 @@
 import * as React from 'react';
+
 import { Check, ChevronRight } from 'lucide-react';
 
-import * as DropdownMenuPrimitive from '../primitives/dropdown-menu';
 import { cn } from '../lib/utils';
+import * as DropdownMenuPrimitive from '../primitives/dropdown-menu';
 
 const DropdownMenuContent = ({ className, sideOffset = 4, ref, ...props }: React.ComponentPropsWithRef<typeof DropdownMenuPrimitive.DropdownMenuContent>) => (
     <DropdownMenuPrimitive.DropdownMenuPortal>
@@ -10,7 +11,7 @@ const DropdownMenuContent = ({ className, sideOffset = 4, ref, ...props }: React
             ref={ref}
             sideOffset={sideOffset}
             className={cn(
-                'z-dropdown border-border bg-surface min-w-32 overflow-hidden rounded-md border p-1 shadow-md',
+                'z-dropdown min-w-32 overflow-hidden rounded-md border border-border bg-surface p-1 shadow-md',
                 'data-[state=open]:animate-in data-[state=closed]:animate-out',
                 'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
                 'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
@@ -83,11 +84,11 @@ const DropdownMenuRadioItem = ({ className, children, ref, ...props }: React.Com
 );
 
 const DropdownMenuLabel = ({ className, ref, ...props }: React.ComponentPropsWithRef<typeof DropdownMenuPrimitive.DropdownMenuLabel>) => (
-    <DropdownMenuPrimitive.DropdownMenuLabel ref={ref} className={cn('text-muted px-2 py-1.5 text-xs font-semibold', className)} {...props} />
+    <DropdownMenuPrimitive.DropdownMenuLabel ref={ref} className={cn('px-2 py-1.5 text-xs font-semibold text-muted', className)} {...props} />
 );
 
 const DropdownMenuSeparator = ({ className, ref, ...props }: React.ComponentPropsWithRef<typeof DropdownMenuPrimitive.DropdownMenuSeparator>) => (
-    <DropdownMenuPrimitive.DropdownMenuSeparator ref={ref} className={cn('bg-border -mx-1 my-1 h-px', className)} {...props} />
+    <DropdownMenuPrimitive.DropdownMenuSeparator ref={ref} className={cn('-mx-1 my-1 h-px bg-border', className)} {...props} />
 );
 
 const DropdownMenuSubTrigger = ({ className, children, ref, ...props }: React.ComponentPropsWithRef<typeof DropdownMenuPrimitive.DropdownMenuSubTrigger>) => (
@@ -109,7 +110,7 @@ const DropdownMenuSubContent = ({ className, ref, ...props }: React.ComponentPro
     <DropdownMenuPrimitive.DropdownMenuSubContent
         ref={ref}
         className={cn(
-            'z-dropdown border-border bg-surface min-w-32 overflow-hidden rounded-md border p-1 shadow-md',
+            'z-dropdown min-w-32 overflow-hidden rounded-md border border-border bg-surface p-1 shadow-md',
             'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
             className
         )}

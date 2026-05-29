@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import * as ButtonPrimitive from '../primitives/button';
 import { cn } from '../lib/utils';
+import * as ButtonPrimitive from '../primitives/button';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -30,7 +30,7 @@ const Button = ({ variant = 'primary', size = 'md', className, ...props }: Butto
         className={cn(
             'inline-flex cursor-pointer items-center justify-center gap-2 font-medium whitespace-nowrap',
             'transition-colors duration-150',
-            'focus-visible:ring-primary-500 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+            'focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none',
             'disabled:pointer-events-none disabled:opacity-50',
             variantClass[variant],
             sizeClass[size],

@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 
-import { cn } from '@/hbds/lib/utils';
 import { Button, Icon, Sheet } from '@/shared/ui';
+
+import { cn } from '@/hbds/lib/utils';
 
 type ReportSheetProps = {
     open: boolean;
@@ -12,14 +13,7 @@ type ReportSheetProps = {
     onSubmit: (reason: string) => void;
 };
 
-const OPTIONS = [
-    '기저귀 갈이대가 없어졌어요',
-    '수유실이 없어졌어요',
-    '아기의자가 없어졌어요',
-    '유모차 진입이 어려워요',
-    '주차가 어려워요',
-    '폐업했어요'
-];
+const OPTIONS = ['기저귀 갈이대가 없어졌어요', '수유실이 없어졌어요', '아기의자가 없어졌어요', '유모차 진입이 어려워요', '주차가 어려워요', '폐업했어요'];
 
 export const ReportSheet = ({ open, onOpenChange, onSubmit }: ReportSheetProps) => {
     const [selected, setSelected] = useState<string | null>(null);
@@ -38,7 +32,8 @@ export const ReportSheet = ({ open, onOpenChange, onSubmit }: ReportSheetProps) 
                 onOpenChange(next);
             }}
             title="무엇이 바뀌었나요?"
-            description="비회원도 제보할 수 있어요. 운영자가 확인 후 반영해요.">
+            description="비회원도 제보할 수 있어요. 운영자가 확인 후 반영해요."
+        >
             <div className="mb-3 flex flex-col gap-1.5">
                 {OPTIONS.map((option) => {
                     const active = selected === option;
@@ -52,12 +47,14 @@ export const ReportSheet = ({ open, onOpenChange, onSubmit }: ReportSheetProps) 
                                 active
                                     ? 'border-primary-500 bg-primary-50 font-medium text-primary-700'
                                     : 'border-border bg-surface text-neutral-700 hover:bg-neutral-50'
-                            )}>
+                            )}
+                        >
                             <span
                                 className={cn(
                                     'inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border',
                                     active ? 'border-primary-600 bg-primary-600 text-white' : 'border-neutral-300 text-transparent'
-                                )}>
+                                )}
+                            >
                                 <Icon name="check" size={12} stroke={2.5} />
                             </span>
                             {option}

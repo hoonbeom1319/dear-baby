@@ -32,13 +32,15 @@ export const AdminLogin = () => {
                     type="button"
                     onClick={() => router.push('/admin')}
                     className="mb-2 flex h-11 w-full items-center justify-center rounded-[9px] text-sm font-semibold"
-                    style={{ background: '#FEE500', color: '#191600' }}>
+                    style={{ background: '#FEE500', color: '#191600' }}
+                >
                     카카오로 로그인
                 </button>
                 <button
                     type="button"
                     onClick={() => router.push('/admin')}
-                    className="flex h-11 w-full items-center justify-center rounded-[9px] border border-border bg-surface text-sm font-medium text-surface-foreground transition-colors hover:bg-neutral-50">
+                    className="flex h-11 w-full items-center justify-center rounded-[9px] border border-border bg-surface text-sm font-medium text-surface-foreground transition-colors hover:bg-neutral-50"
+                >
                     네이버로 로그인
                 </button>
 

@@ -2,11 +2,7 @@ import { createSupabaseAdmin } from '../db/supabase';
 
 export async function findFavoritesByUser(userId: string): Promise<string[]> {
     const supabase = createSupabaseAdmin();
-    const { data, error } = await supabase
-        .from('favorites')
-        .select('place_id')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('favorites').select('place_id').eq('user_id', userId).order('created_at', { ascending: false });
     if (error) throw new Error(error.message);
     return (data ?? []).map((r) => r.place_id as string);
 }

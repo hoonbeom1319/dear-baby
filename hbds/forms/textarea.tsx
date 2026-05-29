@@ -12,9 +12,9 @@ const Textarea = ({ className, invalid, rows = 4, ref, ...props }: TextareaProps
         rows={rows}
         aria-invalid={invalid || undefined}
         className={cn(
-            'border-border bg-surface text-surface-foreground flex w-full rounded-md border px-3 py-2 text-sm',
+            'flex w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-surface-foreground',
             'placeholder:text-muted',
-            'focus-visible:ring-primary-500 focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:outline-none',
+            'focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-0 focus-visible:outline-none',
             'disabled:cursor-not-allowed disabled:opacity-50',
             'aria-invalid:border-danger aria-invalid:focus-visible:ring-danger',
             'resize-y',

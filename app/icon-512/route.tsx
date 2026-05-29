@@ -9,10 +9,11 @@ export async function GET() {
                 height: '100%',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-            }}>
+                justifyContent: 'center'
+            }}
+        >
             <span style={{ fontSize: 256, lineHeight: 1 }}>🍼</span>
         </div>,
-        { width: 512, height: 512 },
+        { width: 512, height: 512 }
     );
 }

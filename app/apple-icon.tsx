@@ -13,10 +13,11 @@ export default function AppleIcon() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: '22%',
-            }}>
+                borderRadius: '22%'
+            }}
+        >
             <span style={{ fontSize: 90, lineHeight: 1 }}>🍼</span>
         </div>,
-        { ...size },
+        { ...size }
     );
 }

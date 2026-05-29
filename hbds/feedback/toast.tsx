@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { createPortal } from 'react-dom';
+
 import * as ToastPrimitive from '@radix-ui/react-toast';
 import { X } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 import { cn } from '../lib/utils';
 
@@ -61,8 +62,8 @@ const ToastAction = ({ className, ref, ...props }: React.ComponentPropsWithRef<t
         ref={ref}
         type="button"
         className={cn(
-            'border-border inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 text-sm font-medium hover:bg-neutral-100',
-            'focus-visible:ring-primary-500 focus-visible:ring-2 focus-visible:outline-none',
+            'inline-flex h-8 shrink-0 items-center justify-center rounded-md border border-border bg-transparent px-3 text-sm font-medium hover:bg-neutral-100',
+            'focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:outline-none',
             'disabled:pointer-events-none disabled:opacity-50',
             className
         )}
@@ -76,8 +77,8 @@ const ToastClose = ({ className, ref, ...props }: React.ComponentPropsWithRef<ty
         type="button"
         aria-label="Close"
         className={cn(
-            'text-muted hover:text-surface-foreground absolute top-2 right-2 rounded-md p-1 opacity-70 transition-opacity hover:opacity-100',
-            'focus-visible:ring-primary-500 focus-visible:ring-2 focus-visible:outline-none',
+            'absolute top-2 right-2 rounded-md p-1 text-muted opacity-70 transition-opacity hover:text-surface-foreground hover:opacity-100',
+            'focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:outline-none',
             className
         )}
         toast-close=""

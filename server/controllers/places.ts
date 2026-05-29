@@ -2,15 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
-import {
-    deletePlace,
-    findAllPlaces,
-    findAllPlacesAdmin,
-    findPlaceById,
-    insertPlace,
-    updatePlace,
-    updatePlaceStatus,
-} from '../dao/places';
+import { deletePlace, findAllPlaces, findAllPlacesAdmin, findPlaceById, insertPlace, updatePlace, updatePlaceStatus } from '../dao/places';
 
 export type { CreatePlaceInput } from '../dao/places';
 

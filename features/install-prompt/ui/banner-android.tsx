@@ -23,12 +23,7 @@ export function BannerAndroid({ onDismiss, onInstall }: Props) {
                 >
                     설치
                 </button>
-                <button
-                    type="button"
-                    onClick={onDismiss}
-                    aria-label="닫기"
-                    className="shrink-0 rounded-full p-1.5 text-muted hover:bg-neutral-100"
-                >
+                <button type="button" onClick={onDismiss} aria-label="닫기" className="shrink-0 rounded-full p-1.5 text-muted hover:bg-neutral-100">
                     <Icon name="x" size={14} />
                 </button>
             </div>

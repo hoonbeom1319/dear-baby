@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useCatalog, usePlaces } from '@/application/providers';
 
 import type { Course } from '@/entities/course';
+
 import { AppHeader, Card, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const Dot = () => <span className="h-0.5 w-0.5 rounded-full bg-neutral-300" />;
@@ -34,14 +35,12 @@ export const CourseList = ({ allCourses }: Props) => {
                 subtitle={`${courses.length}개의 외출 시퀀스`}
             />
 
-            <div className="flex flex-1 flex-col gap-3 px-4 pb-10 pt-3">
+            <div className="flex flex-1 flex-col gap-3 px-4 pt-3 pb-10">
                 {courses.map((course) => (
                     <Card key={course.id} interactive onClick={() => router.push(`/course/${course.id}`)} className="p-3.5">
                         <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0 flex-1">
-                                <div className="text-[15px] font-semibold leading-snug tracking-[-0.005em] text-surface-foreground">
-                                    {course.title}
-                                </div>
+                                <div className="text-[15px] leading-snug font-semibold tracking-[-0.005em] text-surface-foreground">{course.title}</div>
                                 <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted">
                                     <span>정거장 {course.stopIds.length}곳</span>
                                     <Dot />

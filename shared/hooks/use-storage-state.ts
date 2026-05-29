@@ -4,11 +4,7 @@ type Options = {
     storage?: 'local' | 'session';
 };
 
-export function useStorageState<T>(
-    key: string,
-    initialValue: T,
-    options: Options = {}
-): [T, React.Dispatch<React.SetStateAction<T>>] {
+export function useStorageState<T>(key: string, initialValue: T, options: Options = {}): [T, React.Dispatch<React.SetStateAction<T>>] {
     const { storage: storageType = 'local' } = options;
 
     const [state, setStateRaw] = useState<T>(() => {

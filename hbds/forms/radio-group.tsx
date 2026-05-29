@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 
 import { cn } from '../lib/utils';
@@ -14,8 +15,8 @@ const RadioGroupItem = ({ className, ref, ...props }: RadioGroupItemProps) => (
     <RadioGroupPrimitive.Item
         ref={ref}
         className={cn(
-            'border-border bg-surface aspect-square h-4 w-4 rounded-full border',
-            'focus-visible:ring-primary-500 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+            'aspect-square h-4 w-4 rounded-full border border-border bg-surface',
+            'focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none',
             'disabled:cursor-not-allowed disabled:opacity-50',
             'data-[state=checked]:border-primary-600',
             className

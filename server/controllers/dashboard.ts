@@ -42,9 +42,7 @@ export async function fetchDashboardData(): Promise<DashboardData> {
         placeCountByArea[p.area] = (placeCountByArea[p.area] ?? 0) + 1;
     }
 
-    const oldestPendingHours = oldestPending?.created_at
-        ? Math.floor((Date.now() - new Date(oldestPending.created_at).getTime()) / 3_600_000)
-        : null;
+    const oldestPendingHours = oldestPending?.created_at ? Math.floor((Date.now() - new Date(oldestPending.created_at).getTime()) / 3_600_000) : null;
 
     type Raw = { createdAt: string; item: DashboardActivity };
     const raw: Raw[] = [

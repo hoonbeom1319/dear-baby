@@ -26,11 +26,11 @@
 
 ### Client Provider
 
-| Provider | 훅 | 담당 |
-|---|---|---|
-| `AppProvider` | — | 모음집. `AuthProvider` + `FavoriteProvider` + `ToastProvider` 조합 |
-| `AuthProvider` | `useAuth()` | auth 상태(`loggedIn`, `userId`), 로그인 모달(`openLogin`), `logout` |
-| `FavoriteProvider` | `useFavorite()` | 즐겨찾기. `AppProvider` 내부에 중첩 (useAuth 의존) |
+| Provider           | 훅              | 담당                                                                |
+| ------------------ | --------------- | ------------------------------------------------------------------- |
+| `AppProvider`      | —               | 모음집. `AuthProvider` + `FavoriteProvider` + `ToastProvider` 조합  |
+| `AuthProvider`     | `useAuth()`     | auth 상태(`loggedIn`, `userId`), 로그인 모달(`openLogin`), `logout` |
+| `FavoriteProvider` | `useFavorite()` | 즐겨찾기. `AppProvider` 내부에 중첩 (useAuth 의존)                  |
 
 ```ts
 const { loggedIn, openLogin, logout } = useAuth();
@@ -39,9 +39,9 @@ const { favoriteIds, isFavorite, toggleFavorite } = useFavorite();
 
 ### RSC Provider (Zustand store 패턴)
 
-| Provider | 훅 | 담당 |
-|---|---|---|
-| `PlacesProvider` | `usePlaces(selector)` | 장소 목록 서버 fetch, 지역 필터 |
+| Provider          | 훅                     | 담당                                      |
+| ----------------- | ---------------------- | ----------------------------------------- |
+| `PlacesProvider`  | `usePlaces(selector)`  | 장소 목록 서버 fetch, 지역 필터           |
 | `CatalogProvider` | `useCatalog(selector)` | areas / categories / amenities 서버 fetch |
 
 각 RSC Provider는 도메인 폴더 안에 3개 파일로 구성한다:
@@ -87,6 +87,7 @@ app/layout.tsx (RSC)
 ```
 
 **import 규칙**:
+
 - 스크린/피처 등 클라이언트 코드 → `@/application/providers` barrel (훅만 export)
 - `app/layout.tsx` → RSC Provider는 파일 직접 import (`@/application/providers/catalog/provider` 등)
   — RSC를 barrel에 포함하면 클라이언트 번들에서 에러 발생

@@ -33,6 +33,6 @@ export function mapCourseRow(row: CourseRow): Course {
         season: row.season,
         description: row.description,
         stopIds: stops.map((s) => s.place_id),
-        comments: stops.map((s) => s.comment),
+        comments: stops.map((s) => s.comment)
     };
 }

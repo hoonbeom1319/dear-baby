@@ -1,8 +1,9 @@
 import * as React from 'react';
+
 import { ChevronRight } from 'lucide-react';
 
-import * as BreadcrumbPrimitive from '../primitives/breadcrumb';
 import { cn } from '../lib/utils';
+import * as BreadcrumbPrimitive from '../primitives/breadcrumb';
 
 const Breadcrumb = ({ className, ...props }: React.ComponentPropsWithRef<typeof BreadcrumbPrimitive.Breadcrumb>) => (
     <BreadcrumbPrimitive.Breadcrumb className={cn('flex', className)} {...props} />

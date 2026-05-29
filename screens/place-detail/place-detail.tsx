@@ -6,18 +6,18 @@ import { useRouter } from 'next/navigation';
 
 import { useAuth, useCatalog } from '@/application/providers';
 
-import { useFavorite } from '@/entities/favorite';
-import { toast } from '@/shared/lib';
+import { createReport } from '@/server/controllers/reports';
 
 import { NavSheet } from '@/features/navigate';
 import { ReportSheet } from '@/features/report';
 
+import type { Course } from '@/entities/course';
+import { useFavorite } from '@/entities/favorite';
 import { AmenityGrid } from '@/entities/place';
 import type { Place } from '@/entities/place';
-import type { Course } from '@/entities/course';
-import { AppHeader, Button, Card, Icon, IconButton, MobileShell, PlaceImage } from '@/shared/ui';
 
-import { createReport } from '@/server/controllers/reports';
+import { toast } from '@/shared/lib';
+import { AppHeader, Button, Card, Icon, IconButton, MobileShell, PlaceImage } from '@/shared/ui';
 
 type SheetKind = 'nav' | 'report' | null;
 
@@ -42,6 +42,12 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
     const openLogin = useAuth((s) => s.openLogin);
     const { isFavorite, toggleFavorite } = useFavorite(userId, { onRequestLogin: openLogin });
     const [sheet, setSheet] = useState<SheetKind>(null);
+    const getArea = useCatalog((s) => s.getArea);
+    const getCategory = useCatalog((s) => s.getCategory);
+
+    const isFav = isFavorite(place?.id || '');
+    const category = getCategory(place?.category || '');
+    const area = getArea(place?.area || '');
 
     const goBack = () => {
         if (typeof window !== 'undefined' && window.history.length > 1) router.back();
@@ -60,24 +66,13 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
         );
     }
 
-    const getArea = useCatalog((s) => s.getArea);
-    const getCategory = useCatalog((s) => s.getCategory);
-    const isFav = isFavorite(place.id);
-    const category = getCategory(place.category);
-    const area = getArea(place.area);
-
     return (
         <MobileShell>
             <AppHeader
                 left={<IconButton name="back" onClick={goBack} />}
                 right={
                     <>
-                        <IconButton
-                            name={isFav ? 'star-fill' : 'star'}
-                            fav={isFav}
-                            onClick={() => toggleFavorite(place.id)}
-                            title="즐겨찾기"
-                        />
+                        <IconButton name={isFav ? 'star-fill' : 'star'} fav={isFav} onClick={() => toggleFavorite(place.id)} title="즐겨찾기" />
                         <IconButton name="share" onClick={() => toast('공유 링크를 복사했어요 (장소)')} title="공유" />
                     </>
                 }
@@ -86,7 +81,7 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
             <div className="flex-1">
                 {/* 사진 영역 */}
                 <div className="relative">
-                    <PlaceImage className="h-[200px] w-full" iconSize={32} />
+                    <PlaceImage className="h-[200px] w-full bg-white" iconSize={32} />
                     <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
                         <span className="h-1.5 w-[18px] rounded bg-neutral-700" />
                         <span className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
@@ -95,10 +90,8 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                 </div>
 
                 {/* 핵심 정보 */}
-                <div className="px-4 pb-2 pt-[18px]">
-                    <h1 className="text-[22px] font-bold leading-tight tracking-[-0.02em] text-surface-foreground">
-                        {place.name}
-                    </h1>
+                <div className="px-4 pt-[18px] pb-2">
+                    <h1 className="text-[22px] leading-tight font-bold tracking-[-0.02em] text-surface-foreground">{place.name}</h1>
                     <div className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-muted">
                         <span>{category?.name}</span>
                         <MetaDot />
@@ -132,14 +125,16 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                         <button
                             type="button"
                             onClick={() => toast('제보해주셔서 감사해요')}
-                            className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-neutral-700 transition-colors hover:border-success hover:text-success">
+                            className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-neutral-700 transition-colors hover:border-success hover:text-success"
+                        >
                             <Icon name="thumb" size={18} />
                             <span className="text-xs font-medium">맞아요</span>
                         </button>
                         <button
                             type="button"
                             onClick={() => setSheet('report')}
-                            className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-neutral-700 transition-colors hover:border-warning hover:text-warning">
+                            className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-neutral-700 transition-colors hover:border-warning hover:text-warning"
+                        >
                             <Icon name="thumb-down" size={18} />
                             <span className="text-xs font-medium">바뀌었어요</span>
                         </button>
@@ -158,7 +153,6 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                         </div>
                         <IconButton name="copy" size={18} onClick={() => toast('주소를 복사했어요')} title="주소 복사" />
                     </div>
-
                 </section>
 
                 {/* 함께 가면 좋은 코스 */}
@@ -171,7 +165,8 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                                     key={course.id}
                                     interactive
                                     onClick={() => router.push(`/course/${course.id}`)}
-                                    className="flex items-center justify-between gap-3 p-3">
+                                    className="flex items-center justify-between gap-3 p-3"
+                                >
                                     <div className="min-w-0 flex-1">
                                         <div className="text-sm font-semibold text-surface-foreground">{course.title}</div>
                                         <div className="mt-1 flex items-center gap-2 text-xs text-muted">
@@ -191,7 +186,7 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
             </div>
 
             {/* 하단 액션 영역 (한 손) */}
-            <div className="sticky bottom-0 flex items-center gap-2 border-t border-border bg-surface px-3.5 pb-[18px] pt-2.5">
+            <div className="sticky bottom-0 flex items-center gap-2 border-t border-border bg-surface px-3.5 pt-2.5 pb-[18px]">
                 <Button block className="flex-1" onClick={() => setSheet('nav')}>
                     <Icon name="nav" size={18} stroke={2} /> 길찾기
                 </Button>

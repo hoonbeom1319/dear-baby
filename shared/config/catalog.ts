@@ -8,6 +8,6 @@ export type AreaId = string;
 export type CategoryId = string;
 export type AmenityId = string;
 
-export type Area     = { id: AreaId;     name: string };
+export type Area = { id: AreaId; name: string };
 export type Category = { id: CategoryId; name: string };
-export type Amenity  = { id: AmenityId;  short: string; icon: string };
+export type Amenity = { id: AmenityId; short: string; icon: string };

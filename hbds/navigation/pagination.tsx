@@ -1,8 +1,9 @@
 import * as React from 'react';
+
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 
-import * as PaginationPrimitive from '../primitives/pagination';
 import { cn } from '../lib/utils';
+import * as PaginationPrimitive from '../primitives/pagination';
 
 const Pagination = ({ className, ...props }: React.ComponentPropsWithRef<typeof PaginationPrimitive.Pagination>) => (
     <PaginationPrimitive.Pagination className={cn('mx-auto flex w-full justify-center', className)} {...props} />
@@ -25,7 +26,7 @@ const PaginationLink = ({ className, isActive, ...props }: PaginationLinkProps) 
         isActive={isActive}
         className={cn(
             'inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border text-sm transition-colors',
-            isActive ? 'border-primary-300 bg-primary-50 text-primary-700' : 'text-surface-foreground border-transparent hover:bg-neutral-100',
+            isActive ? 'border-primary-300 bg-primary-50 text-primary-700' : 'border-transparent text-surface-foreground hover:bg-neutral-100',
             className
         )}
         {...props}
@@ -59,7 +60,7 @@ const PaginationNext = ({ className, ...props }: React.ComponentPropsWithRef<typ
 );
 
 const PaginationEllipsis = ({ className, ...props }: React.ComponentPropsWithRef<typeof PaginationPrimitive.PaginationEllipsis>) => (
-    <PaginationPrimitive.PaginationEllipsis className={cn('text-muted flex h-9 w-9 items-center justify-center', className)} {...props}>
+    <PaginationPrimitive.PaginationEllipsis className={cn('flex h-9 w-9 items-center justify-center text-muted', className)} {...props}>
         <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
         <span className="sr-only">더 보기</span>
     </PaginationPrimitive.PaginationEllipsis>

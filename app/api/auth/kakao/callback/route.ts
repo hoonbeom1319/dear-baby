@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
             grant_type: 'authorization_code',
             client_id: process.env.KAKAO_REST_API_KEY!,
             redirect_uri: `${siteUrl}/api/auth/kakao/callback`,
-            code,
+            code
         };
         if (process.env.KAKAO_CLIENT_SECRET) {
             tokenParams.client_secret = process.env.KAKAO_CLIENT_SECRET;
@@ -30,14 +30,14 @@ export async function GET(request: NextRequest) {
         const tokenRes = await fetch('https://kauth.kakao.com/oauth/token', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(tokenParams),
+            body: new URLSearchParams(tokenParams)
         });
         const tokenData = (await tokenRes.json()) as KakaoTokenResponse;
         if (tokenData.error) return NextResponse.redirect(`${siteUrl}/?error=kakao_token&msg=${encodeURIComponent(JSON.stringify(tokenData))}`);
 
         // 2. 카카오 사용자 정보 조회
         const userRes = await fetch('https://kapi.kakao.com/v2/user/me', {
-            headers: { Authorization: `Bearer ${tokenData.access_token}` },
+            headers: { Authorization: `Bearer ${tokenData.access_token}` }
         });
         const kakaoUser = (await userRes.json()) as KakaoUserResponse;
 
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
             full_name: kakaoUser.properties?.nickname ?? '',
             avatar_url: kakaoUser.properties?.profile_image ?? '',
             provider: 'kakao',
-            kakao_id: String(kakaoUser.id),
+            kakao_id: String(kakaoUser.id)
         };
 
         const supabase = createSupabaseAdmin();
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
             type: 'signup',
             email,
             password: crypto.randomUUID(),
-            options: { data: userMeta, redirectTo: `${siteUrl}/auth/callback` },
+            options: { data: userMeta, redirectTo: `${siteUrl}/auth/callback` }
         });
 
         if (!signupResult.error) {
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
         const magicResult = await supabase.auth.admin.generateLink({
             type: 'magiclink',
             email,
-            options: { redirectTo: `${siteUrl}/auth/callback` },
+            options: { redirectTo: `${siteUrl}/auth/callback` }
         });
         if (magicResult.error || !magicResult.data?.properties?.action_link) {
             return NextResponse.redirect(`${siteUrl}/?error=kakao_magic&msg=${encodeURIComponent(magicResult.error?.message ?? 'unknown')}`);

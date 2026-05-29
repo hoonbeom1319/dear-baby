@@ -7,7 +7,7 @@ export async function GET() {
         client_id: process.env.KAKAO_REST_API_KEY!,
         redirect_uri: `${siteUrl}/api/auth/kakao/callback`,
         // account_email 제외 — 비즈니스 앱 심사 없이도 동작하는 스코프만 요청
-        scope: 'profile_nickname profile_image',
+        scope: 'profile_nickname profile_image'
     });
     return NextResponse.redirect(`https://kauth.kakao.com/oauth/authorize?${params}`);
 }

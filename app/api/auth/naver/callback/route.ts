@@ -25,15 +25,15 @@ export async function GET(request: NextRequest) {
                 client_id: process.env.NAVER_CLIENT_ID!,
                 client_secret: process.env.NAVER_CLIENT_SECRET!,
                 code,
-                state: searchParams.get('state') ?? '',
-            }),
+                state: searchParams.get('state') ?? ''
+            })
         });
         const tokenData = (await tokenRes.json()) as NaverTokenResponse;
         if (tokenData.error) return NextResponse.redirect(`${siteUrl}/?error=naver_token`);
 
         // 2. Naver 사용자 정보 조회
         const userRes = await fetch('https://openapi.naver.com/v1/nid/me', {
-            headers: { Authorization: `Bearer ${tokenData.access_token}` },
+            headers: { Authorization: `Bearer ${tokenData.access_token}` }
         });
         const userData = (await userRes.json()) as NaverUserResponse;
         const naverUser = userData.response;
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
             full_name: naverUser.name ?? '',
             avatar_url: naverUser.profile_image ?? '',
             provider: 'naver',
-            naver_id: naverUser.id,
+            naver_id: naverUser.id
         };
 
         // 3. 신규 가입 시도 (generateLink signup = 유저 생성 + 링크 동시 처리)
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
             type: 'signup',
             email: naverUser.email,
             password: crypto.randomUUID(),
-            options: { data: userMeta, redirectTo: `${siteUrl}/auth/callback` },
+            options: { data: userMeta, redirectTo: `${siteUrl}/auth/callback` }
         });
 
         if (!signupResult.error) {
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
         const magicResult = await supabase.auth.admin.generateLink({
             type: 'magiclink',
             email: naverUser.email,
-            options: { redirectTo: `${siteUrl}/auth/callback` },
+            options: { redirectTo: `${siteUrl}/auth/callback` }
         });
         if (magicResult.error || !magicResult.data?.properties?.action_link) {
             return NextResponse.redirect(`${siteUrl}/?error=magic_link&msg=${encodeURIComponent(magicResult.error?.message ?? 'unknown')}`);

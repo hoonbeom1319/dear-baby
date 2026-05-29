@@ -27,7 +27,7 @@ export function mapPlaceRow(row: PlaceRow): Place {
         phone: row.phone,
         ageRange: row.age_range,
         description: row.description,
-        amenities: (row.place_amenities ?? []).map((r) => r.amenity_id as AmenityId),
+        amenities: (row.place_amenities ?? []).map((r) => r.amenity_id as AmenityId)
     };
 }
 
@@ -35,6 +35,6 @@ export function mapPlaceAdminRow(row: PlaceRow): PlaceAdmin {
     return {
         ...mapPlaceRow(row),
         sortOrder: row.sort_order,
-        status: row.status as PlaceStatus,
+        status: row.status as PlaceStatus
     };
 }

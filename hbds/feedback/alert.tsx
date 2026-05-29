@@ -1,4 +1,5 @@
 import { HTMLAttributes } from 'react';
+
 import { Info, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 
 import { cn } from '../lib/utils';
@@ -29,21 +30,19 @@ const Alert = ({ className, variant = 'default', children, ...props }: AlertProp
     return (
         <div
             role="alert"
-            className={cn('relative w-full rounded-lg border p-4', icon && 'flex gap-3 items-start', variantClass[variant], className)}
+            className={cn('relative w-full rounded-lg border p-4', icon && 'flex items-start gap-3', variantClass[variant], className)}
             {...props}
         >
             {icon && <span className="mt-0.5 shrink-0">{icon}</span>}
-            <div className="flex-1 min-w-0">{children}</div>
+            <div className="min-w-0 flex-1">{children}</div>
         </div>
     );
 };
 
 const AlertTitle = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-    <p className={cn('mb-1 font-semibold leading-none tracking-tight', className)} {...props} />
+    <p className={cn('mb-1 leading-none font-semibold tracking-tight', className)} {...props} />
 );
 
-const AlertDescription = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-    <p className={cn('text-sm opacity-90', className)} {...props} />
-);
+const AlertDescription = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => <p className={cn('text-sm opacity-90', className)} {...props} />;
 
 export { Alert, AlertTitle, AlertDescription };
