@@ -1,0 +1,1 @@
+export { getAuthHeaders } from './auth';

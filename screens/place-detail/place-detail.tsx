@@ -4,7 +4,9 @@ import { useState, type ReactNode } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useCatalog, useFavorite } from '@/application/providers';
+import { useAuth, useCatalog } from '@/application/providers';
+
+import { useFavorite } from '@/entities/favorite';
 import { toast } from '@/shared/lib';
 
 import { NavSheet } from '@/features/navigate';
@@ -36,7 +38,9 @@ type Props = {
  */
 export const PlaceDetail = ({ place, relatedCourses }: Props) => {
     const router = useRouter();
-    const { isFavorite, toggleFavorite } = useFavorite();
+    const userId = useAuth((s) => s.userId);
+    const openLogin = useAuth((s) => s.openLogin);
+    const { isFavorite, toggleFavorite } = useFavorite(userId, { onRequestLogin: openLogin });
     const [sheet, setSheet] = useState<SheetKind>(null);
 
     const goBack = () => {

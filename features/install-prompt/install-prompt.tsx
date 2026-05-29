@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 
-import { DISMISSED_KEY, isDismissedRecently, isStandalone } from './lib/helpers';
+import { getDevice, isStandalone } from '@/shared/lib';
+
+import { DISMISSED_KEY, isDismissedRecently } from './lib/helpers';
 import { useSwRegistrar } from './model/use-sw-registrar';
 import { BannerAndroid } from './ui/banner-android';
 import { BannerIos } from './ui/banner-ios';
@@ -17,11 +19,11 @@ type State = 'hidden' | 'android' | 'ios' | 'ios-other';
 
 export function InstallPrompt() {
     const [state, setState] = useState<State>(() => {
+        if (typeof window === 'undefined') return 'hidden';
         if (isStandalone() || isDismissedRecently()) return 'hidden';
-        const ua = navigator.userAgent;
-        const isIOS = /iPad|iPhone|iPod/.test(ua);
-        if (isIOS && /CriOS|FxiOS|OPiOS/.test(ua)) return 'ios-other';
-        if (isIOS && /Safari/.test(ua) && !/CriOS|FxiOS|OPiOS/.test(ua)) return 'ios';
+        const device = getDevice();
+        if (device === 'ios-other') return 'ios-other';
+        if (device === 'ios-safari') return 'ios';
         return 'hidden';
     });
     const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null);

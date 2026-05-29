@@ -1,19 +1,20 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { ToastProvider } from '@/shared/ui';
 
 import { AuthProvider } from './auth/provider';
-import { FavoriteProvider } from './favorite-provider';
 
-export const AppProvider = ({ children }: { children: ReactNode }) => (
-    <>
-        <AuthProvider>
-            <FavoriteProvider>
-                {children}
-            </FavoriteProvider>
-        </AuthProvider>
-        <ToastProvider />
-    </>
-);
+export const AppProvider = ({ children }: { children: ReactNode }) => {
+    const [queryClient] = useState(() => new QueryClient());
+
+    return (
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>{children}</AuthProvider>
+            <ToastProvider />
+        </QueryClientProvider>
+    );
+};

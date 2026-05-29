@@ -2,7 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 
-import { useCatalog, useFavorite, usePlaces } from '@/application/providers';
+import { useAuth, useCatalog, usePlaces } from '@/application/providers';
+
+import { useFavorite } from '@/entities/favorite';
 import { toast } from '@/shared/lib';
 
 import { PlaceCard } from '@/entities/place';
@@ -21,7 +23,9 @@ type Props = { course: Course | null };
 export const CourseDetail = ({ course }: Props) => {
     const router = useRouter();
     const getPlaceById = usePlaces((s) => s.getPlaceById);
-    const { isFavorite, toggleFavorite } = useFavorite();
+    const userId = useAuth((s) => s.userId);
+    const openLogin = useAuth((s) => s.openLogin);
+    const { isFavorite, toggleFavorite } = useFavorite(userId, { onRequestLogin: openLogin });
     const getArea = useCatalog((s) => s.getArea);
 
     const goBack = () => {

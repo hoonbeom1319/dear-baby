@@ -4,7 +4,9 @@ import { useState, type ReactNode } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useAuth, useCatalog, useFavorite, usePlaces } from '@/application/providers';
+import { useAuth, useCatalog, usePlaces } from '@/application/providers';
+
+import { useFavorite } from '@/entities/favorite';
 
 import type { Course } from '@/entities/course';
 import { PlaceCard } from '@/entities/place';
@@ -26,8 +28,11 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
     const area = usePlaces((s) => s.area);
     const setArea = usePlaces((s) => s.setArea);
     const allPlaces = usePlaces((s) => s.allPlaces);
-    const { isFavorite, toggleFavorite } = useFavorite();
-    const { loggedIn, openLogin, logout } = useAuth();
+    const loggedIn = useAuth((s) => s.loggedIn);
+    const userId = useAuth((s) => s.userId);
+    const openLogin = useAuth((s) => s.openLogin);
+    const logout = useAuth((s) => s.logout);
+    const { isFavorite, toggleFavorite } = useFavorite(userId, { onRequestLogin: openLogin });
     const areas = useCatalog((s) => s.areas);
     const categories = useCatalog((s) => s.categories);
     const getArea = useCatalog((s) => s.getArea);

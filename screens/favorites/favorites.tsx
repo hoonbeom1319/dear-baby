@@ -2,7 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 
-import { useFavorite, usePlaces } from '@/application/providers';
+import { useAuth, usePlaces } from '@/application/providers';
+
+import { useFavorite } from '@/entities/favorite';
 
 import { PlaceCard } from '@/entities/place';
 
@@ -14,7 +16,9 @@ import { AppHeader, Button, Icon, IconButton, MobileShell } from '@/shared/ui';
  */
 export const Favorites = () => {
     const router = useRouter();
-    const { favoriteIds, isFavorite, toggleFavorite } = useFavorite();
+    const userId = useAuth((s) => s.userId);
+    const openLogin = useAuth((s) => s.openLogin);
+    const { favoriteIds, isFavorite, toggleFavorite } = useFavorite(userId, { onRequestLogin: openLogin });
     const getPlaceById = usePlaces((s) => s.getPlaceById);
 
     const places = favoriteIds.flatMap((id) => {
