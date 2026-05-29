@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from 'react';
+﻿import type { HTMLAttributes } from 'react';
 
 import { cn } from '@/shared/lib';
 
@@ -13,7 +13,7 @@ type PlaceImageProps = HTMLAttributes<HTMLDivElement> & {
  * an empty slot is a clean neutral block with a soft icon.
  */
 export const PlaceImage = ({ iconSize = 28, className, ...props }: PlaceImageProps) => (
-    <div className={cn('flex items-center justify-center bg-slate-100 text-slate-300', className)} {...props}>
+    <div className={cn('flex items-center justify-center bg-neutral-100 text-neutral-300', className)} {...props}>
         <Icon name="image" size={iconSize} stroke={1.4} />
     </div>
 );

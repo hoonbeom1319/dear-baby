@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, type ReactNode } from 'react';
 
@@ -18,7 +18,7 @@ import { Button, Icon, Pill } from '@/shared/ui';
 import { createCourse, modifyCourse, modifyCourseStops, removeCourse } from '@/server/controllers/courses';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (
-    <th className={cn('border-b border-border bg-slate-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
+    <th className={cn('border-b border-border bg-neutral-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
 );
 
 type StopDraft = { placeId: string; comment: string };
@@ -165,7 +165,7 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
                                         <tr
                                             key={item.id}
                                             onClick={() => handleSelect(i)}
-                                            className={cn('cursor-pointer transition-colors', selected === i ? 'bg-primary-50' : 'hover:bg-slate-50')}>
+                                            className={cn('cursor-pointer transition-colors', selected === i ? 'bg-primary-50' : 'hover:bg-neutral-50')}>
                                             <td className="border-b border-border px-4 py-3.5 font-medium text-surface-foreground">{item.title}</td>
                                             <td className="border-b border-border px-4 py-3.5 text-muted">{getArea(item.area)?.name}</td>
                                             <td className="border-b border-border px-4 py-3.5 tabular-nums text-surface-foreground">{item.stopIds.length}곳</td>
@@ -236,13 +236,13 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
                                                             <button
                                                                 type="button"
                                                                 onClick={() => moveStop(n, -1)}
-                                                                className="flex h-[18px] w-6 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-100 hover:text-surface-foreground">
+                                                                className="flex h-[18px] w-6 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-surface-foreground">
                                                                 <Icon name="up-arrow" size={14} />
                                                             </button>
                                                             <button
                                                                 type="button"
                                                                 onClick={() => moveStop(n, 1)}
-                                                                className="flex h-[18px] w-6 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-100 hover:text-surface-foreground">
+                                                                className="flex h-[18px] w-6 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-surface-foreground">
                                                                 <Icon name="down" size={14} />
                                                             </button>
                                                         </div>
@@ -267,7 +267,7 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
                                         <select
                                             defaultValue=""
                                             onChange={(e) => { addStop(e.target.value); e.target.value = ''; }}
-                                            className="h-8 w-full rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 text-[13px] text-muted">
+                                            className="h-8 w-full rounded-lg border border-dashed border-neutral-300 bg-neutral-50 px-3 text-[13px] text-muted">
                                             <option value="" disabled>+ 정거장 추가</option>
                                             {allPlaces
                                                 .filter((p) => !draftStops.some((s) => s.placeId === p.id))
@@ -280,7 +280,7 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex justify-end gap-2 border-t border-border bg-slate-50 p-4">
+                            <div className="flex justify-end gap-2 border-t border-border bg-neutral-50 p-4">
                                 <Button size="sm" variant="outline" onClick={() => syncEditor(course)}>
                                     되돌리기
                                 </Button>

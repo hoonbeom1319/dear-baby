@@ -1,20 +1,20 @@
-'use client';
+﻿'use client';
 
 import { useState, type ReactNode } from 'react';
 
 import { useRouter } from 'next/navigation';
 
 import { useAuth, useCatalog, useFavorite, usePlaces } from '@/application/providers';
-import { toast } from '@/shared/lib';
 
-import { PlaceCard } from '@/entities/place';
 import type { Course } from '@/entities/course';
+import { PlaceCard } from '@/entities/place';
 
 import type { CategoryId } from '@/shared/config';
+import { toast } from '@/shared/lib';
 import { AppHeader, Brand, Card, Chip, ChipRow, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const SectionLabel = ({ children }: { children: ReactNode }) => (
-    <div className="px-4 pb-2 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">{children}</div>
+    <div className="px-4 pb-2 text-[11px] font-semibold tracking-[0.06em] text-muted uppercase">{children}</div>
 );
 
 /**
@@ -33,9 +33,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
     const getArea = useCatalog((s) => s.getArea);
     const [category, setCategory] = useState<CategoryId>('all');
 
-    const places = allPlaces.filter(
-        (place) => place.area === area && (category === 'all' || place.category === category)
-    );
+    const places = allPlaces.filter((place) => place.area === area && (category === 'all' || place.category === category));
     const courseCount = allCourses.filter((c) => c.area === area).length;
     const areaName = getArea(area)?.name;
 
@@ -64,15 +62,13 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
 
             <div className="flex-1 pb-8">
                 {/* 인사 · 맥락 */}
-                <div className="px-4 pb-1 pt-4">
-                    <h1 className="text-[22px] font-bold leading-tight tracking-[-0.02em] text-surface-foreground">
-                        오늘 어디 갈까요?
-                    </h1>
+                <div className="px-4 pt-4 pb-1">
+                    <h1 className="text-[22px] leading-tight font-bold tracking-[-0.02em] text-surface-foreground">오늘 어디 갈까요?</h1>
                     <p className="mt-1 text-[13px] text-muted">{areaName}에 등록된 아기와 갈 만한 곳</p>
                 </div>
 
                 {/* 동네 칩 */}
-                <section className="pb-1.5 pt-4">
+                <section className="pt-4 pb-1.5">
                     <SectionLabel>동네</SectionLabel>
                     <ChipRow>
                         {areas.map((item) => (
@@ -84,7 +80,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
                 </section>
 
                 {/* 카테고리 칩 */}
-                <section className="pb-3.5 pt-2">
+                <section className="pt-2 pb-3.5">
                     <SectionLabel>카테고리</SectionLabel>
                     <ChipRow>
                         {[{ id: 'all', name: '전체' }, ...categories].map((item) => (
@@ -98,20 +94,15 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
                 {/* 코스 진입 카드 — 카테고리 = 전체일 때만 (PRD F-4) */}
                 {category === 'all' && courseCount > 0 && (
                     <div className="px-4 pb-3.5">
-                        <Card
-                            interactive
-                            onClick={() => router.push('/course')}
-                            className="flex items-center gap-3 p-3.5">
+                        <Card interactive onClick={() => router.push('/course')} className="flex items-center gap-3 p-3.5">
                             <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-primary-50 text-primary-600">
                                 <Icon name="map" size={20} stroke={2} />
                             </span>
                             <div className="min-w-0 flex-1">
-                                <div className="text-sm font-semibold tracking-[-0.01em] text-surface-foreground">
-                                    {areaName}의 추천 코스
-                                </div>
+                                <div className="text-sm font-semibold tracking-[-0.01em] text-surface-foreground">{areaName}의 추천 코스</div>
                                 <div className="mt-0.5 text-xs text-muted">큐레이터가 묶은 외출 시퀀스 {courseCount}개</div>
                             </div>
-                            <Icon name="right" size={18} className="text-slate-400" />
+                            <Icon name="right" size={18} className="text-neutral-400" />
                         </Card>
                     </div>
                 )}
@@ -131,9 +122,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
                             onSelect={(id) => router.push(`/place/${id}`)}
                         />
                     ))}
-                    {places.length === 0 && (
-                        <div className="py-10 text-center text-[13px] text-muted">해당 조건에 등록된 장소가 없어요</div>
-                    )}
+                    {places.length === 0 && <div className="py-10 text-center text-[13px] text-muted">해당 조건에 등록된 장소가 없어요</div>}
                 </div>
             </div>
         </MobileShell>

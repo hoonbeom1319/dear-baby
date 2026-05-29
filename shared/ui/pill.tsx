@@ -1,11 +1,11 @@
-import type { HTMLAttributes } from 'react';
+﻿import type { HTMLAttributes } from 'react';
 
 import { cn } from '@/shared/lib';
 
 type PillTone = 'neutral' | 'primary' | 'success' | 'warning' | 'danger';
 
 const toneClass: Record<PillTone, string> = {
-    neutral: 'bg-slate-100 text-slate-700',
+    neutral: 'bg-neutral-100 text-neutral-700',
     primary: 'bg-primary-50 text-primary-700',
     success: 'bg-emerald-50 text-success',
     warning: 'bg-amber-50 text-warning',

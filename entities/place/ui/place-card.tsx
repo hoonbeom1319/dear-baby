@@ -1,4 +1,4 @@
-import { useCatalog } from '@/application/providers';
+﻿import { useCatalog } from '@/application/providers';
 import { cn } from '@/shared/lib';
 import { AmenityBadge, Card, Icon, type IconName, PlaceImage } from '@/shared/ui';
 
@@ -13,7 +13,7 @@ type PlaceCardProps = {
     stopNumber?: number;
 };
 
-const Dot = () => <span className="h-0.5 w-0.5 rounded-full bg-slate-300" />;
+const Dot = () => <span className="h-0.5 w-0.5 rounded-full bg-neutral-300" />;
 
 /**
  * 첫 화면 · 즐겨찾기 · 코스 상세에서 공통으로 재사용하는 장소 카드. (PRD 8.3)
@@ -57,8 +57,8 @@ export const PlaceCard = ({ place, isFavorite = false, onToggleFavorite, onSelec
                                 onToggleFavorite?.(place.id);
                             }}
                             className={cn(
-                                '-mr-1 -mt-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-slate-100',
-                                isFavorite ? 'text-amber-500' : 'text-slate-700'
+                                '-mr-1 -mt-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-neutral-100',
+                                isFavorite ? 'text-amber-500' : 'text-neutral-700'
                             )}>
                             <Icon name={isFavorite ? 'star-fill' : 'star'} size={18} stroke={2} />
                         </button>

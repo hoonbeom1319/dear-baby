@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from 'react';
+﻿import type { HTMLAttributes } from 'react';
 
 import { cn } from '@/shared/lib';
 
@@ -9,7 +9,7 @@ import { cn } from '@/shared/lib';
  * the browser is the device.
  */
 export const MobileShell = ({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) => (
-    <div className="flex min-h-dvh justify-center bg-slate-100">
+    <div className="flex min-h-dvh justify-center bg-neutral-100">
         <div className={cn('flex min-h-dvh w-full max-w-[480px] flex-col bg-surface', className)} {...props}>
             {children}
         </div>

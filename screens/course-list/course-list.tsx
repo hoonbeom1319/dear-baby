@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Fragment } from 'react';
 
@@ -9,7 +9,7 @@ import { useCatalog, usePlaces } from '@/application/providers';
 import type { Course } from '@/entities/course';
 import { AppHeader, Card, Icon, IconButton, MobileShell } from '@/shared/ui';
 
-const Dot = () => <span className="h-0.5 w-0.5 rounded-full bg-slate-300" />;
+const Dot = () => <span className="h-0.5 w-0.5 rounded-full bg-neutral-300" />;
 
 type Props = { allCourses: Course[] };
 
@@ -52,16 +52,16 @@ export const CourseList = ({ allCourses }: Props) => {
                                     <span>{course.season}</span>
                                 </div>
                             </div>
-                            <Icon name="right" size={18} className="text-slate-400" />
+                            <Icon name="right" size={18} className="text-neutral-400" />
                         </div>
-                        <p className="mt-2.5 text-[13px] leading-normal text-slate-700">{course.description}</p>
+                        <p className="mt-2.5 text-[13px] leading-normal text-neutral-700">{course.description}</p>
                         <div className="mt-2 flex flex-wrap items-center gap-1.5">
                             {course.stopIds.map((id, idx) => (
                                 <Fragment key={id}>
-                                    <span className="rounded-full bg-slate-100 px-2.5 py-[3px] text-[11px] font-medium text-surface-foreground">
+                                    <span className="rounded-full bg-neutral-100 px-2.5 py-[3px] text-[11px] font-medium text-surface-foreground">
                                         {idx + 1}. {getPlaceById(id)?.name.split(' ')[0]}
                                     </span>
-                                    {idx < course.stopIds.length - 1 && <span className="text-[11px] text-slate-400">→</span>}
+                                    {idx < course.stopIds.length - 1 && <span className="text-[11px] text-neutral-400">→</span>}
                                 </Fragment>
                             ))}
                         </div>

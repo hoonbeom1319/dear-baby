@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, type ReactNode } from 'react';
 
@@ -18,7 +18,7 @@ import { Button, Icon, type IconName, Pill } from '@/shared/ui';
 import { createPlace, modifyPlace, modifyPlaceStatus, removePlace } from '@/server/controllers/places';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (
-    <th className={cn('border-b border-border bg-slate-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
+    <th className={cn('border-b border-border bg-neutral-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
 );
 
 type FormState = {
@@ -167,7 +167,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                     <button
                         type="button"
                         onClick={closeForm}
-                        className="mb-4 inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-[13.5px] font-medium text-slate-700 transition-colors hover:bg-slate-100">
+                        className="mb-4 inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-[13.5px] font-medium text-neutral-700 transition-colors hover:bg-neutral-100">
                         ← 목록으로
                     </button>
 
@@ -222,11 +222,11 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                                         return (
                                             <label key={amenity.id} className={cn(
                                                 'inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-[13px] transition-colors',
-                                                on ? 'border-primary-500 bg-primary-50 font-medium text-primary-700' : 'border-border bg-surface text-slate-700 hover:bg-slate-50'
+                                                on ? 'border-primary-500 bg-primary-50 font-medium text-primary-700' : 'border-border bg-surface text-neutral-700 hover:bg-neutral-50'
                                             )}>
                                                 <input type="checkbox" className="sr-only" checked={on} onChange={() => toggleAmenity(amenity.id)} />
                                                 <span className={cn('inline-flex h-4 w-4 items-center justify-center rounded',
-                                                    on ? 'bg-primary-600 text-white' : 'border-[1.5px] border-slate-300 text-transparent')}>
+                                                    on ? 'bg-primary-600 text-white' : 'border-[1.5px] border-neutral-300 text-transparent')}>
                                                     <Icon name="check" size={11} stroke={3} />
                                                 </span>
                                                 <Icon name={amenity.icon as IconName} size={14} stroke={1.8} />
@@ -237,7 +237,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                                 </div>
                             </AdField>
                         </div>
-                        <div className="flex justify-end gap-2 border-t border-border bg-slate-50 p-4">
+                        <div className="flex justify-end gap-2 border-t border-border bg-neutral-50 p-4">
                             <Button size="sm" variant="outline" onClick={closeForm}>취소</Button>
                             <Button size="sm" onClick={handleSave} disabled={saving}>
                                 {saving ? '저장 중…' : mode === 'edit' ? '수정 저장' : '저장하기'}
@@ -288,7 +288,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                         </thead>
                         <tbody>
                             {filtered.map((place) => (
-                                <tr key={place.id} className="transition-colors hover:bg-slate-50">
+                                <tr key={place.id} className="transition-colors hover:bg-neutral-50">
                                     <td className="border-b border-border px-4 py-3.5 tabular-nums text-surface-foreground">{place.sortOrder}</td>
                                     <td className="border-b border-border px-4 py-3.5 font-medium text-surface-foreground">{place.name}</td>
                                     <td className="border-b border-border px-4 py-3.5 text-muted">{areas.find((a) => a.id === place.area)?.name}</td>
@@ -297,7 +297,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                                     <td className="border-b border-border px-4 py-3.5">
                                         <div className="flex items-center gap-1">
                                             {Array.from({ length: 5 }).map((_, j) => (
-                                                <span key={j} className={cn('h-2 w-2 rounded-sm', j < place.amenities.length ? 'bg-primary-500' : 'bg-slate-200')} />
+                                                <span key={j} className={cn('h-2 w-2 rounded-sm', j < place.amenities.length ? 'bg-primary-500' : 'bg-neutral-200')} />
                                             ))}
                                             <span className="ml-1.5 text-[12.5px] text-muted">{place.amenities.length}/5</span>
                                         </div>

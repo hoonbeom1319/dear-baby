@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react';
+﻿import type { ButtonHTMLAttributes } from 'react';
 
 import { cn } from '@/shared/lib';
 
@@ -7,8 +7,8 @@ type ButtonSize = 'sm' | 'md' | 'lg';
 
 const variantClass: Record<ButtonVariant, string> = {
     primary: 'border-primary-600 bg-primary-600 text-white hover:border-primary-700 hover:bg-primary-700',
-    outline: 'border-border bg-surface text-surface-foreground hover:bg-slate-50',
-    ghost: 'border-transparent bg-transparent text-surface-foreground hover:bg-slate-100'
+    outline: 'border-border bg-surface text-surface-foreground hover:bg-neutral-50',
+    ghost: 'border-transparent bg-transparent text-surface-foreground hover:bg-neutral-100'
 };
 
 const sizeClass: Record<ButtonSize, string> = {

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 
@@ -51,12 +51,12 @@ export const ReportSheet = ({ open, onOpenChange, onSubmit }: ReportSheetProps) 
                                 'flex w-full items-center gap-2.5 rounded-[10px] border p-3 text-left text-sm transition-colors',
                                 active
                                     ? 'border-primary-500 bg-primary-50 font-medium text-primary-700'
-                                    : 'border-border bg-surface text-slate-700 hover:bg-slate-50'
+                                    : 'border-border bg-surface text-neutral-700 hover:bg-neutral-50'
                             )}>
                             <span
                                 className={cn(
                                     'inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border',
-                                    active ? 'border-primary-600 bg-primary-600 text-white' : 'border-slate-300 text-transparent'
+                                    active ? 'border-primary-600 bg-primary-600 text-white' : 'border-neutral-300 text-transparent'
                                 )}>
                                 <Icon name="check" size={12} stroke={2.5} />
                             </span>

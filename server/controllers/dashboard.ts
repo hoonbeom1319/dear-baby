@@ -1,4 +1,4 @@
-'use server';
+﻿'use server';
 
 import type { IconName } from '@/shared/ui';
 
@@ -70,7 +70,7 @@ export async function fetchDashboardData(): Promise<DashboardData> {
             createdAt: c.created_at,
             item: {
                 icon: 'route' as IconName,
-                tone: 'bg-violet-50 text-violet-600',
+                tone: 'bg-secondary-50 text-secondary-600',
                 title: `코스 등록: ${c.title}`,
                 meta: `${relativeTime(c.created_at)} · 운영자`
             }

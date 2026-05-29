@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, type ReactNode } from 'react';
 
@@ -17,7 +17,7 @@ import { cn } from '@/shared/lib';
 import { Button, Icon, Pill } from '@/shared/ui';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (
-    <th className={cn('border-b border-border bg-slate-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
+    <th className={cn('border-b border-border bg-neutral-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
 );
 
 function formatRelativeTime(isoString: string): { relative: string; date: string } {
@@ -142,7 +142,7 @@ export const AdminReports = ({ initialReports }: Props) => {
                             {filtered.map((report) => {
                                 const { relative, date } = formatRelativeTime(report.created_at);
                                 return (
-                                    <tr key={report.id} className="transition-colors hover:bg-slate-50">
+                                    <tr key={report.id} className="transition-colors hover:bg-neutral-50">
                                         <td className="border-b border-border px-4 py-3.5 text-muted">
                                             <div className="font-medium text-surface-foreground">{relative}</div>
                                             <div className="mt-0.5 text-[11.5px]">{date}</div>
@@ -153,7 +153,7 @@ export const AdminReports = ({ initialReports }: Props) => {
                                         <td className="border-b border-border px-4 py-3.5">
                                             <Pill tone={statusTone(report.status)}>{statusLabel(report.status)}</Pill>
                                         </td>
-                                        <td className="border-b border-border px-4 py-3.5 text-slate-700">{report.reason}</td>
+                                        <td className="border-b border-border px-4 py-3.5 text-neutral-700">{report.reason}</td>
                                         <td className="border-b border-border px-4 py-3.5 text-muted">
                                             {report.user_id ? '회원' : '비회원'}
                                         </td>
@@ -186,7 +186,7 @@ export const AdminReports = ({ initialReports }: Props) => {
             {/* 반영 확인 모달 — 운영자 실수 방지 (PRD 10.3) */}
             <Dialog.Root open={confirmId !== null} onOpenChange={(open) => !open && setConfirmId(null)}>
                 <Dialog.Portal>
-                    <Dialog.Overlay className="fixed inset-0 z-[1040] animate-[fade-in_150ms_ease-out] bg-slate-900/45" />
+                    <Dialog.Overlay className="fixed inset-0 z-[1040] animate-[fade-in_150ms_ease-out] bg-neutral-900/45" />
                     <Dialog.Content className="fixed left-1/2 top-1/2 z-[1050] w-[440px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 animate-[modal-in_200ms_var(--ease-spring)] rounded-xl bg-surface p-6 shadow-modal focus:outline-none">
                         <div className="flex items-start gap-3">
                             <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] bg-amber-50 text-warning">

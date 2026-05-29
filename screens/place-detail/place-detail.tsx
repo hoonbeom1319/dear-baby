@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, type ReactNode } from 'react';
 
@@ -19,7 +19,7 @@ import { createReport } from '@/server/controllers/reports';
 
 type SheetKind = 'nav' | 'report' | null;
 
-const MetaDot = () => <span className="h-0.5 w-0.5 rounded-full bg-slate-300" />;
+const MetaDot = () => <span className="h-0.5 w-0.5 rounded-full bg-neutral-300" />;
 
 const SectionTitle = ({ children }: { children: ReactNode }) => (
     <div className="mb-3 text-[13px] font-semibold tracking-[-0.005em] text-surface-foreground">{children}</div>
@@ -84,9 +84,9 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                 <div className="relative">
                     <PlaceImage className="h-[200px] w-full" iconSize={32} />
                     <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
-                        <span className="h-1.5 w-[18px] rounded bg-slate-700" />
-                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
-                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+                        <span className="h-1.5 w-[18px] rounded bg-neutral-700" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
                     </div>
                 </div>
 
@@ -104,7 +104,7 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                             권장 월령 <strong className="font-semibold text-surface-foreground">{place.ageRange}</strong>
                         </span>
                     </div>
-                    <p className="mt-3 text-sm leading-relaxed text-slate-700">{place.description}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-neutral-700">{place.description}</p>
                 </div>
 
                 {/* 편의시설 전체 */}
@@ -116,7 +116,7 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                             <span className="h-2 w-2 rounded-sm bg-primary-500" /> 있음
                         </span>
                         <span className="inline-flex items-center gap-1">
-                            <span className="h-2 w-2 rounded-sm bg-slate-200" /> 없음
+                            <span className="h-2 w-2 rounded-sm bg-neutral-200" /> 없음
                         </span>
                     </div>
                 </section>
@@ -128,14 +128,14 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                         <button
                             type="button"
                             onClick={() => toast('제보해주셔서 감사해요')}
-                            className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-slate-700 transition-colors hover:border-success hover:text-success">
+                            className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-neutral-700 transition-colors hover:border-success hover:text-success">
                             <Icon name="thumb" size={18} />
                             <span className="text-xs font-medium">맞아요</span>
                         </button>
                         <button
                             type="button"
                             onClick={() => setSheet('report')}
-                            className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-slate-700 transition-colors hover:border-warning hover:text-warning">
+                            className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-neutral-700 transition-colors hover:border-warning hover:text-warning">
                             <Icon name="thumb-down" size={18} />
                             <span className="text-xs font-medium">바뀌었어요</span>
                         </button>
@@ -150,7 +150,7 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                             <div className="mb-0.5 flex items-center gap-1 text-[11px] text-muted">
                                 <Icon name="pin" size={11} stroke={2} /> 주소
                             </div>
-                            <div className="text-[13px] text-slate-700">{place.address}</div>
+                            <div className="text-[13px] text-neutral-700">{place.address}</div>
                         </div>
                         <IconButton name="copy" size={18} onClick={() => toast('주소를 복사했어요')} title="주소 복사" />
                     </div>
@@ -178,7 +178,7 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                                             </span>
                                         </div>
                                     </div>
-                                    <Icon name="right" size={16} className="text-slate-400" />
+                                    <Icon name="right" size={16} className="text-neutral-400" />
                                 </Card>
                             ))}
                         </div>

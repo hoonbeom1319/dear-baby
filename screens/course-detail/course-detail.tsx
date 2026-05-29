@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useRouter } from 'next/navigation';
 
@@ -9,7 +9,7 @@ import { PlaceCard } from '@/entities/place';
 import type { Course } from '@/entities/course';
 import { AppHeader, Button, Icon, IconButton, MobileShell } from '@/shared/ui';
 
-const MetaDot = () => <span className="h-0.5 w-0.5 rounded-full bg-slate-300" />;
+const MetaDot = () => <span className="h-0.5 w-0.5 rounded-full bg-neutral-300" />;
 
 type Props = { course: Course | null };
 
@@ -66,7 +66,7 @@ export const CourseDetail = ({ course }: Props) => {
                         <MetaDot />
                         <span>정거장 {stops.length}곳</span>
                     </div>
-                    <p className="mt-3 text-sm leading-relaxed text-slate-700">{course.description}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-neutral-700">{course.description}</p>
                 </div>
 
                 {/* 정거장 흐름 */}
@@ -84,11 +84,11 @@ export const CourseDetail = ({ course }: Props) => {
                                         onSelect={(id) => router.push(`/place/${id}`)}
                                     />
                                     <div className="ml-9 mt-2 flex items-start gap-2 py-2.5 pr-3 text-[12.5px] leading-relaxed text-muted">
-                                        <Icon name="info" size={13} stroke={2} className="mt-0.5 shrink-0 text-slate-400" />
+                                        <Icon name="info" size={13} stroke={2} className="mt-0.5 shrink-0 text-neutral-400" />
                                         <span>{course.comments[i]}</span>
                                     </div>
                                     {i < stops.length - 1 && (
-                                        <div className="py-2.5 text-center text-slate-300">
+                                        <div className="py-2.5 text-center text-neutral-300">
                                             <Icon name="down-arrow" size={20} stroke={1.8} />
                                         </div>
                                     )}
@@ -96,7 +96,7 @@ export const CourseDetail = ({ course }: Props) => {
                             )
                     )}
 
-                    <div className="mt-4 rounded-[10px] border border-dashed border-border bg-slate-50 p-3 text-center text-xs text-muted">
+                    <div className="mt-4 rounded-[10px] border border-dashed border-border bg-neutral-50 p-3 text-center text-xs text-muted">
                         ─ 코스 완료 ─
                     </div>
                 </div>

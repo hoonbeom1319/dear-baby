@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import type { ReactNode } from 'react';
 
@@ -24,10 +24,10 @@ export const AdminShell = ({ children, pendingReports = 0 }: { children: ReactNo
     const isActive = (href: string) => (href === '/admin' ? pathname === '/admin' : pathname.startsWith(href));
 
     return (
-        <div className="flex min-h-dvh bg-slate-50 text-slate-700">
+        <div className="flex min-h-dvh bg-neutral-50 text-neutral-700">
             <aside className="flex w-[232px] shrink-0 flex-col border-r border-border bg-surface px-3 py-[18px]">
                 <div className="flex items-center gap-2.5 px-2.5 pb-[18px] pt-1">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-xs font-bold tracking-[-0.02em] text-white">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-xs font-bold tracking-[-0.02em] text-white">
                         db
                     </span>
                     <div className="flex flex-col leading-tight">
@@ -46,7 +46,7 @@ export const AdminShell = ({ children, pendingReports = 0 }: { children: ReactNo
                                 href={item.href}
                                 className={cn(
                                     'flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium transition-colors',
-                                    active ? 'bg-primary-50 text-primary-700' : 'text-slate-700 hover:bg-slate-100 hover:text-surface-foreground'
+                                    active ? 'bg-primary-50 text-primary-700' : 'text-neutral-700 hover:bg-neutral-100 hover:text-surface-foreground'
                                 )}>
                                 <span className={active ? 'text-primary-600' : 'text-muted'}>
                                     <Icon name={item.icon} size={16} />
@@ -63,7 +63,7 @@ export const AdminShell = ({ children, pendingReports = 0 }: { children: ReactNo
                 </nav>
 
                 <div className="mt-auto flex items-center gap-2.5 border-t border-border px-2.5 pb-1 pt-3">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-200 text-xs font-semibold text-neutral-700">
                         서
                     </span>
                     <div className="flex flex-col leading-tight">

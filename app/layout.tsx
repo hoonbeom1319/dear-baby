@@ -7,6 +7,8 @@ import { PlacesProvider } from '@/application/providers/places/provider';
 
 import { InstallPrompt } from '@/features/install-prompt';
 
+import { pretendard } from '@/shared/config/font';
+
 export const metadata: Metadata = {
     title: 'Dear Baby',
     description: '아이와 갈 수 있는 장소 가이드',
@@ -28,13 +30,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
-        <html lang="ko">
-            <head>
-                <link
-                    rel="stylesheet"
-                    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css"
-                />
-            </head>
+        <html lang="ko" className={pretendard.variable}>
+            <head />
             <body>
                 <AppProvider>
                     <PlacesProvider>

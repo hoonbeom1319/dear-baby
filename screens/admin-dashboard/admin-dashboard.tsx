@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import type { ReactNode } from 'react';
 
@@ -20,7 +20,7 @@ const Stat = ({ label, value, suffix, percent, barClass = 'bg-primary-500' }: St
             <span className="text-[30px] font-bold leading-none tracking-[-0.025em] tabular-nums text-surface-foreground">{value}</span>
             <span className="text-xs text-muted">{suffix}</span>
         </div>
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-100">
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-neutral-100">
             <span className={cn('block h-full rounded-full', barClass)} style={{ width: `${Math.min(percent, 100)}%` }} />
         </div>
     </div>
@@ -144,19 +144,19 @@ export const AdminDashboard = ({ data }: { data: DashboardData }) => {
                         </div>
                     </div>
 
-                    <div className="rounded-xl border border-dashed border-slate-300 bg-surface px-5 py-[18px]">
+                    <div className="rounded-xl border border-dashed border-neutral-300 bg-surface px-5 py-[18px]">
                         <div className="mb-2.5 text-xs font-semibold uppercase tracking-[0.06em] text-muted">출시 기준 체크리스트</div>
                         {CHECKLIST.map((item, i) => (
                             <div
                                 key={i}
                                 className={cn(
                                     'flex items-center gap-2.5 py-2 text-[13px]',
-                                    i < CHECKLIST.length - 1 && 'border-b border-dashed border-slate-200',
-                                    item.done ? 'text-muted line-through' : 'text-slate-700'
+                                    i < CHECKLIST.length - 1 && 'border-b border-dashed border-border',
+                                    item.done ? 'text-muted line-through' : 'text-neutral-700'
                                 )}>
                                 <span className={cn(
                                     'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded',
-                                    item.done ? 'bg-success text-white' : 'border-[1.5px] border-slate-300 text-transparent'
+                                    item.done ? 'bg-success text-white' : 'border-[1.5px] border-neutral-300 text-transparent'
                                 )}>
                                     <Icon name="check" size={11} stroke={3} />
                                 </span>

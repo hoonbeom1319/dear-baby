@@ -1,4 +1,4 @@
-import { useCatalog } from '@/application/providers';
+﻿import { useCatalog } from '@/application/providers';
 import { cn } from '@/shared/lib';
 import { Icon, type IconName } from '@/shared/ui';
 
@@ -21,11 +21,11 @@ export const AmenityGrid = ({ place }: { place: Place }) => {
                         <div
                             className={cn(
                                 'inline-flex h-11 w-11 items-center justify-center rounded-xl border',
-                                has ? 'border-primary-100 bg-primary-50 text-primary-600' : 'border-slate-200 bg-slate-50 text-slate-300'
+                                has ? 'border-primary-100 bg-primary-50 text-primary-600' : 'border-border bg-neutral-50 text-neutral-300'
                             )}>
                             <Icon name={amenity.icon as IconName} size={20} stroke={1.8} />
                         </div>
-                        <div className={cn('text-[11px] font-medium', has ? 'text-slate-700' : 'text-slate-400')}>
+                        <div className={cn('text-[11px] font-medium', has ? 'text-neutral-700' : 'text-neutral-400')}>
                             {amenity.short}
                         </div>
                     </div>

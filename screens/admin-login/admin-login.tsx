@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useRouter } from 'next/navigation';
 
@@ -10,10 +10,10 @@ export const AdminLogin = () => {
     const router = useRouter();
 
     return (
-        <div className="flex min-h-dvh items-center justify-center bg-slate-50 p-8">
+        <div className="flex min-h-dvh items-center justify-center bg-neutral-50 p-8">
             <div className="w-[400px] max-w-full rounded-2xl border border-border bg-surface p-8 shadow-lg">
                 <div className="mb-2.5 flex items-center gap-3">
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-[10px] bg-slate-900 text-sm font-bold tracking-[-0.02em] text-white">
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-[10px] bg-neutral-900 text-sm font-bold tracking-[-0.02em] text-white">
                         db
                     </span>
                     <div>
@@ -38,7 +38,7 @@ export const AdminLogin = () => {
                 <button
                     type="button"
                     onClick={() => router.push('/admin')}
-                    className="flex h-11 w-full items-center justify-center rounded-[9px] border border-border bg-surface text-sm font-medium text-surface-foreground transition-colors hover:bg-slate-50">
+                    className="flex h-11 w-full items-center justify-center rounded-[9px] border border-border bg-surface text-sm font-medium text-surface-foreground transition-colors hover:bg-neutral-50">
                     네이버로 로그인
                 </button>
 

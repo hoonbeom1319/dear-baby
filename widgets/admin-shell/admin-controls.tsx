@@ -1,15 +1,15 @@
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
+﻿import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
 
 import { cn } from '@/shared/lib';
 import { Icon, type IconName } from '@/shared/ui';
 
-/** 관리자 필터 칩 — 활성 시 slate-900(모바일 Chip의 primary와 구분). */
+/** 관리자 필터 칩 — 활성 시 neutral-900(모바일 Chip의 primary와 구분). */
 export const AdChip = ({ active, className, type = 'button', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean }) => (
     <button
         type={type}
         className={cn(
             'inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[12.5px] font-medium transition-colors',
-            active ? 'border-slate-900 bg-slate-900 text-white' : 'border-border bg-surface text-slate-700 hover:bg-slate-50',
+            active ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-border bg-surface text-neutral-700 hover:bg-neutral-50',
             className
         )}
         {...props}
@@ -30,7 +30,7 @@ export const AdInput = ({ className, ...props }: InputHTMLAttributes<HTMLInputEl
     <input
         className={cn(
             'h-[38px] w-full rounded-lg border border-border bg-surface px-3 text-[13.5px] text-surface-foreground transition-colors',
-            'placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25',
+            'placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25',
             className
         )}
         {...props}
@@ -41,7 +41,7 @@ export const AdTextarea = ({ className, ...props }: TextareaHTMLAttributes<HTMLT
     <textarea
         className={cn(
             'min-h-20 w-full resize-y rounded-lg border border-border bg-surface px-3 py-2.5 text-[13.5px] leading-normal text-surface-foreground transition-colors',
-            'placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25',
+            'placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/25',
             className
         )}
         {...props}
@@ -60,7 +60,7 @@ export const AdIconButton = ({ name, className, type = 'button', ...props }: But
     <button
         type={type}
         className={cn(
-            'inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-slate-100 hover:text-surface-foreground',
+            'inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-neutral-100 hover:text-surface-foreground',
             className
         )}
         {...props}>

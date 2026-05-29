@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Share1Icon } from '@radix-ui/react-icons';
 
@@ -32,7 +32,7 @@ export function BannerIos({ onDismiss, onShare }: Props) {
                     type="button"
                     onClick={onDismiss}
                     aria-label="닫기"
-                    className="shrink-0 rounded-full p-1.5 text-muted hover:bg-slate-100"
+                    className="shrink-0 rounded-full p-1.5 text-muted hover:bg-neutral-100"
                 >
                     <Icon name="x" size={14} />
                 </button>

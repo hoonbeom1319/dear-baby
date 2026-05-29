@@ -32,7 +32,7 @@ function CallbackInner() {
     }, [params, router]);
 
     return (
-        <div className="flex min-h-dvh items-center justify-center text-[15px] text-slate-500">
+        <div className="flex min-h-dvh items-center justify-center text-[15px] text-muted">
             로그인 처리 중…
         </div>
     );

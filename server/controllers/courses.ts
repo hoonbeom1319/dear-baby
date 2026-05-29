@@ -2,15 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
-import {
-    deleteCourse,
-    findAllCourses,
-    findCourseById,
-    findCoursesByStop,
-    insertCourse,
-    replaceCourseStops,
-    updateCourse,
-} from '../dao/courses';
+import { deleteCourse, findAllCourses, findCourseById, findCoursesByStop, insertCourse, replaceCourseStops, updateCourse } from '../dao/courses';
 
 export type { CourseStop, CreateCourseInput } from '../dao/courses';
 

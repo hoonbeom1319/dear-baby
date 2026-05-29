@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 
@@ -72,14 +72,14 @@ export const LoginSheet = ({ open, onOpenChange, recent = 'kakao' }: LoginSheetP
                         type="button"
                         disabled={loading !== null}
                         onClick={() => handleLogin(provider)}
-                        className="flex w-full items-center gap-3 rounded-[10px] border border-border bg-surface p-3 text-left transition-colors hover:border-slate-300 hover:bg-slate-50 disabled:opacity-60"
+                        className="flex w-full items-center gap-3 rounded-[10px] border border-border bg-surface p-3 text-left transition-colors hover:border-neutral-300 hover:bg-neutral-50 disabled:opacity-60"
                     >
                         <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xs font-bold" style={provider.style}>
                             {loading === provider.id ? '…' : provider.mark}
                         </span>
                         <span className="flex-1 text-sm font-medium text-surface-foreground">{provider.name}</span>
                         {recent === provider.id && loading === null && (
-                            <span className="ml-auto rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">최근 로그인</span>
+                            <span className="ml-auto rounded-full bg-neutral-100 px-2 py-0.5 text-[11px] font-medium text-neutral-600">최근 로그인</span>
                         )}
                     </button>
                 ))}

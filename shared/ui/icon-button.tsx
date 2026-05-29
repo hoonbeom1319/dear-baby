@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react';
+﻿import type { ButtonHTMLAttributes } from 'react';
 
 import { cn } from '@/shared/lib';
 
@@ -17,8 +17,8 @@ export const IconButton = ({ name, size = 22, iconStroke, fav, className, type =
         type={type}
         className={cn(
             'inline-flex h-9 w-9 items-center justify-center rounded-lg transition-colors',
-            'hover:bg-slate-100 hover:text-surface-foreground active:bg-slate-200',
-            fav ? 'text-amber-500' : 'text-slate-700',
+            'hover:bg-neutral-100 hover:text-surface-foreground active:bg-neutral-200',
+            fav ? 'text-amber-500' : 'text-neutral-700',
             className
         )}
         {...props}>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Icon, Sheet } from '@/shared/ui';
 
@@ -28,7 +28,7 @@ export const NavSheet = ({ open, onOpenChange, onPick, onCopyAddress }: NavSheet
                     key={app.id}
                     type="button"
                     onClick={() => onPick(app.name)}
-                    className="flex w-full items-center gap-3 rounded-[10px] border border-border bg-surface p-3 text-left transition-colors hover:border-slate-300 hover:bg-slate-50">
+                    className="flex w-full items-center gap-3 rounded-[10px] border border-border bg-surface p-3 text-left transition-colors hover:border-neutral-300 hover:bg-neutral-50">
                     <span
                         className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xs font-bold"
                         style={app.style}>
@@ -38,7 +38,7 @@ export const NavSheet = ({ open, onOpenChange, onPick, onCopyAddress }: NavSheet
                         <div className="text-sm font-medium text-surface-foreground">{app.name}</div>
                         <div className="text-[11px] text-muted">{app.meta}</div>
                     </div>
-                    <Icon name="right" size={16} className="text-slate-400" />
+                    <Icon name="right" size={16} className="text-neutral-400" />
                 </button>
             ))}
         </div>
@@ -46,8 +46,8 @@ export const NavSheet = ({ open, onOpenChange, onPick, onCopyAddress }: NavSheet
         <button
             type="button"
             onClick={onCopyAddress}
-            className="flex w-full items-center gap-3 rounded-[10px] border border-border bg-surface p-3 text-left transition-colors hover:border-slate-300 hover:bg-slate-50">
-            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+            className="flex w-full items-center gap-3 rounded-[10px] border border-border bg-surface p-3 text-left transition-colors hover:border-neutral-300 hover:bg-neutral-50">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-700">
                 <Icon name="copy" size={16} stroke={2} />
             </span>
             <span className="flex-1 text-sm font-medium text-surface-foreground">주소 복사</span>
