@@ -1,6 +1,6 @@
 ﻿import type { ButtonHTMLAttributes, HTMLAttributes } from 'react';
 
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 
 type ChipProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     active?: boolean;

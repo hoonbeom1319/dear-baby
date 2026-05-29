@@ -6,9 +6,8 @@ import { useRouter } from 'next/navigation';
 
 import { useAuth, useCatalog, usePlaces } from '@/application/providers';
 
-import { useFavorite } from '@/entities/favorite';
-
 import type { Course } from '@/entities/course';
+import { useFavorite } from '@/entities/favorite';
 import { PlaceCard } from '@/entities/place';
 
 import type { CategoryId } from '@/shared/config';
@@ -24,19 +23,24 @@ const SectionLabel = ({ children }: { children: ReactNode }) => (
  * 장소는 AppProvider 컨텍스트(layout에서 서버 패치)에서, 코스는 page.tsx RSC에서 전달받는다.
  */
 export const Home = ({ allCourses }: { allCourses: Course[] }) => {
-    const router = useRouter();
+    const [category, setCategory] = useState<CategoryId>('all');
+
     const area = usePlaces((s) => s.area);
     const setArea = usePlaces((s) => s.setArea);
     const allPlaces = usePlaces((s) => s.allPlaces);
+
     const loggedIn = useAuth((s) => s.loggedIn);
     const userId = useAuth((s) => s.userId);
     const openLogin = useAuth((s) => s.openLogin);
     const logout = useAuth((s) => s.logout);
+
     const { isFavorite, toggleFavorite } = useFavorite(userId, { onRequestLogin: openLogin });
+
     const areas = useCatalog((s) => s.areas);
     const categories = useCatalog((s) => s.categories);
     const getArea = useCatalog((s) => s.getArea);
-    const [category, setCategory] = useState<CategoryId>('all');
+
+    const router = useRouter();
 
     const places = allPlaces.filter((place) => place.area === area && (category === 'all' || place.category === category));
     const courseCount = allCourses.filter((c) => c.area === area).length;

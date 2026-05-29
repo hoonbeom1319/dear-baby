@@ -1,4 +1,3 @@
-export { cn } from './cn';
 export { getDevice, isAndroid, isApp, isIOS, isMobile, isStandalone, isWebView } from './device';
 export type { Device } from './device';
 export { getSupabaseBrowser } from './supabase-browser';

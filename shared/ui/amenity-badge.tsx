@@ -1,4 +1,4 @@
-﻿import { cn } from '@/shared/lib';
+﻿import { cn } from '@/hbds/lib/utils';
 
 import { Icon, type IconName } from './icon';
 

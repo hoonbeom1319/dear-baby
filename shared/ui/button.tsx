@@ -1,6 +1,6 @@
 ﻿import type { ButtonHTMLAttributes } from 'react';
 
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 
 type ButtonVariant = 'primary' | 'outline' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';

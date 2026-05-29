@@ -13,7 +13,7 @@ import { AdChip, AdInput, AdminPage } from '@/widgets/admin-shell';
 import type { ReportRow } from '@/server/controllers/reports';
 import { modifyReportStatus } from '@/server/controllers/reports';
 
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 import { Button, Icon, Pill } from '@/shared/ui';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (

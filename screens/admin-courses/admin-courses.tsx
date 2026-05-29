@@ -12,7 +12,7 @@ import type { Course } from '@/entities/course';
 import type { PlaceAdmin } from '@/entities/place';
 
 import { useCatalog } from '@/application/providers';
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 import { Button, Icon, Pill } from '@/shared/ui';
 
 import { createCourse, modifyCourse, modifyCourseStops, removeCourse } from '@/server/controllers/courses';

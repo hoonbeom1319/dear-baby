@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 import { Button, Icon, Sheet } from '@/shared/ui';
 
 type ReportSheetProps = {

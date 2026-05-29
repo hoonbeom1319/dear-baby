@@ -1,6 +1,6 @@
 ﻿import type { HTMLAttributes } from 'react';
 
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 
 /** Dear Baby wordmark — black `db` monogram + name. */
 export const Brand = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (

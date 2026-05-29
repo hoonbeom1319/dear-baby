@@ -1,6 +1,6 @@
 ﻿import type { HTMLAttributes } from 'react';
 
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 
 /**
  * Mobile-web app frame. Dear Baby is mobile-first (PRD 9.3); on wider
@@ -10,7 +10,7 @@ import { cn } from '@/shared/lib';
  */
 export const MobileShell = ({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) => (
     <div className="flex min-h-dvh justify-center bg-neutral-100">
-        <div className={cn('flex min-h-dvh w-full max-w-[480px] flex-col bg-surface', className)} {...props}>
+        <div className={cn('min-h-dvh w-full max-w-[480px] bg-surface', className)} {...props}>
             {children}
         </div>
     </div>

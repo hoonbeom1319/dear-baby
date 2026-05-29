@@ -1,5 +1,5 @@
 ﻿import { useCatalog } from '@/application/providers';
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 import { AmenityBadge, Card, Icon, type IconName, PlaceImage } from '@/shared/ui';
 
 import type { Place } from '../model/types';

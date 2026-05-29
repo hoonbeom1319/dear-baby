@@ -1,6 +1,6 @@
 ﻿import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
 
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 import { Icon, type IconName } from '@/shared/ui';
 
 /** 관리자 필터 칩 — 활성 시 neutral-900(모바일 Chip의 primary와 구분). */

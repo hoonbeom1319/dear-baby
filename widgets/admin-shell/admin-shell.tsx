@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 import { Icon, type IconName } from '@/shared/ui';
 
 const NAV: { href: string; label: string; icon: IconName; key: string }[] = [

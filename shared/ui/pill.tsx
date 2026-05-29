@@ -1,6 +1,6 @@
 ﻿import type { HTMLAttributes } from 'react';
 
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 
 type PillTone = 'neutral' | 'primary' | 'success' | 'warning' | 'danger';
 

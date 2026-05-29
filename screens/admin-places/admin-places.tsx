@@ -12,7 +12,7 @@ import type { PlaceAdmin } from '@/entities/place';
 
 import type { AmenityId, AreaId, CategoryId } from '@/shared/config';
 import { useCatalog } from '@/application/providers';
-import { cn } from '@/shared/lib';
+import { cn } from '@/hbds/lib/utils';
 import { Button, Icon, type IconName, Pill } from '@/shared/ui';
 
 import { createPlace, modifyPlace, modifyPlaceStatus, removePlace } from '@/server/controllers/places';
