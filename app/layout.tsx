@@ -5,8 +5,7 @@ import { AppProvider } from '@/application/providers';
 import { CatalogProvider } from '@/application/providers/catalog/provider';
 import { PlacesProvider } from '@/application/providers/places/provider';
 
-import { InstallBanner } from '@/features/install-prompt';
-import { ServiceWorkerRegistrar } from '@/features/install-prompt/ui/sw-registrar';
+import { InstallPrompt } from '@/features/install-prompt';
 
 export const metadata: Metadata = {
     title: 'Dear Baby',
@@ -42,8 +41,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                         <CatalogProvider>{children}</CatalogProvider>
                     </PlacesProvider>
                 </AppProvider>
-                <ServiceWorkerRegistrar />
-                <InstallBanner />
+                <InstallPrompt />
             </body>
         </html>
     );

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { findPendingReportsCount, findReportsAdmin, insertReport, updateReportStatus as dao_updateReportStatus } from '../dao/reports';
+import { findPendingReportsCount, findReportsAdmin, insertReport, updateReportStatus } from '../dao/reports';
 
 export type { ReportRow } from '../dao/reports';
 
@@ -22,7 +22,7 @@ export async function createReport(input: { placeId: string; reason: string; use
     await insertReport(input);
 }
 
-export async function updateReportStatus(id: string, status: 'applied' | 'ignored'): Promise<void> {
-    await dao_updateReportStatus(id, status);
+export async function modifyReportStatus(id: string, status: 'applied' | 'ignored'): Promise<void> {
+    await updateReportStatus(id, status);
     revalidatePath('/admin/reports');
 }

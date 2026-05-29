@@ -15,7 +15,7 @@ import { useCatalog } from '@/application/providers';
 import { cn } from '@/shared/lib';
 import { Button, Icon, Pill } from '@/shared/ui';
 
-import { createCourse, deleteCourse, replaceCourseStops, updateCourse } from '@/server/controllers/courses';
+import { createCourse, modifyCourse, modifyCourseStops, removeCourse } from '@/server/controllers/courses';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (
     <th className={cn('border-b border-border bg-slate-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
@@ -86,12 +86,12 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
         if (!course) return;
         setSaving(true);
         try {
-            await updateCourse(course.id, {
+            await modifyCourse(course.id, {
                 title: draftTitle,
                 duration: draftDuration,
                 description: draftDesc,
             });
-            await replaceCourseStops(course.id, draftStops);
+            await modifyCourseStops(course.id, draftStops);
             toast('변경사항을 저장했어요');
             router.refresh();
         } catch {
@@ -104,7 +104,7 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
     const handleDelete = async (c: Course) => {
         if (!confirm(`"${c.title}" 코스를 삭제할까요?`)) return;
         try {
-            await deleteCourse(c.id);
+            await removeCourse(c.id);
             toast('삭제했어요');
             setSelected(0);
             router.refresh();
@@ -221,31 +221,42 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
                                         {draftStops.map((stop, n) => {
                                             const place = allPlaces.find((p) => p.id === stop.placeId);
                                             return (
-                                                <div key={stop.placeId} className="flex items-center gap-2.5 rounded-[10px] border border-border bg-surface p-2.5">
-                                                    <div className="inline-flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-primary-600 text-xs font-semibold tabular-nums text-white">
-                                                        {n + 1}
-                                                    </div>
-                                                    <div className="min-w-0 flex-1">
-                                                        <div className="text-[13.5px] font-medium text-surface-foreground">{place?.name ?? stop.placeId}</div>
-                                                        <div className="mt-0.5 text-[11.5px] text-muted">
-                                                            {place ? `${getCategory(place.category)?.name} · ${getArea(place.area)?.name}` : ''}
+                                                <div key={stop.placeId} className="flex flex-col gap-2 rounded-[10px] border border-border bg-surface p-2.5">
+                                                    <div className="flex items-center gap-2.5">
+                                                        <div className="inline-flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-primary-600 text-xs font-semibold tabular-nums text-white">
+                                                            {n + 1}
                                                         </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <div className="text-[13.5px] font-medium text-surface-foreground">{place?.name ?? stop.placeId}</div>
+                                                            <div className="mt-0.5 text-[11.5px] text-muted">
+                                                                {place ? `${getCategory(place.category)?.name} · ${getArea(place.area)?.name}` : ''}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => moveStop(n, -1)}
+                                                                className="flex h-[18px] w-6 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-100 hover:text-surface-foreground">
+                                                                <Icon name="up-arrow" size={14} />
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => moveStop(n, 1)}
+                                                                className="flex h-[18px] w-6 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-100 hover:text-surface-foreground">
+                                                                <Icon name="down" size={14} />
+                                                            </button>
+                                                        </div>
+                                                        <AdIconButton name="trash" onClick={() => removeStop(n)} />
                                                     </div>
-                                                    <div className="flex flex-col">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => moveStop(n, -1)}
-                                                            className="flex h-[18px] w-6 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-100 hover:text-surface-foreground">
-                                                            <Icon name="up-arrow" size={14} />
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => moveStop(n, 1)}
-                                                            className="flex h-[18px] w-6 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-100 hover:text-surface-foreground">
-                                                            <Icon name="down" size={14} />
-                                                        </button>
-                                                    </div>
-                                                    <AdIconButton name="trash" onClick={() => removeStop(n)} />
+                                                    <AdInput
+                                                        placeholder="코멘트 (선택)"
+                                                        value={stop.comment}
+                                                        onChange={(e) =>
+                                                            setDraftStops((prev) =>
+                                                                prev.map((s, i) => (i === n ? { ...s, comment: e.target.value } : s))
+                                                            )
+                                                        }
+                                                    />
                                                 </div>
                                             );
                                         })}

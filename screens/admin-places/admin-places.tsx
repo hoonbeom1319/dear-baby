@@ -15,7 +15,7 @@ import { useCatalog } from '@/application/providers';
 import { cn } from '@/shared/lib';
 import { Button, Icon, type IconName, Pill } from '@/shared/ui';
 
-import { createPlace, deletePlace, updatePlace, updatePlaceStatus } from '@/server/controllers/places';
+import { createPlace, modifyPlace, modifyPlaceStatus, removePlace } from '@/server/controllers/places';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (
     <th className={cn('border-b border-border bg-slate-50 px-4 py-3 text-left text-xs font-semibold text-muted', className)}>{children}</th>
@@ -126,7 +126,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
         };
         try {
             if (mode === 'edit' && editingId) {
-                await updatePlace(editingId, input);
+                await modifyPlace(editingId, input);
                 toast('장소를 수정했어요');
             } else {
                 await createPlace(input);
@@ -143,7 +143,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
 
     const handleToggleStatus = async (place: PlaceAdmin) => {
         try {
-            await updatePlaceStatus(place.id, place.status === 'public' ? 'review' : 'public');
+            await modifyPlaceStatus(place.id, place.status === 'public' ? 'review' : 'public');
             toast(place.status === 'public' ? '검토중으로 변경했어요' : '공개로 변경했어요');
             router.refresh();
         } catch { toast('상태 변경에 실패했어요'); }
@@ -152,7 +152,7 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
     const handleDelete = async (place: PlaceAdmin) => {
         if (!confirm(`"${place.name}" 장소를 삭제할까요? 연결된 코스 정거장도 함께 삭제됩니다.`)) return;
         try {
-            await deletePlace(place.id);
+            await removePlace(place.id);
             toast('삭제했어요');
             router.refresh();
         } catch { toast('삭제에 실패했어요'); }

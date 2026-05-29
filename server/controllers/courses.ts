@@ -3,15 +3,14 @@
 import { revalidatePath } from 'next/cache';
 
 import {
-    deleteCourse as dao_deleteCourse,
+    deleteCourse,
     findAllCourses,
     findCourseById,
     findCoursesByStop,
     insertCourse,
-    replaceCourseStops as dao_replaceCourseStops,
-    updateCourse as dao_updateCourse
+    replaceCourseStops,
+    updateCourse,
 } from '../dao/courses';
-import type { CourseStop, CreateCourseInput } from '../dao/courses';
 
 export type { CourseStop, CreateCourseInput } from '../dao/courses';
 
@@ -31,27 +30,26 @@ export async function fetchCoursesByStop(placeId: string) {
 
 // ─── Mutations ───────────────────────────────────────────────────────────────
 
-export async function createCourse(input: CreateCourseInput): Promise<void> {
+export async function createCourse(input: Parameters<typeof insertCourse>[0]): Promise<void> {
     await insertCourse(input);
     revalidatePath('/admin/courses');
     revalidatePath('/course');
 }
 
-export async function updateCourse(id: string, fields: Partial<Omit<CreateCourseInput, 'stops'>>): Promise<void> {
-    await dao_updateCourse(id, fields);
+export async function modifyCourse(id: string, fields: Parameters<typeof updateCourse>[1]): Promise<void> {
+    await updateCourse(id, fields);
     revalidatePath('/admin/courses');
     revalidatePath(`/course/${id}`);
 }
 
-/** 코스의 정거장 전체를 교체 (삭제 후 재삽입). */
-export async function replaceCourseStops(courseId: string, stops: CourseStop[]): Promise<void> {
-    await dao_replaceCourseStops(courseId, stops);
+export async function modifyCourseStops(courseId: string, stops: Parameters<typeof replaceCourseStops>[1]): Promise<void> {
+    await replaceCourseStops(courseId, stops);
     revalidatePath('/admin/courses');
     revalidatePath(`/course/${courseId}`);
 }
 
-export async function deleteCourse(id: string): Promise<void> {
-    await dao_deleteCourse(id);
+export async function removeCourse(id: string): Promise<void> {
+    await deleteCourse(id);
     revalidatePath('/admin/courses');
     revalidatePath('/course');
 }

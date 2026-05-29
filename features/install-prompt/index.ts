@@ -1,1 +1,1 @@
-export { InstallBanner } from './ui/install-banner';
+export { InstallPrompt } from './install-prompt';

@@ -11,7 +11,7 @@ import { toast } from '@/shared/lib';
 import { AdChip, AdInput, AdminPage } from '@/widgets/admin-shell';
 
 import type { ReportRow } from '@/server/controllers/reports';
-import { updateReportStatus } from '@/server/controllers/reports';
+import { modifyReportStatus } from '@/server/controllers/reports';
 
 import { cn } from '@/shared/lib';
 import { Button, Icon, Pill } from '@/shared/ui';
@@ -67,7 +67,7 @@ export const AdminReports = ({ initialReports }: Props) => {
 
     const handleIgnore = async (id: string) => {
         try {
-            await updateReportStatus(id, 'ignored');
+            await modifyReportStatus(id, 'ignored');
             toast('제보를 무시했어요');
             router.refresh();
         } catch {
@@ -79,7 +79,7 @@ export const AdminReports = ({ initialReports }: Props) => {
         if (!confirmId) return;
         setActing(true);
         try {
-            await updateReportStatus(confirmId, 'applied');
+            await modifyReportStatus(confirmId, 'applied');
             setConfirmId(null);
             toast('제보를 반영했어요');
             router.refresh();
