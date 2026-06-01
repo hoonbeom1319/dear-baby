@@ -96,7 +96,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
                     <>
                         <IconButton name="star" title="즐겨찾기" onClick={() => router.push('/favorites')} />
                         <IconButton
-                            name="user"
+                            name={loggedIn ? 'logout' : 'user'}
                             title={loggedIn ? '로그아웃' : '로그인'}
                             onClick={() => {
                                 if (loggedIn) {
