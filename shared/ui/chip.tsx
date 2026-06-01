@@ -20,5 +20,5 @@ export const Chip = ({ active, className, type = 'button', ...props }: ChipProps
 
 /** Horizontally scrollable chip track with hidden scrollbar. */
 export const ChipRow = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
-    <div className={cn('flex gap-1.5 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', className)} {...props} />
+    <div className={cn('flex flex-nowrap gap-1.5 overflow-x-auto px-4 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden', className)} {...props} />
 );

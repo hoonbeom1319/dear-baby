@@ -4,12 +4,15 @@ import { createContext, useContext, useState, type PropsWithChildren } from 'rea
 
 import { StoreApi, useStore } from 'zustand';
 
-import { type PlacesAction, type PlacesState, createPlacesStore } from './store';
+import { AREA_STORAGE_KEY, type PlacesAction, type PlacesState, createPlacesStore } from './store';
 
 const PlacesStoreContext = createContext<StoreApi<PlacesState & PlacesAction> | null>(null);
 
 export const PlacesStoreProvider = ({ children, data }: PropsWithChildren<{ data: PlacesState }>) => {
-    const [store] = useState(() => createPlacesStore(data));
+    const [store] = useState(() => {
+        const storedArea = typeof window !== 'undefined' ? (localStorage.getItem(AREA_STORAGE_KEY) ?? data.area) : data.area;
+        return createPlacesStore({ ...data, area: storedArea });
+    });
 
     return <PlacesStoreContext.Provider value={store}>{children}</PlacesStoreContext.Provider>;
 };

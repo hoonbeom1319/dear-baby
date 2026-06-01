@@ -73,6 +73,7 @@ type Props = { initialPlaces: PlaceAdmin[] };
 /** 장소 관리 (PRD A-3). 목록 테이블 + 새 장소 추가/수정 폼. */
 export const AdminPlaces = ({ initialPlaces }: Props) => {
     const router = useRouter();
+    const regions = useCatalog((s) => s.regions);
     const areas = useCatalog((s) => s.areas);
     const categories = useCatalog((s) => s.categories);
     const amenities = useCatalog((s) => s.amenities);
@@ -207,10 +208,14 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                                     onChange={(e) => set('area', e.target.value as AreaId)}
                                     className="h-9 w-full rounded-lg border border-border bg-surface px-3 text-[13.5px] text-surface-foreground"
                                 >
-                                    {areas.map((a) => (
-                                        <option key={a.id} value={a.id}>
-                                            {a.name}
-                                        </option>
+                                    {regions.map((r) => (
+                                        <optgroup key={r.id} label={r.name}>
+                                            {areas.filter((a) => a.regionId === r.id).map((a) => (
+                                                <option key={a.id} value={a.id}>
+                                                    {a.name}
+                                                </option>
+                                            ))}
+                                        </optgroup>
                                     ))}
                                 </select>
                             </AdField>

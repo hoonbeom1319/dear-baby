@@ -1,8 +1,12 @@
 'use server';
 
-import type { Amenity, Area, Category } from '@/shared/config';
+import type { Amenity, Area, Category, Region } from '@/shared/config';
 
-import { findAmenities, findAreas, findCategories } from '../dao/catalog';
+import { findAmenities, findAreas, findCategories, findRegions } from '../dao/catalog';
+
+export async function fetchRegions(): Promise<Region[]> {
+    return findRegions();
+}
 
 export async function fetchAreas(): Promise<Area[]> {
     return findAreas();

@@ -14,10 +14,17 @@ export type PlacesAction = {
     getPlaceById: (id: string) => Place | undefined;
 };
 
+const AREA_STORAGE_KEY = 'dear:area';
+
 export const createPlacesStore = (initState: PlacesState) => {
     return createStore<PlacesState & PlacesAction>()((set, get) => ({
         ...initState,
-        setArea: (area: AreaId) => set({ area }),
+        setArea: (area: AreaId) => {
+            if (typeof window !== 'undefined') localStorage.setItem(AREA_STORAGE_KEY, area);
+            set({ area });
+        },
         getPlaceById: (id: string) => get().allPlaces.find((p) => p.id === id)
     }));
 };
+
+export { AREA_STORAGE_KEY };

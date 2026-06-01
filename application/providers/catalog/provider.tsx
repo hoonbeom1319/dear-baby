@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 
-import { fetchAmenities, fetchAreas, fetchCategories } from '@/server/controllers/catalog';
+import { fetchAmenities, fetchAreas, fetchCategories, fetchRegions } from '@/server/controllers/catalog';
 
 import { CatalogStoreProvider } from './store-provider';
 
 export const CatalogProvider = async ({ children }: { children: ReactNode }) => {
-    const [areas, categories, amenities] = await Promise.all([fetchAreas(), fetchCategories(), fetchAmenities()]);
+    const [regions, areas, categories, amenities] = await Promise.all([fetchRegions(), fetchAreas(), fetchCategories(), fetchAmenities()]);
 
-    return <CatalogStoreProvider data={{ areas, categories, amenities }}>{children}</CatalogStoreProvider>;
+    return <CatalogStoreProvider data={{ regions, areas, categories, amenities }}>{children}</CatalogStoreProvider>;
 };

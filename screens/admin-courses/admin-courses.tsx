@@ -113,7 +113,7 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
     const handleNewCourse = async () => {
         try {
             await createCourse({
-                area: 'songpa',
+                area: areas[0]?.id ?? '',
                 title: '새 코스',
                 duration: '',
                 season: '사계절',

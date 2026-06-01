@@ -57,7 +57,7 @@ export const AdminDashboard = ({ data }: { data: DashboardData }) => {
               : `가장 오래된 제보는 ${Math.floor(oldestPendingHours / 24)}일 전`;
 
     const songpa = placeCountByArea['songpa'] ?? 0;
-    const unjeong = placeCountByArea['unjeong'] ?? 0;
+    const paju = placeCountByArea['paju'] ?? 0;
 
     return (
         <AdminPage
@@ -98,10 +98,10 @@ export const AdminDashboard = ({ data }: { data: DashboardData }) => {
             <div className="mb-6 grid grid-cols-3 gap-4">
                 <Stat label="송파권 등록 장소" value={String(songpa)} suffix={`/ ${AREA_GOAL} 목표`} percent={(songpa / AREA_GOAL) * 100} />
                 <Stat
-                    label="운정권 등록 장소"
-                    value={String(unjeong)}
+                    label="파주권 등록 장소"
+                    value={String(paju)}
                     suffix={`/ ${AREA_GOAL} 목표`}
-                    percent={(unjeong / AREA_GOAL) * 100}
+                    percent={(paju / AREA_GOAL) * 100}
                     barClass="bg-warning"
                 />
                 <Stat
