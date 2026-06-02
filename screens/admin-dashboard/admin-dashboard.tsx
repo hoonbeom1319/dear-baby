@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/shared/hooks';
 
 import type { DashboardData } from '@/server/controllers/dashboard';
 

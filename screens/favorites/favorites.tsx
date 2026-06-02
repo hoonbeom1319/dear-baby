@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/shared/hooks';
 
 import { useAuth, usePlaces } from '@/application/providers';
 

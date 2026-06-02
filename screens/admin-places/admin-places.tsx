@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from 'react';
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/shared/hooks';
 
 import { useCatalog } from '@/application/providers';
 

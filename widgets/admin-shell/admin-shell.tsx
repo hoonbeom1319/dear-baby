@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 
-import Link from 'next/link';
+import { Link } from '@/shared/ui';
 import { usePathname } from 'next/navigation';
 
 import { Icon, type IconName } from '@/shared/ui';

@@ -7,6 +7,7 @@ import type { AreaId } from '@/shared/config';
 export type PlacesState = {
     allPlaces: Place[];
     area: AreaId;
+    hydrated: boolean;
 };
 
 export type PlacesAction = {

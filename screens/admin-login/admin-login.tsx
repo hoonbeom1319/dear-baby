@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/shared/hooks';
 
 /**
  * 관리자 로그인 (PRD A-1). 사용자 소셜 로그인을 재사용하고 User의 '관리자 여부'로 권한 식별.

@@ -2,7 +2,7 @@
 
 import { useMemo, useState, type ReactNode } from 'react';
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/shared/hooks';
 
 import { useAuth, useCatalog, usePlaces } from '@/application/providers';
 
@@ -13,12 +13,73 @@ import { PlaceCard } from '@/entities/place';
 import { Slide } from '@/hbds/overlay/slide';
 import { cn } from '@/hbds/lib/utils';
 
+import { Skeleton } from '@/hbds/feedback/skeleton';
+
 import type { AreaId, CategoryId } from '@/shared/config';
 import { toast } from '@/shared/lib';
 import { AppHeader, Brand, Card, Chip, ChipRow, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const SectionLabel = ({ children }: { children: ReactNode }) => (
     <div className="px-4 pb-2 text-[11px] font-semibold tracking-[0.06em] text-muted uppercase">{children}</div>
+);
+
+
+const PlaceCardSkeleton = () => (
+    <div className="rounded-xl border border-border bg-surface shadow-card">
+        <div className="flex items-stretch gap-3 p-3">
+            <Skeleton className="h-[84px] w-[84px] shrink-0 rounded-[10px]" />
+            <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
+                <div>
+                    <Skeleton className="h-[18px] w-3/4" />
+                    <div className="mt-1.5 flex gap-1.5">
+                        <Skeleton className="h-3.5 w-10" />
+                        <Skeleton className="h-3.5 w-8" />
+                        <Skeleton className="h-3.5 w-12" />
+                    </div>
+                </div>
+                <div className="mt-2 flex gap-1.5">
+                    <Skeleton className="h-5 w-12 rounded-full" />
+                    <Skeleton className="h-5 w-10 rounded-full" />
+                    <Skeleton className="h-5 w-14 rounded-full" />
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
+const HomeSkeleton = () => (
+    <MobileShell>
+        <AppHeader
+            lead={<Skeleton className="h-5 w-24" />}
+            right={
+                <div className="flex gap-1">
+                    <Skeleton className="h-9 w-9 rounded-lg" />
+                    <Skeleton className="h-9 w-9 rounded-lg" />
+                </div>
+            }
+        />
+        <div className="flex-1 pb-8">
+            <div className="px-4 pt-4 pb-1">
+                <Skeleton className="h-7 w-40" />
+                <Skeleton className="mt-1.5 h-4 w-56" />
+            </div>
+            <div className="pt-4 pb-3.5">
+                <div className="px-4 pb-2">
+                    <Skeleton className="h-3 w-14" />
+                </div>
+                <div className="flex gap-2 px-4">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                        <Skeleton key={i} className="h-8 w-14 rounded-full" />
+                    ))}
+                </div>
+            </div>
+            <div className="flex flex-col gap-2.5 px-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                    <PlaceCardSkeleton key={i} />
+                ))}
+            </div>
+        </div>
+    </MobileShell>
 );
 
 /**
@@ -30,6 +91,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
     const [sheetOpen, setSheetOpen] = useState(false);
     const [search, setSearch] = useState('');
 
+    const hydrated = usePlaces((s) => s.hydrated);
     const area = usePlaces((s) => s.area);
     const setArea = usePlaces((s) => s.setArea);
     const allPlaces = usePlaces((s) => s.allPlaces);
@@ -57,9 +119,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
         return counts;
     }, [allPlaces]);
 
-    const filteredAreas = search.trim()
-        ? areas.filter((a) => a.name.includes(search.trim()))
-        : areas;
+    const filteredAreas = search.trim() ? areas.filter((a) => a.name.includes(search.trim())) : areas;
 
     const handleAreaChange = (areaId: AreaId) => {
         setArea(areaId);
@@ -69,24 +129,20 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
 
     const router = useRouter();
 
-    const places = allPlaces.filter(
-        (place) => place.area === area && (category === 'all' || place.category === category)
-    );
+    const places = allPlaces.filter((place) => place.area === area && (category === 'all' || place.category === category));
     const courseCount = allCourses.filter((c) => c.area === area).length;
 
     const regionName = regions.find((r) => r.id === currentRegionId)?.name ?? '';
     const areaName = getArea(area)?.name ?? '';
     const displaySubtitle = [regionName, areaName].filter(Boolean).join(' ');
 
+    if (!hydrated) return <HomeSkeleton />;
+
     return (
         <MobileShell>
             <AppHeader
                 lead={
-                    <button
-                        type="button"
-                        onClick={() => setSheetOpen(true)}
-                        className="flex items-center gap-1.5"
-                    >
+                    <button type="button" onClick={() => setSheetOpen(true)} className="flex items-center gap-1.5">
                         <Icon name="pin" size={15} className="shrink-0 text-primary-600" />
                         <span className="text-[15px] font-semibold text-surface-foreground">{areaName}</span>
                         <Icon name="down" size={14} className="text-muted" />
@@ -161,9 +217,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
                             onSelect={(id) => router.push(`/place/${id}`)}
                         />
                     ))}
-                    {places.length === 0 && (
-                        <div className="py-10 text-center text-[13px] text-muted">해당 조건에 등록된 장소가 없어요</div>
-                    )}
+                    {places.length === 0 && <div className="py-10 text-center text-[13px] text-muted">해당 조건에 등록된 장소가 없어요</div>}
                 </div>
             </div>
 
@@ -178,11 +232,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
                 />
             )}
             <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center">
-                <Slide
-                    direction="down"
-                    open={sheetOpen}
-                    className="pointer-events-auto w-full max-w-[480px] rounded-t-2xl bg-surface shadow-xl"
-                >
+                <Slide direction="down" open={sheetOpen} className="pointer-events-auto w-full max-w-[480px] rounded-t-2xl bg-surface shadow-xl">
                     {/* 핸들 */}
                     <div className="flex justify-center pt-3 pb-1">
                         <div className="h-1 w-10 rounded-full bg-neutral-200" />
@@ -235,9 +285,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
                             if (list.length === 0) return null;
                             return (
                                 <div key={r.id}>
-                                    <div className="px-4 pt-4 pb-1.5 text-[11px] font-semibold tracking-[0.06em] text-muted uppercase">
-                                        {r.name}
-                                    </div>
+                                    <div className="px-4 pt-4 pb-1.5 text-[11px] font-semibold tracking-[0.06em] text-muted uppercase">{r.name}</div>
                                     {list.map((item) => {
                                         const count = placeCountByArea[item.id] ?? 0;
                                         const isSelected = item.id === area;
@@ -255,8 +303,7 @@ export const Home = ({ allCourses }: { allCourses: Course[] }) => {
                                                 <span className="text-[12.5px]">
                                                     {isSelected ? (
                                                         <span className="flex items-center gap-1 text-primary-600">
-                                                            {count}곳{' '}
-                                                            <Icon name="check" size={13} />
+                                                            {count}곳 <Icon name="check" size={13} />
                                                         </span>
                                                     ) : count > 0 ? (
                                                         <span className="text-muted">{count}곳</span>

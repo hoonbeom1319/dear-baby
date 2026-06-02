@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from 'react';
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/shared/hooks';
 import { Dialog } from 'radix-ui';
 
 import type { ReportRow } from '@/server/controllers/reports';

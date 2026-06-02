@@ -8,6 +8,7 @@ import { PlacesProvider } from '@/application/providers/places/provider';
 import { InstallPrompt } from '@/features/install-prompt';
 
 import { pretendard } from '@/shared/config/font';
+import { NavigationProgress } from '@/shared/ui';
 
 export const metadata: Metadata = {
     title: 'Dear Baby',
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                         <CatalogProvider>{children}</CatalogProvider>
                     </PlacesProvider>
                 </AppProvider>
+                <NavigationProgress />
                 <InstallPrompt />
             </body>
         </html>

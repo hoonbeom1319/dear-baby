@@ -11,3 +11,5 @@ export { PlaceImage } from './place-image';
 export { Pill } from './pill';
 export { Sheet } from './sheet';
 export { ToastProvider, ToastViewport } from './toast';
+export { NavigationProgress } from './navigation-progress';
+export { Link } from './link';

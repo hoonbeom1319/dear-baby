@@ -2,7 +2,7 @@
 
 import { Fragment } from 'react';
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/shared/hooks';
 
 import { useCatalog, usePlaces } from '@/application/providers';
 

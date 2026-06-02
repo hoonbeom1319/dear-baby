@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from 'react';
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/shared/hooks';
 
 import { useAuth, useCatalog } from '@/application/providers';
 
@@ -13,7 +13,7 @@ import { ReportSheet } from '@/features/report';
 
 import type { Course } from '@/entities/course';
 import { useFavorite } from '@/entities/favorite';
-import { AmenityGrid } from '@/entities/place';
+import { AmenityGrid, usePlaceFeedback } from '@/entities/place';
 import type { Place } from '@/entities/place';
 
 import { toast } from '@/shared/lib';
@@ -42,6 +42,7 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
     const openLogin = useAuth((s) => s.openLogin);
     const { isFavorite, toggleFavorite } = useFavorite(userId, { onRequestLogin: openLogin });
     const [sheet, setSheet] = useState<SheetKind>(null);
+    const { kind: feedbackKind, setFeedback } = usePlaceFeedback(place?.id ?? '');
     const getArea = useCatalog((s) => s.getArea);
     const getCategory = useCatalog((s) => s.getCategory);
 
@@ -121,24 +122,42 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                 {/* 정보 제보 */}
                 <section className="border-t border-border p-4">
                     <SectionTitle>이 정보가 맞나요?</SectionTitle>
-                    <div className="flex gap-2">
-                        <button
-                            type="button"
-                            onClick={() => toast('제보해주셔서 감사해요')}
-                            className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-neutral-700 transition-colors hover:border-success hover:text-success"
+                    {feedbackKind ? (
+                        <div
+                            className={`flex items-center gap-2.5 rounded-[10px] border p-3.5 ${
+                                feedbackKind === 'correct'
+                                    ? 'border-success/30 bg-success/5 text-success'
+                                    : 'border-warning/30 bg-warning/5 text-warning'
+                            }`}
                         >
-                            <Icon name="thumb" size={18} />
-                            <span className="text-xs font-medium">맞아요</span>
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setSheet('report')}
-                            className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-neutral-700 transition-colors hover:border-warning hover:text-warning"
-                        >
-                            <Icon name="thumb-down" size={18} />
-                            <span className="text-xs font-medium">바뀌었어요</span>
-                        </button>
-                    </div>
+                            <Icon name="check" size={16} stroke={2.5} />
+                            <span className="text-sm font-medium">
+                                {feedbackKind === 'correct' ? '맞아요라고 알려주셨어요' : '수정 제보를 해주셨어요'}
+                            </span>
+                        </div>
+                    ) : (
+                        <div className="flex gap-2">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setFeedback('correct');
+                                    toast('제보해주셔서 감사해요');
+                                }}
+                                className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-neutral-700 transition-colors hover:border-success hover:text-success"
+                            >
+                                <Icon name="thumb" size={18} />
+                                <span className="text-xs font-medium">맞아요</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setSheet('report')}
+                                className="flex flex-1 flex-col items-center gap-1 rounded-[10px] border border-border bg-surface p-3 text-neutral-700 transition-colors hover:border-warning hover:text-warning"
+                            >
+                                <Icon name="thumb-down" size={18} />
+                                <span className="text-xs font-medium">바뀌었어요</span>
+                            </button>
+                        </div>
+                    )}
                 </section>
 
                 {/* 기본 정보 */}
@@ -216,6 +235,7 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                     } catch {
                         // 저장 실패해도 사용자에게는 성공 토스트 (UX 우선)
                     }
+                    setFeedback('reported');
                     toast('제보해주셔서 감사해요');
                 }}
             />
