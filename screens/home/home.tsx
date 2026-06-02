@@ -2,7 +2,6 @@
 
 import { useMemo, useState, type ReactNode } from 'react';
 
-import { useRouter } from '@/shared/hooks';
 
 import { useAuth, useCatalog, usePlaces } from '@/application/providers';
 
@@ -10,21 +9,22 @@ import type { Course } from '@/entities/course';
 import { useFavorite } from '@/entities/favorite';
 import { PlaceCard } from '@/entities/place';
 
-import { Slide } from '@/hbds/overlay/slide';
-import { cn } from '@/hbds/lib/utils';
+
+
+import type { AreaId, CategoryId } from '@/shared/config';
+import { useRouter } from '@/shared/hooks';
+import { toast } from '@/shared/lib';
+import { AppHeader, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 import { Skeleton } from '@/hbds/feedback/skeleton';
-
-import { Card } from '@/hbds/surfaces/card';
 import { Chip, ChipRow } from '@/hbds/forms/chip';
-import type { AreaId, CategoryId } from '@/shared/config';
-import { toast } from '@/shared/lib';
-import { AppHeader, Brand, Icon, IconButton, MobileShell } from '@/shared/ui';
+import { cn } from '@/hbds/lib/utils';
+import { Slide } from '@/hbds/overlay/slide';
+import { Card } from '@/hbds/surfaces/card';
 
 const SectionLabel = ({ children }: { children: ReactNode }) => (
     <div className="px-4 pb-2 text-[11px] font-semibold tracking-[0.06em] text-muted uppercase">{children}</div>
 );
-
 
 const PlaceCardSkeleton = () => (
     <div className="rounded-xl border border-border bg-surface shadow-card">

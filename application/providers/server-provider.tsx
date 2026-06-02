@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
 
-import { InstallPrompt } from '@/features/install-prompt';
 import { fetchAmenities, fetchAreas, fetchCategories, fetchRegions } from '@/server/controllers/catalog';
 import { fetchAllPlaces } from '@/server/controllers/places';
+
+import { InstallPrompt } from '@/features/install-prompt';
+
 import { NavigationProgress } from '@/shared/ui';
 
 import { CatalogStoreProvider } from './catalog/store-provider';

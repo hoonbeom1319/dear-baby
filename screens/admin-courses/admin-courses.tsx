@@ -2,8 +2,6 @@
 
 import { useState, type ReactNode } from 'react';
 
-import { useRouter } from '@/shared/hooks';
-
 import { useCatalog } from '@/application/providers';
 
 import { createCourse, modifyCourse, modifyCourseStops, removeCourse } from '@/server/controllers/courses';
@@ -13,11 +11,12 @@ import { AdChip, AdField, AdIconButton, AdInput, AdSelect, AdTextarea, AdminPage
 import type { Course } from '@/entities/course';
 import type { PlaceAdmin } from '@/entities/place';
 
-import { Button } from '@/hbds/display/button';
-import { Pill } from '@/hbds/display/badge';
+import { useRouter } from '@/shared/hooks';
 import { toast } from '@/shared/lib';
 import { Icon } from '@/shared/ui';
 
+import { Pill } from '@/hbds/display/badge';
+import { Button } from '@/hbds/display/button';
 import { cn } from '@/hbds/lib/utils';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (

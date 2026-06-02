@@ -2,7 +2,6 @@
 
 import { useState, type ReactNode } from 'react';
 
-import { useRouter } from '@/shared/hooks';
 
 import { useAuth, useCatalog } from '@/application/providers';
 
@@ -16,10 +15,12 @@ import { useFavorite } from '@/entities/favorite';
 import { AmenityGrid, usePlaceFeedback } from '@/entities/place';
 import type { Place } from '@/entities/place';
 
-import { Button } from '@/hbds/display/button';
-import { Card } from '@/hbds/surfaces/card';
+import { useRouter } from '@/shared/hooks';
 import { toast } from '@/shared/lib';
 import { AppHeader, Icon, IconButton, MobileShell, PlaceImage } from '@/shared/ui';
+
+import { Button } from '@/hbds/display/button';
+import { Card } from '@/hbds/surfaces/card';
 
 type SheetKind = 'nav' | 'report' | null;
 
@@ -127,15 +128,11 @@ export const PlaceDetail = ({ place, relatedCourses }: Props) => {
                     {feedbackKind ? (
                         <div
                             className={`flex items-center gap-2.5 rounded-[10px] border p-3.5 ${
-                                feedbackKind === 'correct'
-                                    ? 'border-success/30 bg-success/5 text-success'
-                                    : 'border-warning/30 bg-warning/5 text-warning'
+                                feedbackKind === 'correct' ? 'border-success/30 bg-success/5 text-success' : 'border-warning/30 bg-warning/5 text-warning'
                             }`}
                         >
                             <Icon name="check" size={16} stroke={2.5} />
-                            <span className="text-sm font-medium">
-                                {feedbackKind === 'correct' ? '맞아요라고 알려주셨어요' : '수정 제보를 해주셨어요'}
-                            </span>
+                            <span className="text-sm font-medium">{feedbackKind === 'correct' ? '맞아요라고 알려주셨어요' : '수정 제보를 해주셨어요'}</span>
                         </div>
                     ) : (
                         <div className="flex gap-2">

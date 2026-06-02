@@ -2,8 +2,6 @@
 
 import { useMemo, useState, type ReactNode } from 'react';
 
-import { useRouter } from '@/shared/hooks';
-
 import { useCatalog } from '@/application/providers';
 
 import { createPlace, modifyPlace, modifyPlaceStatus, removePlace } from '@/server/controllers/places';
@@ -13,11 +11,12 @@ import { AdField, AdIconButton, AdInput, AdTextarea, AdminPage, AreaSelect, Cate
 import type { PlaceAdmin } from '@/entities/place';
 
 import type { AmenityId, AreaId, CategoryId } from '@/shared/config';
-import { Button } from '@/hbds/display/button';
-import { Pill } from '@/hbds/display/badge';
+import { useRouter } from '@/shared/hooks';
 import { toast } from '@/shared/lib';
 import { Icon, type IconName } from '@/shared/ui';
 
+import { Pill } from '@/hbds/display/badge';
+import { Button } from '@/hbds/display/button';
 import { cn } from '@/hbds/lib/utils';
 
 const Th = ({ children, className }: { children?: ReactNode; className?: string }) => (
@@ -103,7 +102,9 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
 
     const areaCounts = useMemo(() => {
         const m: Record<string, number> = {};
-        initialPlaces.forEach((p) => { m[p.area] = (m[p.area] ?? 0) + 1; });
+        initialPlaces.forEach((p) => {
+            m[p.area] = (m[p.area] ?? 0) + 1;
+        });
         return m;
     }, [initialPlaces]);
 
@@ -338,8 +339,12 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
                 {hasFilter && (
                     <button
                         type="button"
-                        className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-surface pl-3 pr-2.5 text-[12.5px] font-medium text-muted transition-colors hover:bg-neutral-50"
-                        onClick={() => { setAreaFilter('all'); setCatFilter('all'); setSearch(''); }}
+                        className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-surface pr-2.5 pl-3 text-[12.5px] font-medium text-muted transition-colors hover:bg-neutral-50"
+                        onClick={() => {
+                            setAreaFilter('all');
+                            setCatFilter('all');
+                            setSearch('');
+                        }}
                     >
                         <Icon name="x" size={13} /> 초기화
                     </button>

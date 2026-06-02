@@ -2,9 +2,9 @@
 
 import type { ReactNode } from 'react';
 
-import { Link } from '@/shared/ui';
 import { usePathname } from 'next/navigation';
 
+import { Link } from '@/shared/ui';
 import { Icon, type IconName } from '@/shared/ui';
 
 import { cn } from '@/hbds/lib/utils';

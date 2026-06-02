@@ -19,7 +19,7 @@ export const PlacesStoreProvider = ({ children, data }: PropsWithChildren<{ data
     useEffect(() => {
         const storedArea = (localStorage.getItem(AREA_STORAGE_KEY) as PlacesState['area']) ?? data.area;
         store.setState({ area: storedArea, hydrated: true });
-    }, []);
+    }, [data.area, store]);
 
     return <PlacesStoreContext.Provider value={store}>{children}</PlacesStoreContext.Provider>;
 };

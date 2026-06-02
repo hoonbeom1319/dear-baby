@@ -1,6 +1,26 @@
-import type { Place } from '@/server/types/place';
-
 import { FETCH } from '@/hbw/api';
+
+type PlaceMapLinks = { kakao?: string; naver?: string; tmap?: string } | null;
+
+export type PlaceDto = {
+    id: string;
+    regionCode: string;
+    subRegionCode: string;
+    categoryCode: string;
+    name: string;
+    subtitle?: string | null;
+    headline?: string | null;
+    description?: string | null;
+    honeyTip?: string | null;
+    address?: string | null;
+    lat?: number | null;
+    lng?: number | null;
+    mapLinks?: PlaceMapLinks;
+    images?: string[] | null;
+    amenityCodes: string[];
+    createdAt?: string;
+    updatedAt?: string;
+};
 
 export type GetPlacesParams = {
     regionCode?: string;
@@ -11,7 +31,7 @@ export type GetPlacesParams = {
 
 export type GetPlacesResponse = {
     ok: true;
-    items: Place[];
+    items: PlaceDto[];
     nextCursor: string | null;
 };
 

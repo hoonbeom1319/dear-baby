@@ -2,14 +2,15 @@
 
 import { Fragment } from 'react';
 
-import { useRouter } from '@/shared/hooks';
 
 import { useCatalog, usePlaces } from '@/application/providers';
 
 import type { Course } from '@/entities/course';
 
-import { Card } from '@/hbds/surfaces/card';
+import { useRouter } from '@/shared/hooks';
 import { AppHeader, Icon, IconButton, MobileShell } from '@/shared/ui';
+
+import { Card } from '@/hbds/surfaces/card';
 
 const Dot = () => <span className="h-0.5 w-0.5 rounded-full bg-neutral-300" />;
 

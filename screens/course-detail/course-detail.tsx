@@ -1,6 +1,5 @@
 ﻿'use client';
 
-import { useRouter } from '@/shared/hooks';
 
 import { useAuth, useCatalog, usePlaces } from '@/application/providers';
 
@@ -8,9 +7,11 @@ import type { Course } from '@/entities/course';
 import { useFavorite } from '@/entities/favorite';
 import { PlaceCard } from '@/entities/place';
 
-import { Button } from '@/hbds/display/button';
+import { useRouter } from '@/shared/hooks';
 import { toast } from '@/shared/lib';
 import { AppHeader, Icon, IconButton, MobileShell } from '@/shared/ui';
+
+import { Button } from '@/hbds/display/button';
 
 const MetaDot = () => <span className="h-0.5 w-0.5 rounded-full bg-neutral-300" />;
 

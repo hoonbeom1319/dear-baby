@@ -2,15 +2,14 @@
 
 import type { ReactNode } from 'react';
 
-import { useRouter } from '@/shared/hooks';
-
 import type { DashboardData } from '@/server/controllers/dashboard';
 
 import { AdminPage } from '@/widgets/admin-shell';
 
-import { Button } from '@/hbds/display/button';
+import { useRouter } from '@/shared/hooks';
 import { Icon, type IconName } from '@/shared/ui';
 
+import { Button } from '@/hbds/display/button';
 import { cn } from '@/hbds/lib/utils';
 
 type StatProps = { label: string; value: string; suffix: ReactNode; percent: number; barClass?: string };
@@ -98,13 +97,7 @@ export const AdminDashboard = ({ data }: { data: DashboardData }) => {
             {/* 통계 */}
             <div className="mb-6 grid grid-cols-3 gap-4">
                 <Stat label="송파권 등록 장소" value={String(songpa)} suffix={`/ ${AREA_GOAL} 목표`} percent={(songpa / AREA_GOAL) * 100} />
-                <Stat
-                    label="파주권 등록 장소"
-                    value={String(paju)}
-                    suffix={`/ ${AREA_GOAL} 목표`}
-                    percent={(paju / AREA_GOAL) * 100}
-                    barClass="bg-warning"
-                />
+                <Stat label="파주권 등록 장소" value={String(paju)} suffix={`/ ${AREA_GOAL} 목표`} percent={(paju / AREA_GOAL) * 100} barClass="bg-warning" />
                 <Stat
                     label="전체 등록 장소"
                     value={String(totalPlaces)}

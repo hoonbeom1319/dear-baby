@@ -1,5 +1,6 @@
-import { Skeleton } from '@/hbds/feedback/skeleton';
 import { AppHeader, MobileShell } from '@/shared/ui';
+
+import { Skeleton } from '@/hbds/feedback/skeleton';
 
 export default function Loading() {
     return (
