@@ -1,6 +1,6 @@
 import type { Place } from '@/server/types/place';
 
-import { FETCH } from '@/hbw/api/fetch';
+import { FETCH } from '@/hbw/api';
 
 export type GetPlacesParams = {
     regionCode?: string;

@@ -1,6 +1,6 @@
 import { getAuthHeaders } from '@/shared/api';
 
-import { FETCH } from '@/hbw/api/fetch';
+import { FETCH } from '@/hbw/api';
 
 export type GetFavoritesResponse = { ok: true; ids: string[] };
 export type MutateFavoriteResponse = { ok: true };

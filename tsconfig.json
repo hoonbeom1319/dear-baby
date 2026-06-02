@@ -19,6 +19,9 @@
             }
         ],
         "paths": {
+            "@/hbw/api": ["./hbw/src/api/index.ts"],
+            "@/hbw/api/*": ["./hbw/src/api/*"],
+            "@/hbw/lib/*": ["./hbw/src/lib/*"],
             "@/*": ["./*"]
         }
     },

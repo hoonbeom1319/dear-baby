@@ -22,6 +22,7 @@
 
 ## Public imports
 
+- `hbw/api`
 - `hbw/api/fetch`
 - `hbw/lib/device`
 - `hbw/lib/number`

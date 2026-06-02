@@ -20,15 +20,21 @@ const NavigationProgressBar = () => {
 
     useEffect(() => {
         if (!isNavigating) return;
+
         if (cleanupTimerRef.current) {
             clearTimeout(cleanupTimerRef.current);
             cleanupTimerRef.current = null;
         }
-        setActive(true);
-        setCompleting(false);
-        setWidth(0);
-        const raf = requestAnimationFrame(() => requestAnimationFrame(() => setWidth(75)));
-        return () => cancelAnimationFrame(raf);
+
+        const startRaf = requestAnimationFrame(() => {
+            setActive(true);
+            setCompleting(false);
+            setWidth(0);
+
+            requestAnimationFrame(() => setWidth(75));
+        });
+
+        return () => cancelAnimationFrame(startRaf);
     }, [isNavigating]);
 
     useEffect(() => {
@@ -39,8 +45,12 @@ const NavigationProgressBar = () => {
         if (prev === currentUrl || !active) return;
 
         done();
-        setCompleting(true);
-        setWidth(100);
+
+        const completeRaf = requestAnimationFrame(() => {
+            setCompleting(true);
+            setWidth(100);
+        });
+
         const t = setTimeout(() => {
             setActive(false);
             setWidth(0);
@@ -48,8 +58,12 @@ const NavigationProgressBar = () => {
             cleanupTimerRef.current = null;
         }, 500);
         cleanupTimerRef.current = t;
-        return () => clearTimeout(t);
-    }, [pathname, searchParams]);
+
+        return () => {
+            cancelAnimationFrame(completeRaf);
+            clearTimeout(t);
+        };
+    }, [active, done, pathname, searchParams]);
 
     if (!active) return null;
 

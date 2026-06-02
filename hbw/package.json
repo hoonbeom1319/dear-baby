@@ -8,6 +8,11 @@
     "module": "./dist/api/fetch.js",
     "types": "./dist/api/fetch.d.ts",
     "exports": {
+        "./api": {
+            "types": "./dist/api/index.d.ts",
+            "import": "./dist/api/index.js",
+            "require": "./dist/api/index.cjs"
+        },
         "./api/*": {
             "types": "./dist/api/*.d.ts",
             "import": "./dist/api/*.js",
