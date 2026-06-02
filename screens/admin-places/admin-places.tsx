@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 
 import { useRouter } from '@/shared/hooks';
 
@@ -8,13 +8,15 @@ import { useCatalog } from '@/application/providers';
 
 import { createPlace, modifyPlace, modifyPlaceStatus, removePlace } from '@/server/controllers/places';
 
-import { AdChip, AdField, AdIconButton, AdInput, AdTextarea, AdminPage } from '@/widgets/admin-shell';
+import { AdField, AdIconButton, AdInput, AdTextarea, AdminPage, AreaSelect, CategorySelect } from '@/widgets/admin-shell';
 
 import type { PlaceAdmin } from '@/entities/place';
 
 import type { AmenityId, AreaId, CategoryId } from '@/shared/config';
+import { Button } from '@/hbds/display/button';
+import { Pill } from '@/hbds/display/badge';
 import { toast } from '@/shared/lib';
-import { Button, Icon, type IconName, Pill } from '@/shared/ui';
+import { Icon, type IconName } from '@/shared/ui';
 
 import { cn } from '@/hbds/lib/utils';
 
@@ -96,10 +98,20 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState<FormState>(makeDefaultForm);
     const [areaFilter, setAreaFilter] = useState<AreaId | 'all'>('all');
+    const [catFilter, setCatFilter] = useState<CategoryId | 'all'>('all');
     const [search, setSearch] = useState('');
+
+    const areaCounts = useMemo(() => {
+        const m: Record<string, number> = {};
+        initialPlaces.forEach((p) => { m[p.area] = (m[p.area] ?? 0) + 1; });
+        return m;
+    }, [initialPlaces]);
+
+    const hasFilter = areaFilter !== 'all' || catFilter !== 'all' || search !== '';
 
     const filtered = initialPlaces.filter((p) => {
         if (areaFilter !== 'all' && p.area !== areaFilter) return false;
+        if (catFilter !== 'all' && p.category !== catFilter) return false;
         if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false;
         return true;
     });
@@ -203,21 +215,14 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
 
                         <div className="grid grid-cols-2 gap-4">
                             <AdField label="동네">
-                                <select
+                                <AreaSelect
+                                    variant="field"
+                                    allowAll={false}
                                     value={form.area}
-                                    onChange={(e) => set('area', e.target.value as AreaId)}
-                                    className="h-9 w-full rounded-lg border border-border bg-surface px-3 text-[13.5px] text-surface-foreground"
-                                >
-                                    {regions.map((r) => (
-                                        <optgroup key={r.id} label={r.name}>
-                                            {areas.filter((a) => a.regionId === r.id).map((a) => (
-                                                <option key={a.id} value={a.id}>
-                                                    {a.name}
-                                                </option>
-                                            ))}
-                                        </optgroup>
-                                    ))}
-                                </select>
+                                    onChange={(id) => set('area', id as AreaId)}
+                                    areas={areas}
+                                    regions={regions}
+                                />
                             </AdField>
                             <AdField label="카테고리">
                                 <select
@@ -328,14 +333,17 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
             }
         >
             <div className="mb-4 flex flex-wrap items-center gap-2">
-                <AdChip active={areaFilter === 'all'} onClick={() => setAreaFilter('all')}>
-                    전체 동네
-                </AdChip>
-                {areas.map((a) => (
-                    <AdChip key={a.id} active={areaFilter === a.id} onClick={() => setAreaFilter(a.id)}>
-                        {a.name}
-                    </AdChip>
-                ))}
+                <AreaSelect value={areaFilter} onChange={setAreaFilter} areas={areas} regions={regions} counts={areaCounts} />
+                <CategorySelect value={catFilter} onChange={setCatFilter} categories={categories} />
+                {hasFilter && (
+                    <button
+                        type="button"
+                        className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-surface pl-3 pr-2.5 text-[12.5px] font-medium text-muted transition-colors hover:bg-neutral-50"
+                        onClick={() => { setAreaFilter('all'); setCatFilter('all'); setSearch(''); }}
+                    >
+                        <Icon name="x" size={13} /> 초기화
+                    </button>
+                )}
                 <div className="flex-1" />
                 <div className="relative min-w-[240px]">
                     <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted">
@@ -397,7 +405,9 @@ export const AdminPlaces = ({ initialPlaces }: Props) => {
             </div>
             <div className="mt-3.5">
                 <span className="text-[12.5px] text-muted">
-                    총 {initialPlaces.length}곳 · {filtered.length}개 표시 중
+                    {hasFilter
+                        ? `${filtered.length}곳 표시 중 · 전체 ${initialPlaces.length}곳`
+                        : `총 ${initialPlaces.length}곳 · 1–${filtered.length} 표시 중`}
                 </span>
             </div>
         </AdminPage>

@@ -1,14 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
-import { AppProvider } from '@/application/providers';
-import { CatalogProvider } from '@/application/providers/catalog/provider';
-import { PlacesProvider } from '@/application/providers/places/provider';
-
-import { InstallPrompt } from '@/features/install-prompt';
+import { AppProvider, ServerProvider } from '@/application/providers';
 
 import { pretendard } from '@/shared/config/font';
-import { NavigationProgress } from '@/shared/ui';
 
 export const metadata: Metadata = {
     title: 'Dear Baby',
@@ -34,13 +29,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <html lang="ko" className={pretendard.variable}>
             <head />
             <body>
-                <AppProvider>
-                    <PlacesProvider>
-                        <CatalogProvider>{children}</CatalogProvider>
-                    </PlacesProvider>
-                </AppProvider>
-                <NavigationProgress />
-                <InstallPrompt />
+                <ServerProvider>
+                    <AppProvider>{children}</AppProvider>
+                </ServerProvider>
             </body>
         </html>
     );

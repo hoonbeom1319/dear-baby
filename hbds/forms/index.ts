@@ -1,3 +1,4 @@
+export * from './chip';
 export * from './input';
 export * from './textarea';
 export * from './label';

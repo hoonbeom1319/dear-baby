@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom';
 import { cn } from '../lib/utils';
 
 const ToastProvider = ToastPrimitive.Provider;
+const Description = ToastPrimitive.Description;
 
 const ToastViewport = ({ className, ref, ...props }: React.ComponentPropsWithRef<typeof ToastPrimitive.Viewport>) => {
     if (typeof document === 'undefined') return null;
@@ -88,4 +89,18 @@ const ToastClose = ({ className, ref, ...props }: React.ComponentPropsWithRef<ty
     </ToastPrimitive.Close>
 );
 
-export { ToastProvider, ToastViewport, Toast, ToastTitle, ToastDescription, ToastAction, ToastClose };
+type SnackbarProps = React.ComponentPropsWithRef<typeof ToastPrimitive.Root>;
+
+const Snackbar = ({ className, ref, ...props }: SnackbarProps) => (
+    <ToastPrimitive.Root
+        ref={ref}
+        className={cn(
+            'animate-[toast-in_220ms_var(--ease-spring)] rounded-full bg-neutral-900 px-[18px] py-2.5 text-center text-[13px] font-medium text-white shadow-lg',
+            'data-[state=closed]:animate-[toast-out_150ms_ease-in]',
+            className
+        )}
+        {...props}
+    />
+);
+
+export { ToastProvider, Description, ToastViewport, Toast, ToastTitle, ToastDescription, ToastAction, ToastClose, Snackbar };

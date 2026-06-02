@@ -28,4 +28,23 @@ const Badge = ({ className, variant = 'default', size = 'md', ...props }: BadgeP
     <span className={cn('inline-flex items-center rounded-full border font-medium', variantClass[variant], sizeClass[size], className)} {...props} />
 );
 
-export { Badge };
+type PillTone = 'neutral' | 'primary' | 'success' | 'warning' | 'danger';
+
+const pillToneClass: Record<PillTone, string> = {
+    neutral: 'bg-neutral-100 text-neutral-700',
+    primary: 'bg-primary-50 text-primary-700',
+    success: 'bg-emerald-50 text-success',
+    warning: 'bg-amber-50 text-warning',
+    danger: 'bg-rose-50 text-danger'
+};
+
+type PillProps = HTMLAttributes<HTMLSpanElement> & { tone?: PillTone };
+
+const Pill = ({ tone = 'neutral', className, ...props }: PillProps) => (
+    <span
+        className={cn('inline-flex h-[22px] items-center gap-1 rounded-full px-2 text-[11.5px] leading-none font-medium', pillToneClass[tone], className)}
+        {...props}
+    />
+);
+
+export { Badge, Pill };
