@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 
+import { Sheet } from '@/hbds/overlay/sheet';
 import { getSupabaseBrowser } from '@/shared/lib';
-import { Sheet } from '@/shared/ui';
 
 type Provider = 'kakao' | 'naver' | 'apple';
 

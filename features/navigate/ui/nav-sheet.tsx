@@ -1,6 +1,7 @@
 ﻿'use client';
 
-import { Icon, Sheet } from '@/shared/ui';
+import { Sheet } from '@/hbds/overlay/sheet';
+import { Icon } from '@/shared/ui';
 
 type NavSheetProps = {
     open: boolean;

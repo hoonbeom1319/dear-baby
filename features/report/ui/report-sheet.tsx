@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 
-import { Button, Icon, Sheet } from '@/shared/ui';
+import { Button } from '@/hbds/display/button';
+import { Sheet } from '@/hbds/overlay/sheet';
+import { Icon } from '@/shared/ui';
 
 import { cn } from '@/hbds/lib/utils';
 

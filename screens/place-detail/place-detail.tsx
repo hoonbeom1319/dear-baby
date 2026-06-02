@@ -16,8 +16,10 @@ import { useFavorite } from '@/entities/favorite';
 import { AmenityGrid, usePlaceFeedback } from '@/entities/place';
 import type { Place } from '@/entities/place';
 
+import { Button } from '@/hbds/display/button';
+import { Card } from '@/hbds/surfaces/card';
 import { toast } from '@/shared/lib';
-import { AppHeader, Button, Card, Icon, IconButton, MobileShell, PlaceImage } from '@/shared/ui';
+import { AppHeader, Icon, IconButton, MobileShell, PlaceImage } from '@/shared/ui';
 
 type SheetKind = 'nav' | 'report' | null;
 

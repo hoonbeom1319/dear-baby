@@ -15,9 +15,11 @@ import { cn } from '@/hbds/lib/utils';
 
 import { Skeleton } from '@/hbds/feedback/skeleton';
 
+import { Card } from '@/hbds/surfaces/card';
+import { Chip, ChipRow } from '@/hbds/forms/chip';
 import type { AreaId, CategoryId } from '@/shared/config';
 import { toast } from '@/shared/lib';
-import { AppHeader, Brand, Card, Chip, ChipRow, Icon, IconButton, MobileShell } from '@/shared/ui';
+import { AppHeader, Brand, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const SectionLabel = ({ children }: { children: ReactNode }) => (
     <div className="px-4 pb-2 text-[11px] font-semibold tracking-[0.06em] text-muted uppercase">{children}</div>

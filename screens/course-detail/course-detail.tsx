@@ -8,8 +8,9 @@ import type { Course } from '@/entities/course';
 import { useFavorite } from '@/entities/favorite';
 import { PlaceCard } from '@/entities/place';
 
+import { Button } from '@/hbds/display/button';
 import { toast } from '@/shared/lib';
-import { AppHeader, Button, Icon, IconButton, MobileShell } from '@/shared/ui';
+import { AppHeader, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const MetaDot = () => <span className="h-0.5 w-0.5 rounded-full bg-neutral-300" />;
 

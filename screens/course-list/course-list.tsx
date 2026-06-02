@@ -8,7 +8,8 @@ import { useCatalog, usePlaces } from '@/application/providers';
 
 import type { Course } from '@/entities/course';
 
-import { AppHeader, Card, Icon, IconButton, MobileShell } from '@/shared/ui';
+import { Card } from '@/hbds/surfaces/card';
+import { AppHeader, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 const Dot = () => <span className="h-0.5 w-0.5 rounded-full bg-neutral-300" />;
 

@@ -13,8 +13,10 @@ import { AdChip, AdField, AdIconButton, AdInput, AdSelect, AdTextarea, AdminPage
 import type { Course } from '@/entities/course';
 import type { PlaceAdmin } from '@/entities/place';
 
+import { Button } from '@/hbds/display/button';
+import { Pill } from '@/hbds/display/badge';
 import { toast } from '@/shared/lib';
-import { Button, Icon, Pill } from '@/shared/ui';
+import { Icon } from '@/shared/ui';
 
 import { cn } from '@/hbds/lib/utils';
 

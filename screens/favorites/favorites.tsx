@@ -7,7 +7,8 @@ import { useAuth, usePlaces } from '@/application/providers';
 import { useFavorite } from '@/entities/favorite';
 import { PlaceCard } from '@/entities/place';
 
-import { AppHeader, Button, Icon, IconButton, MobileShell } from '@/shared/ui';
+import { Button } from '@/hbds/display/button';
+import { AppHeader, Icon, IconButton, MobileShell } from '@/shared/ui';
 
 /**
  * 즐겨찾기 목록 (PRD F-8). 최근 추가순 자동 정렬.
