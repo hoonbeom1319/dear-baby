@@ -26,15 +26,16 @@ async function verifyAuth(request: NextRequest): Promise<string | null> {
 const CSP = [
     "default-src 'self'",
     // Next.js 하이드레이션 인라인 스크립트 허용
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    // Next.js 하이드레이션 인라인 스크립트 허용
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' dapi.kakao.com *.daumcdn.net",
     // Tailwind/Next.js 인라인 스타일 허용
     "style-src 'self' 'unsafe-inline'",
-    // Supabase Storage 이미지, data URI, blob
-    "img-src 'self' data: blob: *.supabase.co",
+    // Supabase Storage + 카카오맵 타일/마커
+    "img-src 'self' data: blob: *.supabase.co *.daumcdn.net *.kakao.com",
     // 로컬 폰트(Pretendard woff2)
     "font-src 'self'",
-    // Supabase API/Auth fetch
-    "connect-src 'self' *.supabase.co",
+    // Supabase + Naver Search/Blog API + 카카오맵 API
+    "connect-src 'self' *.supabase.co openapi.naver.com dapi.kakao.com *.kakao.com",
     // PWA 서비스 워커
     "worker-src 'self'",
     "frame-src 'none'",

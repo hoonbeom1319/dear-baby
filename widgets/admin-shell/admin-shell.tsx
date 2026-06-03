@@ -12,6 +12,7 @@ import { cn } from '@/hbds/lib/utils';
 const NAV: { href: string; label: string; icon: IconName; key: string }[] = [
     { href: '/admin', label: '대시보드', icon: 'home', key: 'dashboard' },
     { href: '/admin/places', label: '장소 관리', icon: 'pin', key: 'places' },
+    { href: '/admin/place-finder', label: '장소 찾기', icon: 'search', key: 'place-finder' },
     { href: '/admin/courses', label: '코스 관리', icon: 'route', key: 'courses' },
     { href: '/admin/reports', label: '정보 제보', icon: 'inbox', key: 'reports' }
 ];
