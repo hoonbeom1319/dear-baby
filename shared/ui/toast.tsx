@@ -5,7 +5,7 @@ import { useToastStore } from '@/shared/lib/toast';
 import { Snackbar, ToastProvider as HbdsToastProvider, ToastViewport as HbdsToastViewport, Description as HbdsDescription } from '@/hbds/feedback/toast';
 
 export const ToastViewport = () => (
-    <HbdsToastViewport className="pointer-events-none fixed right-0 bottom-7 left-0 z-1080 flex flex-col items-center gap-2 outline-none" />
+    <HbdsToastViewport className="pointer-events-none fixed right-0 bottom-7 left-0 z-1080 flex flex-col items-center gap-2 outline-none md:max-w-none" />
 );
 
 export const ToastProvider = () => {

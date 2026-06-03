@@ -38,19 +38,20 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
     const areas = useCatalog((s) => s.areas);
     const getArea = useCatalog((s) => s.getArea);
     const getCategory = useCatalog((s) => s.getCategory);
+    const [courses, setCourses] = useState(initialCourses);
     const [selected, setSelected] = useState(0);
     const [saving, setSaving] = useState(false);
     const [areaFilter, setAreaFilter] = useState<AreaId | 'all'>('all');
 
     const areaCounts = useMemo(() => {
         const m: Record<string, number> = {};
-        initialCourses.forEach((c) => {
+        courses.forEach((c) => {
             m[c.area] = (m[c.area] ?? 0) + 1;
         });
         return m;
-    }, [initialCourses]);
+    }, [courses]);
 
-    const filteredCourses = areaFilter === 'all' ? initialCourses : initialCourses.filter((c) => c.area === areaFilter);
+    const filteredCourses = areaFilter === 'all' ? courses : courses.filter((c) => c.area === areaFilter);
 
     const course = filteredCourses[selected] ?? initialCourses[selected];
 
@@ -114,12 +115,19 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
 
     const handleDelete = async (c: Course) => {
         if (!confirm(`"${c.title}" 코스를 삭제할까요?`)) return;
+        setCourses((prev) => prev.filter((item) => item.id !== c.id));
+        setSelected(0);
         try {
             await removeCourse(c.id);
             toast('삭제했어요');
-            setSelected(0);
             router.refresh();
         } catch {
+            setCourses((prev) => {
+                const idx = initialCourses.findIndex((item) => item.id === c.id);
+                const next = [...prev];
+                next.splice(idx, 0, c);
+                return next;
+            });
             toast('삭제에 실패했어요');
         }
     };
@@ -132,7 +140,7 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
                 duration: '',
                 season: '사계절',
                 description: '',
-                sortOrder: initialCourses.length,
+                sortOrder: courses.length,
                 stops: []
             });
             toast('새 코스를 만들었어요. 우측 에디터에서 편집하세요.');
@@ -168,49 +176,51 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
                         />
                     </div>
                     <div className="overflow-hidden rounded-xl border border-border bg-surface">
-                        <table className="w-full border-collapse text-[13.5px]">
-                            <thead>
-                                <tr>
-                                    <Th>이름</Th>
-                                    <Th className="w-[90px]">동네</Th>
-                                    <Th className="w-[90px]">정거장</Th>
-                                    <Th className="w-[90px]">소요</Th>
-                                    <Th className="w-[80px]" />
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredCourses.map((item, i) => (
-                                    <tr
-                                        key={item.id}
-                                        onClick={() => handleSelect(i)}
-                                        className={cn('cursor-pointer transition-colors', selected === i ? 'bg-primary-50' : 'hover:bg-neutral-50')}
-                                    >
-                                        <td className="border-b border-border px-4 py-3.5 font-medium text-surface-foreground">{item.title}</td>
-                                        <td className="border-b border-border px-4 py-3.5 text-muted">{getArea(item.area)?.name}</td>
-                                        <td className="border-b border-border px-4 py-3.5 text-surface-foreground tabular-nums">{item.stopIds.length}곳</td>
-                                        <td className="border-b border-border px-4 py-3.5 text-muted">{item.duration}</td>
-                                        <td className="border-b border-border px-4 py-3.5">
-                                            <div className="flex justify-end gap-1">
-                                                <AdIconButton
-                                                    name="trash"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleDelete(item);
-                                                    }}
-                                                />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {filteredCourses.length === 0 && (
+                        <div className="max-h-[calc(100dvh-180px)] overflow-y-auto">
+                            <table className="w-full border-collapse text-[13.5px]">
+                                <thead>
                                     <tr>
-                                        <td colSpan={5} className="py-8 text-center text-[13px] text-muted">
-                                            코스가 없어요
-                                        </td>
+                                        <Th className="sticky top-0">이름</Th>
+                                        <Th className="sticky top-0 w-[90px]">동네</Th>
+                                        <Th className="sticky top-0 w-[90px]">정거장</Th>
+                                        <Th className="sticky top-0 w-[90px]">소요</Th>
+                                        <Th className="sticky top-0 w-[80px]" />
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {filteredCourses.map((item, i) => (
+                                        <tr
+                                            key={item.id}
+                                            onClick={() => handleSelect(i)}
+                                            className={cn('cursor-pointer transition-colors', selected === i ? 'bg-primary-50' : 'hover:bg-neutral-50')}
+                                        >
+                                            <td className="border-b border-border px-4 py-3.5 font-medium text-surface-foreground">{item.title}</td>
+                                            <td className="border-b border-border px-4 py-3.5 text-muted">{getArea(item.area)?.name}</td>
+                                            <td className="border-b border-border px-4 py-3.5 text-surface-foreground tabular-nums">{item.stopIds.length}곳</td>
+                                            <td className="border-b border-border px-4 py-3.5 text-muted">{item.duration}</td>
+                                            <td className="border-b border-border px-4 py-3.5">
+                                                <div className="flex justify-end gap-1">
+                                                    <AdIconButton
+                                                        name="trash"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDelete(item);
+                                                        }}
+                                                    />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {filteredCourses.length === 0 && (
+                                        <tr>
+                                            <td colSpan={5} className="py-8 text-center text-[13px] text-muted">
+                                                코스가 없어요
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
