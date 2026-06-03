@@ -1,16 +1,17 @@
 ﻿'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 
 import { useCatalog } from '@/application/providers';
 
 import { createCourse, modifyCourse, modifyCourseStops, removeCourse } from '@/server/controllers/courses';
 
-import { AdChip, AdField, AdIconButton, AdInput, AdSelect, AdTextarea, AdminPage } from '@/widgets/admin-shell';
+import { AdField, AdIconButton, AdInput, AdTextarea, AdminPage, AreaSelect } from '@/widgets/admin-shell';
 
 import type { Course } from '@/entities/course';
 import type { PlaceAdmin } from '@/entities/place';
 
+import type { AreaId } from '@/shared/config';
 import { useRouter } from '@/shared/hooks';
 import { toast } from '@/shared/lib';
 import { Icon } from '@/shared/ui';
@@ -33,12 +34,21 @@ type Props = {
 /** 코스 관리 (PRD A-4). 좌측 목록 선택 → 우측 에디터 라이브 갱신. */
 export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
     const router = useRouter();
+    const regions = useCatalog((s) => s.regions);
     const areas = useCatalog((s) => s.areas);
     const getArea = useCatalog((s) => s.getArea);
     const getCategory = useCatalog((s) => s.getCategory);
     const [selected, setSelected] = useState(0);
     const [saving, setSaving] = useState(false);
-    const [areaFilter, setAreaFilter] = useState<string>('all');
+    const [areaFilter, setAreaFilter] = useState<AreaId | 'all'>('all');
+
+    const areaCounts = useMemo(() => {
+        const m: Record<string, number> = {};
+        initialCourses.forEach((c) => {
+            m[c.area] = (m[c.area] ?? 0) + 1;
+        });
+        return m;
+    }, [initialCourses]);
 
     const filteredCourses = areaFilter === 'all' ? initialCourses : initialCourses.filter((c) => c.area === areaFilter);
 
@@ -46,12 +56,14 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
 
     // 에디터 로컬 상태 (선택 변경 시 course로 초기화)
     const [draftTitle, setDraftTitle] = useState(course?.title ?? '');
+    const [draftArea, setDraftArea] = useState<AreaId>(course?.area ?? areas[0]?.id ?? '');
     const [draftDuration, setDraftDuration] = useState(course?.duration ?? '');
     const [draftDesc, setDraftDesc] = useState(course?.description ?? '');
     const [draftStops, setDraftStops] = useState<StopDraft[]>(course?.stopIds.map((id, i) => ({ placeId: id, comment: course.comments[i] ?? '' })) ?? []);
 
     const syncEditor = (c: Course) => {
         setDraftTitle(c.title);
+        setDraftArea(c.area);
         setDraftDuration(c.duration);
         setDraftDesc(c.description);
         setDraftStops(c.stopIds.map((id, i) => ({ placeId: id, comment: c.comments[i] ?? '' })));
@@ -85,6 +97,7 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
         setSaving(true);
         try {
             await modifyCourse(course.id, {
+                area: draftArea,
                 title: draftTitle,
                 duration: draftDuration,
                 description: draftDesc
@@ -142,28 +155,17 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
             <div className="grid grid-cols-[1.3fr_1fr] items-start gap-5">
                 {/* 좌측: 목록 */}
                 <div>
-                    <div className="mb-3 flex gap-2">
-                        <AdChip
-                            active={areaFilter === 'all'}
-                            onClick={() => {
-                                setAreaFilter('all');
+                    <div className="mb-3">
+                        <AreaSelect
+                            value={areaFilter}
+                            onChange={(id) => {
+                                setAreaFilter(id);
                                 setSelected(0);
                             }}
-                        >
-                            전체 동네
-                        </AdChip>
-                        {areas.map((a) => (
-                            <AdChip
-                                key={a.id}
-                                active={areaFilter === a.id}
-                                onClick={() => {
-                                    setAreaFilter(a.id);
-                                    setSelected(0);
-                                }}
-                            >
-                                {a.name}
-                            </AdChip>
-                        ))}
+                            areas={areas}
+                            regions={regions}
+                            counts={areaCounts}
+                        />
                     </div>
                     <div className="overflow-hidden rounded-xl border border-border bg-surface">
                         <table className="w-full border-collapse text-[13.5px]">
@@ -228,7 +230,14 @@ export const AdminCourses = ({ initialCourses, allPlaces }: Props) => {
                             </AdField>
                             <div className="grid grid-cols-2 gap-4">
                                 <AdField label="동네">
-                                    <AdSelect value={getArea(course.area)?.name} />
+                                    <AreaSelect
+                                        variant="field"
+                                        allowAll={false}
+                                        value={draftArea}
+                                        onChange={(id) => setDraftArea(id as AreaId)}
+                                        areas={areas}
+                                        regions={regions}
+                                    />
                                 </AdField>
                                 <AdField label="예상 소요">
                                     <AdInput value={draftDuration} onChange={(e) => setDraftDuration(e.target.value)} />

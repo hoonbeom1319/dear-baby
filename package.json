@@ -7,7 +7,8 @@
         "devs": "next dev --experimental-https",
         "build": "next build",
         "start": "next start",
-        "lint": "eslint"
+        "lint": "eslint",
+        "seed:places": "node --env-file=.env scripts/seed-seoul-places.mjs"
     },
     "dependencies": {
         "@radix-ui/react-icons": "^1.3.2",
