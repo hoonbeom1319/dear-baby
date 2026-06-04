@@ -1,8 +1,7 @@
-const INTERNAL_ORDER = ['state', 'custom', 'ref', 'memo', 'callback', 'handler', 'effect', 'layout', 'return'];
+const INTERNAL_ORDER = ['state', 'custom', 'memo', 'callback', 'handler', 'effect', 'layout', 'return'];
 
 const HOOK_CATEGORY = {
     useState: 'state',
-    useRef: 'ref',
     useMemo: 'memo',
     useCallback: 'callback',
     useEffect: 'effect',
@@ -19,6 +18,8 @@ function getCalleeName(callee) {
 
 function getHookCategoryByName(name) {
     if (!name?.startsWith('use')) return null;
+    // useRef는 custom hook에 인자로 넘기는 경우가 많아 순서 검사에서 제외
+    if (name === 'useRef') return null;
     return HOOK_CATEGORY[name] ?? 'custom';
 }
 
