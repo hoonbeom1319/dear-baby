@@ -25,55 +25,13 @@ import { NaverBlogReviews } from './ui/naver-blog-reviews';
 import { PlaceDetailHeader } from './ui/place-detail-header';
 import { ResultsList } from './ui/results-list';
 
-// ── Constants ─────────────────────────────────────────────────────────────────
-
-const AREA_ID_MAP: Record<string, string> = {
-    강남구: 'gangnam',
-    강북구: 'gangbuk',
-    강동구: 'gangdong',
-    강서구: 'gangseo',
-    관악구: 'gwanak',
-    광진구: 'gwangjin',
-    구로구: 'guro',
-    금천구: 'geumcheon',
-    노원구: 'nowon',
-    도봉구: 'dobong',
-    동대문구: 'dongdaemun',
-    동작구: 'dongjak',
-    마포구: 'mapo',
-    서대문구: 'seodaemun',
-    서초구: 'seocho',
-    성동구: 'seongdong',
-    성북구: 'seongbuk',
-    송파구: 'songpa',
-    양천구: 'yangcheon',
-    영등포구: 'yeongdeungpo',
-    용산구: 'yongsan',
-    은평구: 'eunpyeong',
-    종로구: 'jongno',
-    중구: 'jung',
-    중랑구: 'jungnang'
-};
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function detectArea(roadAddress: string): AreaId | '' {
-    for (const [name, id] of Object.entries(AREA_ID_MAP)) {
-        if (roadAddress.includes(name)) return id as AreaId;
-    }
-    return '';
-}
-
-function detectCategory(naverCategory: string): CategoryId {
-    return naverCategory.includes('카페') || naverCategory.includes('디저트') ? 'cafe' : 'rest';
-}
-
 /** 검색 결과 장소를 등록 폼 프리필로 변환한다. 동네를 못 잡으면 첫 동네로 폴백. */
 function placeToPrefill(place: KakaoSearchPlace, areas: Area[]): PlaceFormPrefill {
+    const area = areas.find(({ name }) => place.roadAddress.includes(name))?.id ?? '';
     return {
         name: stripHtml(place.title),
-        area: (detectArea(place.roadAddress) || areas[0]?.id || '') as AreaId,
-        category: detectCategory(place.category),
+        area,
+        category: '' as CategoryId,
         address: place.roadAddress || place.address,
         phone: place.telephone
     };
@@ -96,6 +54,18 @@ export const AdminPlaceFinder = () => {
     const { posts: blogPosts, isLoading: blogLoading } = useNaverBlog(selectedPlaceName);
 
     const focusPlace = useMemo(() => (selected ? toMapCenter(selected) : null), [selected]);
+
+    const prefill = useMemo(() => {
+        if (!selected) return { name: '', area: '', category: '', address: '', phone: '' };
+        const area = areas.find(({ name }) => selected.roadAddress.includes(name))?.id ?? '';
+        return {
+            name: stripHtml(selected.title),
+            area,
+            category: '' as CategoryId,
+            address: selected.roadAddress || selected.address,
+            phone: selected.telephone
+        };
+    }, [selected, areas]);
 
     const handleSelect = useCallback((place: KakaoSearchPlace) => setSelected(place), []);
 
@@ -168,7 +138,7 @@ export const AdminPlaceFinder = () => {
                                 <PlaceDetailHeader place={selected} onBack={() => setSelected(null)} />
                                 <NaverBlogReviews posts={blogPosts} loading={blogLoading} />
                                 <PlaceRegisterForm
-                                    prefill={placeToPrefill(selected, areas)}
+                                    prefill={prefill}
                                     onSubmit={async (payload) => {
                                         await createPlace(payload);
                                         setSelected(null);
