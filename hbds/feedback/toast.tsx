@@ -1,25 +1,21 @@
 import * as React from 'react';
 
-import * as ToastPrimitive from '@radix-ui/react-toast';
 import { X } from 'lucide-react';
-import { createPortal } from 'react-dom';
+import { Portal, Toast as ToastPrimitive } from 'radix-ui';
 
 import { cn } from '../lib/utils';
 
 const ToastProvider = ToastPrimitive.Provider;
 const Description = ToastPrimitive.Description;
 
-const ToastViewport = ({ className, ref, ...props }: React.ComponentPropsWithRef<typeof ToastPrimitive.Viewport>) => {
-    if (typeof document === 'undefined') return null;
-    return createPortal(
+const ToastViewport = ({ className, ...props }: React.ComponentPropsWithRef<typeof ToastPrimitive.Viewport>) => (
+    <Portal.Root asChild>
         <ToastPrimitive.Viewport
-            ref={ref}
             className={cn('z-toast fixed right-0 bottom-0 flex max-h-screen w-full flex-col-reverse gap-2 p-4 md:max-w-[420px]', className)}
             {...props}
-        />,
-        document.body
-    );
-};
+        />
+    </Portal.Root>
+);
 
 type ToastVariant = 'default' | 'success' | 'warning' | 'danger';
 

@@ -1,3 +1,5 @@
+import type { LatLng } from '@/shared/kakao-map';
+
 /** mapx(경도)·mapy(위도) — WGS84×10⁷ 정수 문자열 */
 export type MapPlace = {
     mapx: string;
@@ -15,10 +17,11 @@ export type KakaoSearchPlace = MapPlace & {
     roadAddress: string;
 };
 
-export type MapCenter = { lat: number; lng: number };
+/** 지도 중심·마커·카메라 이동용 좌표 */
+export type MapCenter = LatLng;
 
 /** 지도 카메라가 이동할 좌표 */
-export type MapFocusPlace = MapCenter;
+export type MapFocusPlace = LatLng;
 
 export type KakaoPlaceMapSearchResult =
     | { ok: true; places: KakaoSearchPlace[] }

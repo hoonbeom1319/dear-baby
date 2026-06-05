@@ -1,15 +1,16 @@
 'use client';
 
-import { useRef } from 'react';
+import { useState } from 'react';
 
 import { UpdateIcon } from '@radix-ui/react-icons';
-import Script from 'next/script';
+
+import { KakaoMap } from '@/shared/kakao-map';
 
 import { Button } from '@/hbds/display/button';
-import { cn } from '@/hbds/lib/utils';
 
+import { DEFAULT_MAP_CENTER, DEFAULT_MAP_LEVEL } from './config/defaults';
 import type { KakaoPlaceMapSearchResult, KakaoSearchPlace, MapFocusPlace } from './lib/types';
-import { useKakaoPlaceMap } from './model/use-kakao-place-map';
+import { useKakaoPlaceSearch } from './model/use-kakao-place-search';
 
 export type KakaoPlaceMapProps = {
     searchQuery?: string | null;
@@ -20,33 +21,25 @@ export type KakaoPlaceMapProps = {
 };
 
 export function KakaoPlaceMap({ searchQuery = null, focusPlace = null, onMarkerClick, onSearchComplete, className }: KakaoPlaceMapProps) {
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    const { mapReady, onSdkLoad, showResearch, researchHere } = useKakaoPlaceMap({
-        mapContainerRef: containerRef,
-        searchQuery,
-        focusPlace,
-        onMarkerClick,
-        onSearchComplete
-    });
+    const [map, setMap] = useState<kakao.maps.Map | null>(null);
+    const { markers, showResearch, researchHere } = useKakaoPlaceSearch(map, { searchQuery, focusPlace, onSearchComplete });
 
     return (
-        <>
-            <Script
-                src={`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_APP_KEY}&autoload=false&libraries=services`}
-                strategy="afterInteractive"
-                onLoad={onSdkLoad}
-            />
-            <div ref={containerRef} className={cn('relative h-full w-full', className)}>
-                {!mapReady && <div className="absolute inset-0 flex items-center justify-center bg-neutral-100 text-[13px] text-muted">지도 로딩 중…</div>}
-                {showResearch && (
-                    <div className="absolute top-3 left-1/2 z-10 -translate-x-1/2">
-                        <Button size="sm" variant="outline" onClick={researchHere} className="rounded-full shadow-md">
-                            <UpdateIcon className="h-3.5 w-3.5" />이 지역에서 재검색
-                        </Button>
-                    </div>
-                )}
-            </div>
-        </>
+        <KakaoMap
+            onReady={setMap}
+            center={DEFAULT_MAP_CENTER}
+            level={DEFAULT_MAP_LEVEL}
+            markers={markers}
+            onMarkerClick={onMarkerClick ? ({ place }) => onMarkerClick(place) : undefined}
+            className={className}
+        >
+            {showResearch && (
+                <div className="absolute top-3 left-1/2 z-10 -translate-x-1/2">
+                    <Button size="sm" variant="outline" onClick={researchHere} className="rounded-full shadow-md">
+                        <UpdateIcon className="h-3.5 w-3.5" />이 지역에서 재검색
+                    </Button>
+                </div>
+            )}
+        </KakaoMap>
     );
 }

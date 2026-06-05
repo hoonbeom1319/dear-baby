@@ -19,7 +19,6 @@ import { stripHtml, toast } from '@/shared/lib';
 import { Icon } from '@/shared/ui';
 
 import { Button } from '@/hbds/display/button';
-import { cn } from '@/hbds/lib/utils';
 
 import { NaverBlogReviews } from './ui/naver-blog-reviews';
 import { PlaceDetailHeader } from './ui/place-detail-header';
@@ -83,25 +82,19 @@ function placeToPrefill(place: KakaoSearchPlace, areas: Area[]): PlaceFormPrefil
 // ── AdminPlaceFinder ──────────────────────────────────────────────────────────
 
 export const AdminPlaceFinder = () => {
+    const [query, setQuery] = useState('');
+    const [mapSearchQuery, setMapSearchQuery] = useState<string | null>(null);
+    const [searchResults, setSearchResults] = useState<KakaoSearchPlace[]>([]);
+    const [selected, setSelected] = useState<KakaoSearchPlace | null>(null);
+
     const router = useRouter();
     const regions = useCatalog((s) => s.regions);
     const areas = useCatalog((s) => s.areas);
     const categories = useCatalog((s) => s.categories);
     const amenities = useCatalog((s) => s.amenities);
 
-    const [query, setQuery] = useState('');
-    const [mapSearchQuery, setMapSearchQuery] = useState<string | null>(null);
-    const [catFilter, setCatFilter] = useState<'all' | 'cafe' | 'rest'>('all');
-    const [searchResults, setSearchResults] = useState<KakaoSearchPlace[]>([]);
-    const [selected, setSelected] = useState<KakaoSearchPlace | null>(null);
-
     const selectedPlaceName = selected ? stripHtml(selected.title) : null;
     const { posts: blogPosts, isLoading: blogLoading } = useNaverBlog(selectedPlaceName);
-
-    const visiblePlaces = useMemo(() => {
-        if (catFilter === 'all') return searchResults;
-        return searchResults.filter((place) => detectCategory(place.category) === catFilter);
-    }, [searchResults, catFilter]);
 
     const focusPlace = useMemo(() => (selected ? toMapCenter(selected) : null), [selected]);
 
@@ -145,21 +138,6 @@ export const AdminPlaceFinder = () => {
                         onKeyDown={(e: React.KeyboardEvent) => e.key === 'Enter' && handleSearch()}
                     />
                 </div>
-                <div className="flex gap-1.5">
-                    {(['all', 'cafe', 'rest'] as const).map((v) => (
-                        <button
-                            key={v}
-                            type="button"
-                            onClick={() => setCatFilter(v)}
-                            className={cn(
-                                'h-8 rounded-full px-3.5 text-[12.5px] font-medium transition-colors',
-                                catFilter === v ? 'bg-primary-600 text-white' : 'border border-border bg-surface text-neutral-700 hover:bg-neutral-50'
-                            )}
-                        >
-                            {v === 'all' ? '전체' : v === 'cafe' ? '카페' : '식당'}
-                        </button>
-                    ))}
-                </div>
                 <Button size="sm" onClick={handleSearch} disabled={!query.trim()}>
                     검색
                 </Button>
@@ -187,7 +165,7 @@ export const AdminPlaceFinder = () => {
                             />
                         </>
                     ) : (
-                        <ResultsList results={visiblePlaces} pendingQuery={mapSearchQuery} onSelect={handleSelect} />
+                        <ResultsList results={searchResults} pendingQuery={mapSearchQuery} onSelect={handleSelect} />
                     )}
                 </div>
             </div>
