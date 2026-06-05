@@ -89,6 +89,7 @@ declare namespace kakao {
             }
 
             interface PlacesSearchDocument {
+                id: string;
                 place_name: string;
                 category_name: string;
                 phone: string;
@@ -102,6 +103,12 @@ declare namespace kakao {
             interface KeywordSearchOptions {
                 useMapBounds?: boolean;
                 location?: LatLng;
+                /** 사각형 검색 영역: "SW_LNG,SW_LAT,NE_LNG,NE_LAT" */
+                rect?: string;
+                /** 거리 정렬 기준점 경도 */
+                x?: string;
+                /** 거리 정렬 기준점 위도 */
+                y?: string;
                 sort?: SortBy;
                 size?: number;
                 page?: number;
