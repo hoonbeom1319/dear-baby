@@ -1,8 +1,5 @@
 import type { KakaoSearchPlace } from './types';
 
-const PLACES_PAGE_SIZE = 15;
-const PLACES_MAX_PAGES = 10;
-
 /** WGS84 도(소수) → mapx/mapy용 ×10⁷ 정수 문자열 */
 const toCoord = (value: string): string => {
     const n = Number(value);
@@ -10,7 +7,7 @@ const toCoord = (value: string): string => {
     return String(Math.round(n * 1e7));
 };
 
-/** 현재 지도 화면(bounds) 기준 키워드 검색 — 거리순, 페이지당 15건·최대 3페이지 */
+/** 현재 지도 화면(bounds) 기준 키워드 검색 — 거리순, API 한도(45건)까지 페이지네이션 */
 export const searchPlacesOnMap = (map: kakao.maps.Map, keyword: string): Promise<KakaoSearchPlace[]> => {
     const q = keyword.trim();
     if (!q) return Promise.resolve([]);
@@ -34,7 +31,7 @@ export const searchPlacesOnMap = (map: kakao.maps.Map, keyword: string): Promise
                         mapy: toCoord(doc.y)
                     }))
                 );
-                if (pagination.hasNextPage && pagination.current < PLACES_MAX_PAGES) {
+                if (pagination.hasNextPage) {
                     pagination.nextPage();
                     return;
                 }
@@ -52,7 +49,7 @@ export const searchPlacesOnMap = (map: kakao.maps.Map, keyword: string): Promise
             useMapBounds: true,
             location: map.getCenter(),
             sort: kakao.maps.services.SortBy.DISTANCE,
-            size: PLACES_PAGE_SIZE
+            size: 15 // API 페이지당 최대
         });
     });
 };
