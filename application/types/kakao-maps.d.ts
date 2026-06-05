@@ -40,9 +40,23 @@ declare namespace kakao {
             relayout(): void;
         }
 
+        class Size {
+            constructor(width: number, height: number);
+        }
+
+        class Point {
+            constructor(x: number, y: number);
+        }
+
+        class MarkerImage {
+            constructor(src: string, size: Size, options?: { offset?: Point });
+        }
+
         interface MarkerOptions {
             position: LatLng;
             map?: Map | null;
+            image?: MarkerImage;
+            zIndex?: number;
         }
 
         class Marker {
@@ -104,8 +118,8 @@ declare namespace kakao {
         }
 
         // ── 아직 미사용 — 필요할 때 추가 ──────────────────────────────
-        // AbstractOverlay, Circle, CustomOverlay, InfoWindow, MarkerImage
-        // Point, Polygon, Polyline, Rectangle, Roadview, RoadviewClient
+        // AbstractOverlay, Circle, CustomOverlay, InfoWindow
+        // Polygon, Polyline, Rectangle, Roadview, RoadviewClient
         // StaticMap, Tileset, ZoomControl, MapTypeControl, MapTypeId
         // MarkerClusterer, services.Geocoder, services.categorySearch …
     }

@@ -5,14 +5,14 @@ import { Icon } from '@/shared/ui';
 
 export function ResultsList({
     results,
-    pendingQuery,
+    pending,
     onSelect
 }: {
     results: KakaoSearchPlace[];
-    pendingQuery: string | null;
+    pending: boolean;
     onSelect: (place: KakaoSearchPlace) => void;
 }) {
-    if (pendingQuery) return <div className="flex flex-1 items-center justify-center py-20 text-[13px] text-muted">검색 중…</div>;
+    if (pending) return <div className="flex flex-1 items-center justify-center py-20 text-[13px] text-muted">검색 중…</div>;
 
     if (results.length === 0)
         return (

@@ -13,13 +13,7 @@ import { cn } from '@/hbds/lib/utils';
 import type { PlaceFormPrefill, PlaceRegisterPayload } from '../lib/type';
 import { usePlaceRegister } from '../model/use-place-register';
 
-export function PlaceRegisterForm({
-    prefill,
-    onSubmit
-}: {
-    prefill: PlaceFormPrefill;
-    onSubmit: (payload: PlaceRegisterPayload) => Promise<void>;
-}) {
+export function PlaceRegisterForm({ prefill, onSubmit }: { prefill: PlaceFormPrefill; onSubmit: (payload: PlaceRegisterPayload) => Promise<void> }) {
     const areas = useCatalog((s) => s.areas);
     const regions = useCatalog((s) => s.regions);
     const categories = useCatalog((s) => s.categories);
@@ -28,14 +22,14 @@ export function PlaceRegisterForm({
     const { form, set, toggleAmenity, saving, save } = usePlaceRegister(prefill, onSubmit);
 
     return (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="@container flex min-w-0 flex-col gap-4 p-4">
             <p className="text-[11.5px] font-semibold tracking-widest text-muted uppercase">등록 정보</p>
 
             <AdField label="이름">
                 <AdInput value={form.name} onChange={(e) => set('name', e.target.value)} />
             </AdField>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-3">
                 <AdField label="동네">
                     <AreaSelect
                         variant="field"
@@ -65,7 +59,7 @@ export function PlaceRegisterForm({
                 <AdInput value={form.address} onChange={(e) => set('address', e.target.value)} />
             </AdField>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-3">
                 <AdField label="전화번호">
                     <AdInput value={form.phone} onChange={(e) => set('phone', e.target.value)} />
                 </AdField>
@@ -74,7 +68,7 @@ export function PlaceRegisterForm({
                 </AdField>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-3">
                 <AdField label="시작 월령">
                     <AdInput value={form.ageRangeStart} onChange={(e) => set('ageRangeStart', e.target.value)} placeholder="예: 6" inputMode="numeric" />
                 </AdField>
@@ -93,14 +87,14 @@ export function PlaceRegisterForm({
             </AdField>
 
             <AdField label="편의시설" hint="다중 선택">
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,7.5rem),1fr))] gap-2">
                     {amenities.map((amenity) => {
                         const on = form.amenities.includes(amenity.id);
                         return (
                             <label
                                 key={amenity.id}
                                 className={cn(
-                                    'inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-[13px] transition-colors',
+                                    'relative flex w-full min-w-0 cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-[13px] whitespace-nowrap transition-colors',
                                     on
                                         ? 'border-primary-500 bg-primary-50 font-medium text-primary-700'
                                         : 'border-border bg-surface text-neutral-700 hover:bg-neutral-50'
@@ -115,8 +109,8 @@ export function PlaceRegisterForm({
                                 >
                                     <Icon name="check" size={11} stroke={3} />
                                 </span>
-                                <Icon name={amenity.icon as IconName} size={14} stroke={1.8} />
-                                {amenity.short}
+                                <Icon name={amenity.icon as IconName} size={14} stroke={1.8} className="shrink-0" />
+                                <span className="min-w-0 truncate">{amenity.short}</span>
                             </label>
                         );
                     })}

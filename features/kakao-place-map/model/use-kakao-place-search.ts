@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { LatLng } from '@/shared/kakao-map';
 
-import { FOCUS_PLACE_LEVEL } from '../config/defaults';
 import { toMapCenter } from '../lib/coords';
 import { searchPlacesOnMap } from '../lib/kakao-places-search';
 import type { KakaoPlaceMapSearchResult, KakaoSearchPlace, MapFocusPlace } from '../lib/types';
@@ -27,7 +26,6 @@ export function useKakaoPlaceSearch(map: kakao.maps.Map | null, { searchQuery, f
     // focusPlace로 지도를 옮길 때 발생하는 idle은 "사용자 이동"이 아니므로 한 번 무시한다.
     const programmaticMoveRef = useRef(false);
 
-    // 좌표를 못 잡는 장소는 제외하고, 마커에 place 페이로드를 얹는다.
     const markers = useMemo<PlaceMarker[]>(
         () =>
             places.flatMap((place) => {
@@ -91,11 +89,11 @@ export function useKakaoPlaceSearch(map: kakao.maps.Map | null, { searchQuery, f
     }, [map]);
 
     // 선택 장소로 카메라 이동. 영역 검색이라 결과는 그대로 두고 카메라만 옮긴다.
+    // 줌 레벨은 사용자가 설정한 상태를 유지한다.
     useEffect(() => {
         if (!map || !focusPlace) return;
         programmaticMoveRef.current = true;
         map.setCenter(new kakao.maps.LatLng(focusPlace.lat, focusPlace.lng));
-        map.setLevel(FOCUS_PLACE_LEVEL);
         map.relayout();
     }, [map, focusPlace]);
 

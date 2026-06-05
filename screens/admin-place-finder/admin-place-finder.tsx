@@ -86,6 +86,7 @@ export const AdminPlaceFinder = () => {
     const [mapSearchQuery, setMapSearchQuery] = useState<string | null>(null);
     const [searchResults, setSearchResults] = useState<KakaoSearchPlace[]>([]);
     const [selected, setSelected] = useState<KakaoSearchPlace | null>(null);
+    const [isPendingSearch, setIsPendingSearch] = useState(false);
 
     const router = useRouter();
     const areas = useCatalog((s) => s.areas);
@@ -103,12 +104,14 @@ export const AdminPlaceFinder = () => {
 
         setSelected(null);
         setSearchResults([]);
+        setIsPendingSearch(true);
         setMapSearchQuery(null);
         queueMicrotask(() => setMapSearchQuery(q));
     };
 
     const handleSearchComplete = useCallback((result: KakaoPlaceMapSearchResult) => {
         setMapSearchQuery(null);
+        setIsPendingSearch(false);
         if (!result.ok) {
             toast('검색에 실패했어요');
             return;
@@ -117,6 +120,12 @@ export const AdminPlaceFinder = () => {
         if (result.places.length === 0) {
             toast('이 지도 영역에서 결과를 찾지 못했어요. 지도를 이동하거나 검색어를 바꿔보세요');
         }
+    }, []);
+
+    const handleResearchStart = useCallback(() => {
+        setSelected(null);
+        setSearchResults([]);
+        setIsPendingSearch(true);
     }, []);
 
     return (
@@ -139,7 +148,7 @@ export const AdminPlaceFinder = () => {
             </div>
 
             <div className="relative flex h-[calc(100vh-4rem)]">
-                <KakaoPlaceMap searchQuery={mapSearchQuery} focusPlace={focusPlace} onSearchComplete={handleSearchComplete} onMarkerClick={handleSelect} />
+                <KakaoPlaceMap searchQuery={mapSearchQuery} focusPlace={focusPlace} activePlace={selected} onSearchComplete={handleSearchComplete} onResearchStart={handleResearchStart} onMarkerClick={handleSelect} />
                 <ResizablePanel defaultWidth={350} minWidth={240} maxWidth={700}>
                     <div
                         key={`${selected?.roadAddress || selected?.address}|${selectedPlaceName}`}
@@ -159,7 +168,7 @@ export const AdminPlaceFinder = () => {
                                 />
                             </>
                         ) : (
-                            <ResultsList results={searchResults} pendingQuery={mapSearchQuery} onSelect={handleSelect} />
+                            <ResultsList results={searchResults} pending={isPendingSearch} onSelect={handleSelect} />
                         )}
                     </div>
                 </ResizablePanel>
