@@ -19,6 +19,7 @@ import { stripHtml, toast } from '@/shared/lib';
 import { Icon } from '@/shared/ui';
 
 import { Button } from '@/hbds/display/button';
+import { ResizablePanel } from '@/hbds/layout';
 
 import { NaverBlogReviews } from './ui/naver-blog-reviews';
 import { PlaceDetailHeader } from './ui/place-detail-header';
@@ -119,13 +120,11 @@ export const AdminPlaceFinder = () => {
     }, []);
 
     return (
-        <div className="flex h-screen flex-col">
-            <div className="flex shrink-0 items-center gap-3 border-b border-border bg-surface px-6 py-3">
-                <span className="shrink-0 text-[15px] font-bold tracking-tight text-surface-foreground">장소 찾기</span>
-                <div className="relative max-w-[480px] flex-1">
-                    <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted">
-                        <Icon name="search" size={14} />
-                    </span>
+        <div className="h-screen overflow-hidden">
+            <div className="flex h-14 items-center gap-3 border-b border-border bg-surface px-6 py-3">
+                <span className="text-[15px] font-bold tracking-tight text-surface-foreground">장소 찾기</span>
+                <div className="flex flex-1 items-center gap-3">
+                    <Icon name="search" size={20} />
                     <AdInput
                         className="h-9 pl-9 text-[13.5px]"
                         placeholder="장소 유형으로 검색 (현재 지도 위치 기준)  예: 카페, 뷔페"
@@ -139,27 +138,31 @@ export const AdminPlaceFinder = () => {
                 </Button>
             </div>
 
-            <div className="flex flex-1">
+            <div className="relative flex h-[calc(100vh-4rem)]">
                 <KakaoPlaceMap searchQuery={mapSearchQuery} focusPlace={focusPlace} onSearchComplete={handleSearchComplete} onMarkerClick={handleSelect} />
-                <div className="h-full max-h-full max-w-[440px] overflow-y-auto border-l border-border bg-surface">
-                    {selected ? (
-                        <>
-                            <PlaceDetailHeader place={selected} onBack={() => setSelected(null)} />
-                            <NaverBlogReviews posts={blogPosts} loading={blogLoading} />
-                            <PlaceRegisterForm
-                                key={`${selected.roadAddress || selected.address}|${selectedPlaceName}`}
-                                prefill={placeToPrefill(selected, areas)}
-                                onSubmit={async (payload) => {
-                                    await createPlace(payload);
-                                    setSelected(null);
-                                    router.refresh();
-                                }}
-                            />
-                        </>
-                    ) : (
-                        <ResultsList results={searchResults} pendingQuery={mapSearchQuery} onSelect={handleSelect} />
-                    )}
-                </div>
+                <ResizablePanel defaultWidth={350} minWidth={240} maxWidth={700}>
+                    <div
+                        key={`${selected?.roadAddress || selected?.address}|${selectedPlaceName}`}
+                        className="h-full overflow-y-auto border-l border-border bg-surface"
+                    >
+                        {selected ? (
+                            <>
+                                <PlaceDetailHeader place={selected} onBack={() => setSelected(null)} />
+                                <NaverBlogReviews posts={blogPosts} loading={blogLoading} />
+                                <PlaceRegisterForm
+                                    prefill={placeToPrefill(selected, areas)}
+                                    onSubmit={async (payload) => {
+                                        await createPlace(payload);
+                                        setSelected(null);
+                                        router.refresh();
+                                    }}
+                                />
+                            </>
+                        ) : (
+                            <ResultsList results={searchResults} pendingQuery={mapSearchQuery} onSelect={handleSelect} />
+                        )}
+                    </div>
+                </ResizablePanel>
             </div>
         </div>
     );
