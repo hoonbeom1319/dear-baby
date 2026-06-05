@@ -38,6 +38,7 @@ export type IconName =
     | 'edit'
     | 'trash'
     | 'search'
+    | 'menu'
     | 'up-arrow'
     | 'bell'
     | 'user'
@@ -288,6 +289,14 @@ export const Icon = ({ name, size = 20, stroke = 1.75, ...props }: IconProps) =>
                 <svg {...common}>
                     <circle cx="11" cy="11" r="7" />
                     <line x1="21" y1="21" x2="16.5" y2="16.5" />
+                </svg>
+            );
+        case 'menu':
+            return (
+                <svg {...common}>
+                    <line x1="4" y1="6" x2="20" y2="6" />
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <line x1="4" y1="18" x2="20" y2="18" />
                 </svg>
             );
         case 'up-arrow':
