@@ -86,6 +86,7 @@ export const AdminPlaceFinder = () => {
     const [mapSearchQuery, setMapSearchQuery] = useState<string | null>(null);
     const [searchResults, setSearchResults] = useState<KakaoSearchPlace[]>([]);
     const [selected, setSelected] = useState<KakaoSearchPlace | null>(null);
+    const [hoveredPlace, setHoveredPlace] = useState<KakaoSearchPlace | null>(null);
     const [isPendingSearch, setIsPendingSearch] = useState(false);
 
     const router = useRouter();
@@ -148,7 +149,15 @@ export const AdminPlaceFinder = () => {
             </div>
 
             <div className="relative flex h-[calc(100vh-4rem)]">
-                <KakaoPlaceMap searchQuery={mapSearchQuery} focusPlace={focusPlace} activePlace={selected} onSearchComplete={handleSearchComplete} onResearchStart={handleResearchStart} onMarkerClick={handleSelect} />
+                <KakaoPlaceMap
+                    searchQuery={mapSearchQuery}
+                    focusPlace={focusPlace}
+                    activePlace={selected}
+                    onSearchComplete={handleSearchComplete}
+                    onResearchStart={handleResearchStart}
+                    onMarkerClick={handleSelect}
+                    onMarkerHover={setHoveredPlace}
+                />
                 <ResizablePanel defaultWidth={350} minWidth={240} maxWidth={700}>
                     <div
                         key={`${selected?.roadAddress || selected?.address}|${selectedPlaceName}`}
@@ -168,7 +177,7 @@ export const AdminPlaceFinder = () => {
                                 />
                             </>
                         ) : (
-                            <ResultsList results={searchResults} pending={isPendingSearch} onSelect={handleSelect} />
+                            <ResultsList results={searchResults} pending={isPendingSearch} onSelect={handleSelect} hoveredPlace={hoveredPlace} />
                         )}
                     </div>
                 </ResizablePanel>

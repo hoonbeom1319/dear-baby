@@ -117,8 +117,25 @@ declare namespace kakao {
             }
         }
 
+        interface CustomOverlayOptions {
+            content: string | HTMLElement;
+            position: LatLng;
+            xAnchor?: number;
+            yAnchor?: number;
+            zIndex?: number;
+            clickable?: boolean;
+        }
+
+        class CustomOverlay {
+            constructor(options: CustomOverlayOptions);
+            setMap(map: Map | null): void;
+            setPosition(position: LatLng): void;
+            setContent(content: string | HTMLElement): void;
+            setZIndex(zIndex: number): void;
+        }
+
         // ── 아직 미사용 — 필요할 때 추가 ──────────────────────────────
-        // AbstractOverlay, Circle, CustomOverlay, InfoWindow
+        // AbstractOverlay, Circle, InfoWindow
         // Polygon, Polyline, Rectangle, Roadview, RoadviewClient
         // StaticMap, Tileset, ZoomControl, MapTypeControl, MapTypeId
         // MarkerClusterer, services.Geocoder, services.categorySearch …

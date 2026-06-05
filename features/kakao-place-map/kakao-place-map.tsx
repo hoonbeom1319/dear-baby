@@ -18,6 +18,7 @@ export type KakaoPlaceMapProps = {
     focusPlace?: MapFocusPlace | null;
     activePlace?: KakaoSearchPlace | null;
     onMarkerClick?: (place: KakaoSearchPlace) => void;
+    onMarkerHover?: (place: KakaoSearchPlace | null) => void;
     onSearchComplete?: (result: KakaoPlaceMapSearchResult) => void;
     onResearchStart?: () => void;
     className?: string;
@@ -28,6 +29,7 @@ export function KakaoPlaceMap({
     focusPlace = null,
     activePlace = null,
     onMarkerClick,
+    onMarkerHover,
     onSearchComplete,
     onResearchStart,
     className
@@ -44,6 +46,7 @@ export function KakaoPlaceMap({
             level={DEFAULT_MAP_LEVEL}
             markers={markers}
             onMarkerClick={onMarkerClick ? ({ place }) => onMarkerClick(place) : undefined}
+            onMarkerHover={onMarkerHover ? (m) => onMarkerHover(m ? m.place : null) : undefined}
             activeMarker={activeMarker}
             className={className}
         >

@@ -18,10 +18,10 @@ export type KakaoMapProps<T extends LatLng = LatLng> = {
     markers?: T[];
     /** 마커 클릭 시 호출 */
     onMarkerClick?: (item: T) => void;
+    /** 마커 hover 시 호출 */
+    onMarkerHover?: (item: T | null) => void;
     /** 활성 마커 — 기본 마커와 다르게 표시된다 */
     activeMarker?: T | null;
-    /** 활성 마커 z-index */
-    activeMarkerZIndex?: number;
     /** 맵 인스턴스가 생성되면 호출된다 */
     onReady?: (map: kakao.maps.Map) => void;
     /** 맵 위에 띄울 오버레이 */
@@ -30,12 +30,22 @@ export type KakaoMapProps<T extends LatLng = LatLng> = {
 };
 
 /** SDK 로딩 + 컨테이너 div + 맵 인스턴스·마커를 캡슐화한 범용 지도. */
-export function KakaoMap<T extends LatLng = LatLng>({ center, level, markers = [], onMarkerClick, activeMarker, activeMarkerZIndex, onReady, children, className }: KakaoMapProps<T>) {
+export function KakaoMap<T extends LatLng = LatLng>({
+    center,
+    level,
+    markers = [],
+    onMarkerClick,
+    onMarkerHover,
+    activeMarker,
+    onReady,
+    children,
+    className
+}: KakaoMapProps<T>) {
     const containerRef = useRef<HTMLDivElement>(null);
     const ready = useKakaoSdk();
     const map = useKakaoMap({ containerRef, ready, center, level });
 
-    useMarkers(map, markers, { onClick: onMarkerClick, activeItem: activeMarker, activeZIndex: activeMarkerZIndex });
+    useMarkers(map, markers, { onClick: onMarkerClick, onHover: onMarkerHover, activeItem: activeMarker });
 
     useEffect(() => {
         if (map) onReady?.(map);

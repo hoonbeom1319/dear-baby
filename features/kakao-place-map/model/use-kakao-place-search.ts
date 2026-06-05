@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { LatLng } from '@/shared/kakao-map';
+import { stripHtml } from '@/shared/lib';
 
 import { toMapCenter } from '../lib/coords';
 import { searchPlacesOnMap } from '../lib/kakao-places-search';
@@ -30,7 +31,7 @@ export function useKakaoPlaceSearch(map: kakao.maps.Map | null, { searchQuery, f
         () =>
             places.flatMap((place) => {
                 const center = toMapCenter(place);
-                return center ? [{ ...center, place }] : [];
+                return center ? [{ ...center, place, label: stripHtml(place.title) }] : [];
             }),
         [places]
     );
