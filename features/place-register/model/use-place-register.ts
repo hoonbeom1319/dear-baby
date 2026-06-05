@@ -5,7 +5,8 @@ import { useState } from 'react';
 import type { AmenityId } from '@/shared/config';
 import { toast } from '@/shared/lib';
 
-import { formToPayload, prefillToForm, type PlaceFormPrefill, type PlaceRegisterFormState, type PlaceRegisterPayload } from '../lib/place-to-form';
+import { formToPayload, prefillToForm } from '../lib/place-to-form';
+import type { PlaceFormPrefill, PlaceRegisterFormState, PlaceRegisterPayload } from '../lib/type';
 
 /**
  * 장소 등록 폼의 상태·검증·저장 흐름을 보유한다.

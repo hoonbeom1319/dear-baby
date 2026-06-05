@@ -9,7 +9,7 @@ import { createPlace } from '@/server/controllers/places';
 import { AdInput } from '@/widgets/admin-shell';
 
 import { KakaoPlaceMap, toMapCenter, type KakaoPlaceMapSearchResult, type KakaoSearchPlace } from '@/features/kakao-place-map';
-import type { PlaceFormPrefill } from '@/features/place-register';
+import { PlaceRegisterForm, type PlaceFormPrefill } from '@/features/place-register';
 
 import { useNaverBlog } from '@/entities/naver-blog';
 
@@ -22,7 +22,6 @@ import { Button } from '@/hbds/display/button';
 
 import { NaverBlogReviews } from './ui/naver-blog-reviews';
 import { PlaceDetailHeader } from './ui/place-detail-header';
-import { PlaceRegisterForm } from './ui/place-register-form';
 import { ResultsList } from './ui/results-list';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -88,10 +87,7 @@ export const AdminPlaceFinder = () => {
     const [selected, setSelected] = useState<KakaoSearchPlace | null>(null);
 
     const router = useRouter();
-    const regions = useCatalog((s) => s.regions);
     const areas = useCatalog((s) => s.areas);
-    const categories = useCatalog((s) => s.categories);
-    const amenities = useCatalog((s) => s.amenities);
 
     const selectedPlaceName = selected ? stripHtml(selected.title) : null;
     const { posts: blogPosts, isLoading: blogLoading } = useNaverBlog(selectedPlaceName);
@@ -143,9 +139,9 @@ export const AdminPlaceFinder = () => {
                 </Button>
             </div>
 
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-1">
                 <KakaoPlaceMap searchQuery={mapSearchQuery} focusPlace={focusPlace} onSearchComplete={handleSearchComplete} onMarkerClick={handleSelect} />
-                <div className="flex w-[440px] shrink-0 flex-col overflow-y-auto border-l border-border bg-surface">
+                <div className="h-full max-h-full max-w-[440px] overflow-y-auto border-l border-border bg-surface">
                     {selected ? (
                         <>
                             <PlaceDetailHeader place={selected} onBack={() => setSelected(null)} />
@@ -158,10 +154,6 @@ export const AdminPlaceFinder = () => {
                                     setSelected(null);
                                     router.refresh();
                                 }}
-                                areas={areas}
-                                regions={regions}
-                                categories={categories}
-                                amenities={amenities}
                             />
                         </>
                     ) : (

@@ -1,30 +1,30 @@
 'use client';
 
+import { useCatalog } from '@/application/providers';
+
 import { AdField, AdInput, AdTextarea, AreaSelect } from '@/widgets/admin-shell';
 
-import { usePlaceRegister, type PlaceFormPrefill, type PlaceRegisterPayload } from '@/features/place-register';
-
-import type { Amenity, Area, AreaId, Category, CategoryId, Region } from '@/shared/config';
+import type { AreaId, CategoryId } from '@/shared/config';
 import { Icon, type IconName } from '@/shared/ui';
 
 import { Button } from '@/hbds/display/button';
 import { cn } from '@/hbds/lib/utils';
 
+import type { PlaceFormPrefill, PlaceRegisterPayload } from '../lib/type';
+import { usePlaceRegister } from '../model/use-place-register';
+
 export function PlaceRegisterForm({
     prefill,
-    onSubmit,
-    areas,
-    regions,
-    categories,
-    amenities
+    onSubmit
 }: {
     prefill: PlaceFormPrefill;
     onSubmit: (payload: PlaceRegisterPayload) => Promise<void>;
-    areas: Area[];
-    regions: Region[];
-    categories: Category[];
-    amenities: Amenity[];
 }) {
+    const areas = useCatalog((s) => s.areas);
+    const regions = useCatalog((s) => s.regions);
+    const categories = useCatalog((s) => s.categories);
+    const amenities = useCatalog((s) => s.amenities);
+
     const { form, set, toggleAmenity, saving, save } = usePlaceRegister(prefill, onSubmit);
 
     return (
