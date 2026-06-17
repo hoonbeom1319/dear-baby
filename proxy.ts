@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
 // 인증이 필요한 API 경로 목록 — 새 보호 라우트 추가 시 여기에만 추가
-const PROTECTED_API_PREFIXES = ['/api/favorite'];
+const PROTECTED_API_PREFIXES: string[] = ['/api/places', '/api/records', '/api/events'];
 
 function isProtectedApi(pathname: string) {
     return PROTECTED_API_PREFIXES.some((prefix) => pathname.startsWith(prefix));
@@ -26,7 +26,6 @@ async function verifyAuth(request: NextRequest): Promise<string | null> {
 const CSP = [
     "default-src 'self'",
     // Next.js 하이드레이션 인라인 스크립트 허용
-    // Next.js 하이드레이션 인라인 스크립트 허용
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' dapi.kakao.com *.daumcdn.net",
     // Tailwind/Next.js 인라인 스타일 허용
     "style-src 'self' 'unsafe-inline'",
@@ -34,8 +33,8 @@ const CSP = [
     "img-src 'self' data: blob: *.supabase.co *.daumcdn.net *.kakao.com",
     // 로컬 폰트(Pretendard woff2)
     "font-src 'self'",
-    // Supabase + Naver Search/Blog API + 카카오맵 API
-    "connect-src 'self' *.supabase.co openapi.naver.com dapi.kakao.com *.kakao.com",
+    // Supabase + 카카오맵 API
+    "connect-src 'self' *.supabase.co dapi.kakao.com *.kakao.com",
     // PWA 서비스 워커
     "worker-src 'self'",
     "frame-src 'none'",

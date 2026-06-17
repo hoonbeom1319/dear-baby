@@ -1,108 +1,115 @@
-import { mapPlaceAdminRow, mapPlaceRow, type PlaceRow } from '@/entities/place/model/db';
-import type { Place, PlaceAdmin } from '@/entities/place/model/types';
-
-import type { AmenityId, AreaId, CategoryId } from '@/shared/config';
-
 import { createSupabaseAdmin } from '../db/supabase';
 
-const PLACE_SELECT = '*, place_amenities(amenity_id)' as const;
+// ─── 도메인 타입 ──────────────────────────────────────────────────────────────
 
-// ─── Queries ─────────────────────────────────────────────────────────────────
-
-export async function findAllPlaces(): Promise<Place[]> {
-    const supabase = createSupabaseAdmin();
-    const { data, error } = await supabase.from('places').select(PLACE_SELECT).eq('status', 'public').order('sort_order', { ascending: true });
-    if (error) throw new Error(error.message);
-    return (data as PlaceRow[]).map(mapPlaceRow);
-}
-
-export async function findPlaceById(id: string): Promise<Place | null> {
-    const supabase = createSupabaseAdmin();
-    const { data, error } = await supabase.from('places').select(PLACE_SELECT).eq('id', id).maybeSingle();
-    if (error || !data) return null;
-    return mapPlaceRow(data as PlaceRow);
-}
-
-/** 어드민용 — 검토중 포함 전체 */
-export async function findAllPlacesAdmin(): Promise<PlaceAdmin[]> {
-    const supabase = createSupabaseAdmin();
-    const { data, error } = await supabase.from('places').select(PLACE_SELECT).order('sort_order', { ascending: true });
-    if (error) throw new Error(error.message);
-    return (data as PlaceRow[]).map(mapPlaceAdminRow);
-}
-
-// ─── Mutations ───────────────────────────────────────────────────────────────
-
-export type CreatePlaceInput = {
-    area: AreaId;
-    category: CategoryId;
+/** 지도 핀 한 개 + 누적 방문 요약 (지도 홈 F-6) */
+export type PlaceSummary = {
+    id: string;
     name: string;
-    address: string;
-    phone: string;
-    ageRange: string;
-    description: string;
-    amenities: AmenityId[];
+    lat: number;
+    lng: number;
+    source: 'kakao' | 'manual';
+    kakaoPlaceId: string | null;
+    visitCount: number;
+    lastVisitedOn: string | null;
+};
+
+/** 장소 상세의 사진 — storagePath 보관 (서명 URL 변환은 controller 몫) */
+export type PhotoRow = {
+    id: string;
+    storagePath: string;
+    takenAt: string | null;
     sortOrder: number;
 };
 
-export async function insertPlace(input: CreatePlaceInput): Promise<void> {
+/** 장소 상세의 방문 한 건 (시간순 F-7) */
+export type VisitDetail = {
+    id: string;
+    visitedOn: string;
+    note: string | null;
+    createdAt: string;
+    photos: PhotoRow[];
+};
+
+/** 장소 상세 — 모든 방문을 시간순으로 (F-7) */
+export type PlaceDetail = {
+    id: string;
+    name: string;
+    lat: number;
+    lng: number;
+    source: 'kakao' | 'manual';
+    kakaoPlaceId: string | null;
+    createdAt: string;
+    visits: VisitDetail[];
+};
+
+// ─── Queries ─────────────────────────────────────────────────────────────────
+
+/** 지도 홈 — 사용자의 모든 핀 + 방문 수/최근 방문일 */
+export async function findPlacesByUser(userId: string): Promise<PlaceSummary[]> {
     const supabase = createSupabaseAdmin();
     const { data, error } = await supabase
         .from('places')
-        .insert({
-            area: input.area,
-            category: input.category,
-            name: input.name,
-            address: input.address,
-            phone: input.phone,
-            age_range: input.ageRange,
-            description: input.description,
-            sort_order: input.sortOrder,
-            status: 'review'
-        })
-        .select('id')
-        .single();
-
+        .select('id, name, lat, lng, source, kakao_place_id, visits(visited_on)')
+        .eq('user_id', userId);
     if (error) throw new Error(error.message);
 
-    if (input.amenities.length > 0) {
-        const { error: amenityError } = await supabase.from('place_amenities').insert(input.amenities.map((amenity_id) => ({ place_id: data.id, amenity_id })));
-        if (amenityError) throw new Error(amenityError.message);
-    }
+    return (data ?? []).map((row) => {
+        const visited = (row.visits ?? []).map((v: { visited_on: string }) => v.visited_on);
+        const lastVisitedOn = visited.length > 0 ? visited.reduce((a, b) => (a > b ? a : b)) : null;
+        return {
+            id: row.id,
+            name: row.name,
+            lat: row.lat,
+            lng: row.lng,
+            source: row.source,
+            kakaoPlaceId: row.kakao_place_id,
+            visitCount: visited.length,
+            lastVisitedOn
+        };
+    });
 }
 
-export async function updatePlace(id: string, input: Partial<CreatePlaceInput>): Promise<void> {
+/** 장소 상세 — 방문 시간순(내림차순), 각 방문의 사진은 sort_order 순 */
+export async function findPlaceDetail(userId: string, placeId: string): Promise<PlaceDetail | null> {
     const supabase = createSupabaseAdmin();
-    const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
-    if (input.area !== undefined) patch.area = input.area;
-    if (input.category !== undefined) patch.category = input.category;
-    if (input.name !== undefined) patch.name = input.name;
-    if (input.address !== undefined) patch.address = input.address;
-    if (input.phone !== undefined) patch.phone = input.phone;
-    if (input.ageRange !== undefined) patch.age_range = input.ageRange;
-    if (input.description !== undefined) patch.description = input.description;
-    if (input.sortOrder !== undefined) patch.sort_order = input.sortOrder;
-
-    const { error } = await supabase.from('places').update(patch).eq('id', id);
+    const { data, error } = await supabase
+        .from('places')
+        .select('id, name, lat, lng, source, kakao_place_id, created_at, visits(id, visited_on, note, created_at, photos(id, storage_path, taken_at, sort_order))')
+        .eq('id', placeId)
+        .eq('user_id', userId)
+        .order('visited_on', { referencedTable: 'visits', ascending: false })
+        .maybeSingle();
     if (error) throw new Error(error.message);
+    if (!data) return null;
 
-    if (input.amenities !== undefined) {
-        await supabase.from('place_amenities').delete().eq('place_id', id);
-        if (input.amenities.length > 0) {
-            const { error: amenityError } = await supabase.from('place_amenities').insert(input.amenities.map((amenity_id) => ({ place_id: id, amenity_id })));
-            if (amenityError) throw new Error(amenityError.message);
-        }
-    }
+    return {
+        id: data.id,
+        name: data.name,
+        lat: data.lat,
+        lng: data.lng,
+        source: data.source,
+        kakaoPlaceId: data.kakao_place_id,
+        createdAt: data.created_at,
+        visits: (data.visits ?? []).map((v: RawVisit) => ({
+            id: v.id,
+            visitedOn: v.visited_on,
+            note: v.note,
+            createdAt: v.created_at,
+            photos: (v.photos ?? [])
+                .map((p: RawPhoto) => ({ id: p.id, storagePath: p.storage_path, takenAt: p.taken_at, sortOrder: p.sort_order }))
+                .sort((a, b) => a.sortOrder - b.sortOrder)
+        }))
+    };
 }
 
-export async function updatePlaceStatus(id: string, status: 'public' | 'review'): Promise<void> {
-    const supabase = createSupabaseAdmin();
-    const { error } = await supabase.from('places').update({ status, updated_at: new Date().toISOString() }).eq('id', id);
-    if (error) throw new Error(error.message);
-}
+type RawPhoto = { id: string; storage_path: string; taken_at: string | null; sort_order: number };
+type RawVisit = { id: string; visited_on: string; note: string | null; created_at: string; photos: RawPhoto[] | null };
 
-export async function deletePlace(id: string): Promise<void> {
+// ─── Mutations (저장 후 편집 — 다음 단계에서 확장) ────────────────────────────
+
+export async function deletePlace(userId: string, placeId: string): Promise<void> {
     const supabase = createSupabaseAdmin();
-    const { error } = await supabase.from('places').delete().eq('id', id);
+    const { error } = await supabase.from('places').delete().eq('id', placeId).eq('user_id', userId);
     if (error) throw new Error(error.message);
 }

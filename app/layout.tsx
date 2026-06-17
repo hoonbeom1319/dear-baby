@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
-import { AppProvider, ServerProvider } from '@/application/providers';
+import { AppProvider } from '@/application/providers';
 
 import { pretendard } from '@/shared/config/font';
 
 export const metadata: Metadata = {
     title: 'Dear Baby',
-    description: '아이와 갈 수 있는 장소 가이드',
+    description: '아이와 간 장소를 날짜·사진과 함께 지도에 기록하는 우리 가족의 추억 지도',
     appleWebApp: {
         capable: true,
         statusBarStyle: 'default',
@@ -29,9 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <html lang="ko" className={pretendard.variable}>
             <head />
             <body>
-                <ServerProvider>
-                    <AppProvider>{children}</AppProvider>
-                </ServerProvider>
+                <AppProvider>{children}</AppProvider>
             </body>
         </html>
     );

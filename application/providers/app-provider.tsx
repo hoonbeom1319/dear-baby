@@ -4,7 +4,9 @@ import { useState, type ReactNode } from 'react';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { ToastProvider } from '@/shared/ui';
+import { InstallPrompt } from '@/features/install-prompt';
+
+import { NavigationProgress, ToastProvider } from '@/shared/ui';
 
 import { AuthProvider } from './auth/provider';
 
@@ -15,6 +17,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         <QueryClientProvider client={queryClient}>
             <AuthProvider>{children}</AuthProvider>
             <ToastProvider />
+            <NavigationProgress />
+            <InstallPrompt />
         </QueryClientProvider>
     );
 };

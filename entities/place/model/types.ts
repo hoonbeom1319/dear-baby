@@ -1,25 +1,63 @@
-import type { AmenityId, AreaId, CategoryId } from '@/shared/config';
+// 클라이언트가 다루는 장소 도메인 타입 (BFF /api/places 응답 형태와 일치)
 
-export type PlaceStatus = 'public' | 'review';
+export type PlaceSource = 'kakao' | 'manual';
 
-/** 장소 표시용 view model. (PRD 6.1 Place) */
-export type Place = {
+/** 지도 핀 + 누적 방문 요약 (지도 홈) */
+export type PlaceSummary = {
     id: string;
-    area: AreaId;
-    category: CategoryId;
     name: string;
-    address: string;
-    phone: string;
-    /** 권장 월령 범위 라벨, 예: "6개월~", "12~48개월", "전 연령". */
-    ageRange: string;
-    /** 한 줄 설명 · 큐레이터 코멘트. */
-    description: string;
-    /** 보유한 편의시설만 (없는 것은 담지 않는다). */
-    amenities: AmenityId[];
+    lat: number;
+    lng: number;
+    source: PlaceSource;
+    kakaoPlaceId: string | null;
+    visitCount: number;
+    lastVisitedOn: string | null;
 };
 
-/** 어드민용 — Place + 관리 메타. */
-export type PlaceAdmin = Place & {
+export type Photo = {
+    id: string;
+    url: string | null; // 서명 URL (만료 있음)
+    takenAt: string | null;
     sortOrder: number;
-    status: PlaceStatus;
+};
+
+export type Visit = {
+    id: string;
+    visitedOn: string;
+    note: string | null;
+    createdAt: string;
+    photos: Photo[];
+};
+
+/** 장소 상세 — 방문 시간순 */
+export type PlaceDetail = {
+    id: string;
+    name: string;
+    lat: number;
+    lng: number;
+    source: PlaceSource;
+    kakaoPlaceId: string | null;
+    createdAt: string;
+    visits: Visit[];
+};
+
+// ─── 기록 세션 입력 (편집기 → BFF /api/records) ──────────────────────────────
+// 사진 바이너리는 브라우저가 Storage에 먼저 올리고, 여기엔 그 경로만 담는다.
+
+export type RecordPhotoInput = {
+    storagePath: string;
+    takenAt: string | null;
+    sortOrder: number;
+};
+
+/** 한 장소 그룹 = Place 1개 + Visit 1개(+ 사진들) */
+export type RecordGroupInput = {
+    name: string;
+    lat: number;
+    lng: number;
+    source: PlaceSource;
+    kakaoPlaceId: string | null;
+    visitedOn: string; // YYYY-MM-DD
+    note: string | null;
+    photos: RecordPhotoInput[];
 };

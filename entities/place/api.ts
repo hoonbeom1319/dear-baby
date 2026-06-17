@@ -1,50 +1,29 @@
+import { getAuthHeaders } from '@/shared/api';
+
 import { FETCH } from '@/hbw/api';
 
-type PlaceMapLinks = { kakao?: string; naver?: string; tmap?: string } | null;
+import type { PlaceDetail, PlaceSummary, RecordGroupInput } from './model/types';
 
-export type PlaceDto = {
-    id: string;
-    regionCode: string;
-    subRegionCode: string;
-    categoryCode: string;
-    name: string;
-    subtitle?: string | null;
-    headline?: string | null;
-    description?: string | null;
-    honeyTip?: string | null;
-    address?: string | null;
-    lat?: number | null;
-    lng?: number | null;
-    mapLinks?: PlaceMapLinks;
-    images?: string[] | null;
-    amenityCodes: string[];
-    createdAt?: string;
-    updatedAt?: string;
+export type GetPlacesResponse = { ok: true; places: PlaceSummary[] };
+export type GetPlaceDetailResponse = { ok: true; place: PlaceDetail };
+export type PostRecordResponse = { ok: true; placeIds: string[] };
+
+export const GetPlaces = async (): Promise<GetPlacesResponse> => {
+    const headers = await getAuthHeaders();
+    return FETCH<GetPlacesResponse>('/api/places', { headers });
 };
 
-export type GetPlacesParams = {
-    regionCode?: string;
-    subRegionCode?: string;
-    limit?: number;
-    cursor?: string;
+export const GetPlaceDetail = async (placeId: string): Promise<GetPlaceDetailResponse> => {
+    const headers = await getAuthHeaders();
+    return FETCH<GetPlaceDetailResponse>(`/api/places/${placeId}`, { headers });
 };
 
-export type GetPlacesResponse = {
-    ok: true;
-    items: PlaceDto[];
-    nextCursor: string | null;
-};
-
-export const GetPlaces = (params: GetPlacesParams = {}) => {
-    const search = new URLSearchParams();
-
-    if (params.regionCode) search.set('regionCode', params.regionCode);
-    if (params.subRegionCode) search.set('subRegionCode', params.subRegionCode);
-    if (typeof params.limit === 'number') search.set('limit', String(params.limit));
-    if (params.cursor) search.set('cursor', params.cursor);
-
-    const query = search.toString();
-    const path = query ? `/api/places?${query}` : '/api/places';
-
-    return FETCH<GetPlacesResponse>(path);
+/** 기록 세션 생성 — Place/Visit/Photo 를 한 번에 만든다 */
+export const PostRecord = async (groups: RecordGroupInput[]): Promise<PostRecordResponse> => {
+    const headers = await getAuthHeaders();
+    return FETCH<PostRecordResponse>('/api/records', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify({ groups })
+    });
 };
