@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import type { PlaceCandidate } from '@/shared/kakao-map';
+import { searchPlacesByKeyword, type PickedPlace, type PlaceSearchResult } from '@/shared/kakao-map';
 import { formatVisitDateShort } from '@/shared/lib';
 import { Icon } from '@/shared/ui';
 
@@ -16,7 +16,7 @@ type PlaceGroupCardProps = {
     menuOpen: boolean;
     onTapPhoto: (id: string) => void;
     onRename: (name: string) => void;
-    onChooseCandidate: (candidate: PlaceCandidate) => void;
+    onChoosePlace: (picked: PickedPlace) => void;
     onToggleMenu: () => void;
     onPinEdit: () => void;
     onDelete: () => void;
@@ -26,8 +26,8 @@ type PlaceGroupCardProps = {
 
 /**
  * 장소 그룹 카드 — 저장 시 Place 1 + Visit 1이 된다.
- * 장소명은 상위 후보로 채워두되(첫 제안), 입력 포커스 시 다른 후보를 고를 수 있다
- * (자동 top1 확정 금지 — 실내·대형건물 약점, [[verify-kakao-reverse-geocoding]]).
+ * 장소명은 자동 분석(역지오코딩 첫 제안)으로 채워두되, 입력을 고치면 그 텍스트로 **카카오 장소를 검색**해
+ * 결과에서 고를 수 있다(그룹 좌표 거리순). 검색 없이 자유 라벨("할머니 집")로 둬도 된다.
  */
 export function PlaceGroupCard({
     group,
@@ -35,18 +35,49 @@ export function PlaceGroupCard({
     menuOpen,
     onTapPhoto,
     onRename,
-    onChooseCandidate,
+    onChoosePlace,
     onToggleMenu,
     onPinEdit,
     onDelete,
     onNote,
     onEditDate
 }: PlaceGroupCardProps) {
-    const [candidatesOpen, setCandidatesOpen] = useState(false);
+    const [focused, setFocused] = useState(false);
+    const [results, setResults] = useState<PlaceSearchResult[]>([]);
+    const [searching, setSearching] = useState(false);
     const isKakao = group.source === 'kakao';
 
-    // 현재 이름과 다른 후보만 제안 목록에 남긴다.
-    const otherCandidates = group.candidates.filter((c) => c.name !== group.name);
+    // 입력 = 자유 라벨 + 카카오 검색어. 상태 전환은 이벤트에서(effect 동기 setState 회피).
+    const handleChange = (value: string) => {
+        onRename(value);
+        setSearching(value.trim().length > 0);
+        if (!value.trim()) setResults([]);
+    };
+
+    // 포커스 중 이름이 바뀌면 그룹 좌표 근처로 카카오 검색(디바운스).
+    useEffect(() => {
+        if (!focused) return;
+        const q = group.name.trim();
+        if (!q) return;
+        let cancelled = false;
+        const timer = setTimeout(() => {
+            searchPlacesByKeyword(q, { lat: group.lat, lng: group.lng })
+                .then((r) => {
+                    if (cancelled) return;
+                    setResults(r);
+                    setSearching(false);
+                })
+                .catch(() => {
+                    if (cancelled) return;
+                    setResults([]);
+                    setSearching(false);
+                });
+        }, 300);
+        return () => {
+            cancelled = true;
+            clearTimeout(timer);
+        };
+    }, [focused, group.name, group.lat, group.lng]);
 
     return (
         <div className="relative rounded-2xl border border-[#E2E8F0] bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.05)]">
@@ -56,10 +87,10 @@ export function PlaceGroupCard({
                 <div className="relative min-w-0 flex-1">
                     <input
                         value={group.name}
-                        onChange={(e) => onRename(e.target.value)}
-                        onFocus={() => setCandidatesOpen(true)}
-                        onBlur={() => setTimeout(() => setCandidatesOpen(false), 120)}
-                        placeholder="장소 이름"
+                        onChange={(e) => handleChange(e.target.value)}
+                        onFocus={() => setFocused(true)}
+                        onBlur={() => setTimeout(() => setFocused(false), 150)}
+                        placeholder="장소 이름 (검색하거나 직접 입력)"
                         className="w-full border-none bg-transparent p-0 text-[16px] font-bold text-[#0F172A] outline-none placeholder:text-[#94A3B8]"
                     />
                     <div className="mt-[3px] flex flex-wrap items-center gap-1.5">
@@ -88,26 +119,33 @@ export function PlaceGroupCard({
                         <span className="text-[12px] text-[#94A3B8]">사진 {group.photos.length}장</span>
                     </div>
 
-                    {candidatesOpen && otherCandidates.length > 0 && (
-                        <div className="absolute top-[58px] left-0 z-30 w-full overflow-hidden rounded-xl border border-[#E2E8F0] bg-white shadow-[0_10px_24px_-6px_rgba(15,23,42,0.22)]">
-                            <p className="px-3 pt-2.5 pb-1 text-[11px] font-semibold text-[#94A3B8]">다른 후보</p>
-                            {otherCandidates.map((candidate, i) => (
-                                <button
-                                    key={`${candidate.kakaoPlaceId ?? candidate.name}-${i}`}
-                                    type="button"
-                                    // onMouseDown: input blur보다 먼저 잡아 선택이 닫힘에 묻히지 않게
-                                    onMouseDown={(e) => {
-                                        e.preventDefault();
-                                        onChooseCandidate(candidate);
-                                        setCandidatesOpen(false);
-                                    }}
-                                    className="flex w-full items-center gap-2 px-3 py-2.5 text-left hover:bg-neutral-50"
-                                >
-                                    <Icon name="pin" size={15} className="shrink-0 fill-primary-600 text-white" stroke={1.2} />
-                                    <span className="flex-1 truncate text-[14px] text-[#334155]">{candidate.name}</span>
-                                    {candidate.distanceM != null && <span className="text-[11px] text-[#94A3B8] tabular-nums">{candidate.distanceM}m</span>}
-                                </button>
-                            ))}
+                    {focused && (results.length > 0 || searching) && (
+                        <div className="absolute top-[58px] left-0 z-30 max-h-[230px] w-full overflow-y-auto rounded-xl border border-[#E2E8F0] bg-white shadow-[0_10px_24px_-6px_rgba(15,23,42,0.22)]">
+                            <p className="px-3 pt-2.5 pb-1 text-[11px] font-semibold text-[#94A3B8]">카카오맵 검색</p>
+                            {results.length === 0 ? (
+                                <p className="px-3 pb-3 text-[13px] text-[#94A3B8]">검색 중…</p>
+                            ) : (
+                                results.map((place) => (
+                                    <button
+                                        key={place.kakaoPlaceId}
+                                        type="button"
+                                        // onMouseDown: input blur보다 먼저 잡아 선택이 닫힘에 묻히지 않게
+                                        onMouseDown={(e) => {
+                                            e.preventDefault();
+                                            onChoosePlace({ name: place.name, source: 'kakao', lat: place.lat, lng: place.lng, kakaoPlaceId: place.kakaoPlaceId });
+                                            setResults([]);
+                                            setFocused(false);
+                                        }}
+                                        className="flex w-full items-start gap-2 px-3 py-2.5 text-left hover:bg-neutral-50"
+                                    >
+                                        <Icon name="pin" size={15} className="mt-0.5 shrink-0 fill-primary-600 text-white" stroke={1.2} />
+                                        <span className="min-w-0 flex-1">
+                                            <span className="block truncate text-[14px] font-medium text-[#334155]">{place.name}</span>
+                                            <span className="block truncate text-[12px] text-[#94A3B8]">{place.address}</span>
+                                        </span>
+                                    </button>
+                                ))
+                            )}
                         </div>
                     )}
                 </div>

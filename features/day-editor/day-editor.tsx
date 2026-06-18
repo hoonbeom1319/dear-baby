@@ -106,7 +106,7 @@ export function DayEditor({ analysis, ready, hasPhotos, dateOptions, onBack, onS
                                 menuOpen={menuId === group.id}
                                 onTapPhoto={editor.togglePhoto}
                                 onRename={(name) => editor.renameGroup(group.id, name)}
-                                onChooseCandidate={(c) => editor.chooseCandidate(group.id, c)}
+                                onChoosePlace={(p) => editor.choosePlace(group.id, p)}
                                 onToggleMenu={() => setMenuId((id) => (id === group.id ? null : group.id))}
                                 onPinEdit={() => {
                                     setMenuId(null);

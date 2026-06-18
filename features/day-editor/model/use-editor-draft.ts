@@ -196,14 +196,12 @@ export function useEditorDraft(analysis: DayAnalysis | null, ready: boolean) {
         });
     }, []);
 
-    /** 후보 선택 — 이름·출처·좌표·kakaoId를 후보에서 채운다. */
-    const chooseCandidate = useCallback((groupId: string, candidate: PlaceCandidate) => {
+    /** 카카오 검색 결과 선택 — 이름·출처·좌표·kakaoId를 한 번에 채운다(장소명 입력의 검색 드롭다운). */
+    const choosePlace = useCallback((groupId: string, picked: PickedPlace) => {
         setDraft((d) => ({
             ...d,
             groups: d.groups.map((g) =>
-                g.id === groupId
-                    ? { ...g, name: candidate.name, source: sourceOf(candidate), lat: candidate.lat, lng: candidate.lng, kakaoPlaceId: candidate.kakaoPlaceId }
-                    : g
+                g.id === groupId ? { ...g, name: picked.name, source: picked.source, lat: picked.lat, lng: picked.lng, kakaoPlaceId: picked.kakaoPlaceId } : g
             )
         }));
     }, []);
@@ -244,7 +242,7 @@ export function useEditorDraft(analysis: DayAnalysis | null, ready: boolean) {
         unassignSelected,
         addGroup,
         deleteGroup,
-        chooseCandidate,
+        choosePlace,
         renameGroup,
         setNote,
         setGroupCoord,
