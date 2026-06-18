@@ -75,22 +75,15 @@ export function MapHomeView({ places, newPlaceIds, onAddRecord, onPinClick, onAv
                 </button>
             </div>
 
-            {/* 힌트 알약 */}
-            <div className="pointer-events-none absolute bottom-[118px] left-1/2 z-10 -translate-x-1/2">
-                <span className="whitespace-nowrap rounded-full bg-[rgba(15,23,42,0.84)] px-3.5 py-2 text-[13px] font-medium text-white">
-                    핀을 눌러 그날의 추억을 다시 보세요
-                </span>
-            </div>
-
             {/* FAB 기록 추가 */}
             <button
                 type="button"
                 onClick={onAddRecord}
-                className="absolute right-5 bottom-9 z-10 flex h-14 items-center gap-2 rounded-full bg-primary-600 pr-5 pl-4 text-white transition-colors hover:bg-primary-700"
+                aria-label="기록 추가"
+                className="absolute right-5 bottom-9 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-primary-600 text-white transition-colors hover:bg-primary-700"
                 style={{ boxShadow: '0 14px 28px -8px oklch(64.6% 0.222 41.116 / 0.6)' }}
             >
-                <Icon name="plus" size={22} stroke={2} />
-                <span className="text-[15px] font-bold">기록 추가</span>
+                <Icon name="plus" size={26} stroke={2} />
             </button>
         </div>
     );
