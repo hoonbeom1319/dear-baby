@@ -111,8 +111,8 @@ type RawVisit = { id: string; visited_on: string; note: string | null; created_a
 
 // ─── Mutations (저장 후 편집) ─────────────────────────────────────────────────
 
-/** 핀을 옮기면 카카오 장소와의 연결이 끊기므로 source='manual'로 내려가는 게 자연스럽다(편집기 규칙과 동일). */
-export type PlacePatch = { name?: string; lat?: number; lng?: number; source?: 'manual'; kakaoPlaceId?: string | null };
+// 핀만 옮기면 source='manual'(연결 끊김)로, 카카오 검색으로 장소를 바꾸면 source='kakao'+kakaoPlaceId로 갱신된다.
+export type PlacePatch = { name?: string; lat?: number; lng?: number; source?: 'kakao' | 'manual'; kakaoPlaceId?: string | null };
 
 export async function updatePlace(userId: string, placeId: string, patch: PlacePatch): Promise<void> {
     const row: Record<string, unknown> = {};

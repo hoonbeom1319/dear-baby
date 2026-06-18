@@ -10,10 +10,9 @@ import { useMemoryEditor } from '@/features/memory-editor';
 
 import { usePlaceDetailData } from '@/entities/place';
 
-
+import { AddPlaceSheet } from '@/shared/kakao-map';
 import { ConfirmSheet, DateSheet, Icon } from '@/shared/ui';
 
-import { PinEditSheet } from './ui/pin-edit-sheet';
 import { VisitCard, type VisitCardHandlers } from './ui/visit-card';
 
 /** 뒤로(지도) + 편집 토글. 핀 탭으로 들어온 흐름이라 history back이 지도 상태를 그대로 복원한다. */
@@ -61,7 +60,7 @@ export function PlaceDetailScreen() {
     const [editMode, setEditMode] = useState(false);
     // 날짜 시트: visitId=있으면 방문 날짜 수정, null이면 새 방문 추가. current=수정 시 현재 날짜(시트 표시값).
     const [dateTarget, setDateTarget] = useState<{ visitId: string | null; current: string | null } | null>(null);
-    const [pinOpen, setPinOpen] = useState(false);
+    const [placeEditOpen, setPlaceEditOpen] = useState(false);
     const [confirm, setConfirm] = useState<{ kind: 'place' } | { kind: 'visit'; visitId: string } | null>(null);
 
     const goBack = () => router.back();
@@ -116,11 +115,11 @@ export function PlaceDetailScreen() {
                         <div className="flex gap-2 pl-8">
                             <button
                                 type="button"
-                                onClick={() => setPinOpen(true)}
+                                onClick={() => setPlaceEditOpen(true)}
                                 className="flex items-center gap-1.5 rounded-lg border border-[#e2e8f0] bg-white px-3 py-2 text-[13px] font-semibold text-[#334155] transition-colors hover:bg-[#f8fafc]"
                             >
-                                <Icon name="pin" size={15} />
-                                핀 위치 수정
+                                <Icon name="search" size={15} />
+                                장소 변경
                             </button>
                             <button
                                 type="button"
@@ -179,7 +178,18 @@ export function PlaceDetailScreen() {
                 }}
             />
 
-            <PinEditSheet open={pinOpen} onOpenChange={setPinOpen} center={{ lat: place.lat, lng: place.lng }} onSubmit={editor.movePlace} />
+            <AddPlaceSheet
+                open={placeEditOpen}
+                onOpenChange={setPlaceEditOpen}
+                title="장소 변경"
+                mode="place"
+                near={{ lat: place.lat, lng: place.lng }}
+                onSubmitPlace={(picked) => {
+                    editor.changePlace(picked);
+                    setPlaceEditOpen(false);
+                }}
+                onSubmitPin={() => {}}
+            />
 
             <ConfirmSheet
                 open={confirm !== null}

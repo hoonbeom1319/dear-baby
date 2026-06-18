@@ -2,6 +2,7 @@
 
 import { usePlaceMutationsData } from '@/entities/place';
 
+import type { PickedPlace } from '@/shared/kakao-map';
 import { toast } from '@/shared/lib';
 
 import { uploadVisitPhotos } from '../lib/upload-visit-photos';
@@ -27,8 +28,12 @@ export function useMemoryEditor(userId: string | null, placeId: string) {
     return {
         isMutating,
         renamePlace: (name: string) => m.modifyPlace.mutate({ placeId, patch: { name } }, { onError: FAIL }),
-        movePlace: (lat: number, lng: number) =>
-            m.modifyPlace.mutate({ placeId, patch: { lat, lng, source: 'manual', kakaoPlaceId: null } }, { onError: FAIL }),
+        // 카카오 검색/지도에서 고른 장소로 통째 교체 — 이름·좌표·출처·kakaoId를 함께 갱신한다.
+        changePlace: (picked: PickedPlace) =>
+            m.modifyPlace.mutate(
+                { placeId, patch: { name: picked.name, lat: picked.lat, lng: picked.lng, source: picked.source, kakaoPlaceId: picked.kakaoPlaceId } },
+                { onError: FAIL }
+            ),
         removePlace: (onSuccess: () => void) => m.removePlace.mutate({ placeId }, { onSuccess, onError: FAIL }),
         addVisit: (visitedOn: string) => m.addVisit.mutate({ placeId, input: { visitedOn, note: null } }, { onError: FAIL }),
         editVisitDate: (visitId: string, visitedOn: string) => m.modifyVisit.mutate({ placeId, visitId, patch: { visitedOn } }, { onError: FAIL }),
