@@ -25,6 +25,8 @@ export type EditorGroup = {
     lat: number;
     lng: number;
     kakaoPlaceId: string | null;
+    /** 방문 날짜 YYYY-MM-DD. 촬영시각이 전혀 없으면 null — 저장 전 사용자가 지정해야 한다. */
+    visitedOn: string | null;
     note: string;
     photos: EditorPhoto[];
 };
@@ -32,8 +34,6 @@ export type EditorGroup = {
 export type EditorDraft = {
     groups: EditorGroup[];
     unassigned: EditorPhoto[];
-    /** 방문 날짜 YYYY-MM-DD. 어떤 사진에도 촬영시각이 없으면 null(사용자가 정해야 함). */
-    date: string | null;
 };
 
 /** 새 장소를 만들 때 필요한 좌표·출처 정보 (장소 추가 시트가 채운다) */
@@ -52,8 +52,23 @@ const nextGroupId = () => `eg${groupSeq++}`;
 
 const sourceOf = (candidate: PlaceCandidate): PlaceSource => (candidate.kind === 'poi' ? 'kakao' : 'manual');
 
+/** 기존 그룹들의 최빈 방문일 — 새 장소를 추가할 때 같은 날 기본값으로 쓴다. */
+function mostCommonVisitedOn(groups: EditorGroup[]): string | null {
+    const counts = new Map<string, number>();
+    for (const g of groups) if (g.visitedOn) counts.set(g.visitedOn, (counts.get(g.visitedOn) ?? 0) + 1);
+    let best: string | null = null;
+    let bestCount = 0;
+    for (const [date, count] of counts) {
+        if (count > bestCount) {
+            best = date;
+            bestCount = count;
+        }
+    }
+    return best;
+}
+
 function seedFromAnalysis(analysis: DayAnalysis | null): EditorDraft {
-    if (!analysis) return { groups: [], unassigned: [], date: null };
+    if (!analysis) return { groups: [], unassigned: [] };
 
     const toPhotos = (photos: DayAnalysis['unsorted']): EditorPhoto[] =>
         photos.map((p) => ({ id: nextPhotoId(), file: p.file, url: URL.createObjectURL(p.file), takenAt: p.takenAt }));
@@ -68,12 +83,13 @@ function seedFromAnalysis(analysis: DayAnalysis | null): EditorDraft {
             lat: chosen?.lat ?? g.center.lat,
             lng: chosen?.lng ?? g.center.lng,
             kakaoPlaceId: chosen?.kakaoPlaceId ?? null,
+            visitedOn: g.visitedOn,
             note: '',
             photos: toPhotos(g.photos)
         };
     });
 
-    return { groups, unassigned: toPhotos(analysis.unsorted), date: analysis.date };
+    return { groups, unassigned: toPhotos(analysis.unsorted) };
 }
 
 /**
@@ -82,7 +98,7 @@ function seedFromAnalysis(analysis: DayAnalysis | null): EditorDraft {
  * 시드 이후 분석 변동은 무시한다 — 사용자가 편집을 시작했을 수 있으므로.
  */
 export function useEditorDraft(analysis: DayAnalysis | null, ready: boolean) {
-    const [draft, setDraft] = useState<EditorDraft>({ groups: [], unassigned: [], date: null });
+    const [draft, setDraft] = useState<EditorDraft>({ groups: [], unassigned: [] });
     const [selected, setSelected] = useState<Set<string>>(new Set());
     const seeded = useRef(false);
 
@@ -167,6 +183,7 @@ export function useEditorDraft(analysis: DayAnalysis | null, ready: boolean) {
                     lat: seed.lat,
                     lng: seed.lng,
                     kakaoPlaceId: seed.kakaoPlaceId,
+                    visitedOn: mostCommonVisitedOn(d.groups), // 새 장소는 그날 기본값으로 — 다르면 카드에서 바꾼다
                     note: '',
                     photos: base.pulled
                 };
@@ -223,7 +240,9 @@ export function useEditorDraft(analysis: DayAnalysis | null, ready: boolean) {
         }));
     }, []);
 
-    const setDate = useCallback((date: string) => setDraft((d) => ({ ...d, date })), []);
+    const setGroupDate = useCallback((groupId: string, visitedOn: string) => {
+        setDraft((d) => ({ ...d, groups: d.groups.map((g) => (g.id === groupId ? { ...g, visitedOn } : g)) }));
+    }, []);
 
     return {
         draft,
@@ -238,6 +257,6 @@ export function useEditorDraft(analysis: DayAnalysis | null, ready: boolean) {
         renameGroup,
         setNote,
         setGroupCoord,
-        setDate
+        setGroupDate
     };
 }

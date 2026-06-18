@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { formatVisitDateShort, toast } from '@/shared/lib';
+import { toast } from '@/shared/lib';
 import { DateSheet, Icon } from '@/shared/ui';
 
 import type { DayAnalysis } from './lib/types';
@@ -40,8 +40,8 @@ type DayEditorProps = {
     /** EXIF에서 뽑은 후보 날짜들 (YYYY-MM-DD) */
     dateOptions: string[];
     onBack: () => void;
-    /** 이름 있는 장소 그룹들을 저장한다 (사진 업로드 + 기록 생성은 호출부 몫) */
-    onSave: (savable: EditorGroup[], date: string | null) => void;
+    /** 이름 있는 장소 그룹들을 저장한다 (그룹별 visitedOn 사용 — 사진 업로드·기록 생성은 호출부 몫) */
+    onSave: (savable: EditorGroup[]) => void;
     /** 저장(업로드) 진행 중 — 저장 바 비활성·문구 변경 */
     saving?: boolean;
 };
@@ -52,7 +52,8 @@ type DayEditorProps = {
  */
 export function DayEditor({ analysis, ready, hasPhotos, dateOptions, onBack, onSave, saving = false }: DayEditorProps) {
     const [menuId, setMenuId] = useState<string | null>(null);
-    const [dateOpen, setDateOpen] = useState(false);
+    // 날짜 시트를 연 그룹 id (그룹별 방문 날짜 — null이면 닫힘)
+    const [dateForGroup, setDateForGroup] = useState<string | null>(null);
     const [moveOpen, setMoveOpen] = useState(false);
     const [addSheet, setAddSheet] = useState<AddSheetState>(CLOSED_ADD_SHEET);
 
@@ -60,17 +61,20 @@ export function DayEditor({ analysis, ready, hasPhotos, dateOptions, onBack, onS
     const { draft, selected } = editor;
 
     const savable = draft.groups.filter((g) => g.name.trim());
+    const dateGroup = draft.groups.find((g) => g.id === dateForGroup) ?? null;
     // 검색 거리 기준·지도 초기 중심 — 그날 첫 장소 근처(없으면 시트가 서울 기본값을 쓴다).
     const dayCenter = draft.groups[0] ? { lat: draft.groups[0].lat, lng: draft.groups[0].lng } : null;
     const closeAddSheet = () => setAddSheet(CLOSED_ADD_SHEET);
 
-    const requireDateThenSave = () => {
-        if (!draft.date) {
-            toast('방문 날짜를 먼저 골라주세요');
-            setDateOpen(true);
+    const requireDatesThenSave = () => {
+        // 이름은 있는데 날짜가 비어 있는 그룹이 있으면 그 카드의 날짜 시트를 연다.
+        const missing = savable.find((g) => !g.visitedOn);
+        if (missing) {
+            toast('날짜를 정하지 않은 장소가 있어요');
+            setDateForGroup(missing.id);
             return;
         }
-        onSave(savable, draft.date);
+        onSave(savable);
     };
 
     return (
@@ -81,15 +85,7 @@ export function DayEditor({ analysis, ready, hasPhotos, dateOptions, onBack, onS
                     <button type="button" onClick={onBack} aria-label="뒤로" className="flex h-10 w-10 items-center justify-center rounded-full text-[#0F172A] hover:bg-neutral-100">
                         <Icon name="back" size={24} stroke={2} />
                     </button>
-                    <div className="text-[18px] font-bold text-[#0F172A]">하루 기록 정리</div>
-                    <button
-                        type="button"
-                        onClick={() => setDateOpen(true)}
-                        className="ml-auto flex h-[38px] shrink-0 items-center gap-1.5 rounded-full border border-[#E2E8F0] px-3"
-                    >
-                        <Icon name="clock" size={16} className="text-primary-600" stroke={2} />
-                        <span className="text-[13px] font-semibold text-[#334155] tabular-nums">{formatVisitDateShort(draft.date)}</span>
-                    </button>
+                    <div className="text-[18px] font-bold text-[#0F172A]">기록 정리</div>
                 </div>
             </header>
 
@@ -121,6 +117,7 @@ export function DayEditor({ analysis, ready, hasPhotos, dateOptions, onBack, onS
                                     editor.deleteGroup(group.id);
                                 }}
                                 onNote={(note) => editor.setNote(group.id, note)}
+                                onEditDate={() => setDateForGroup(group.id)}
                             />
                         ))}
 
@@ -140,13 +137,19 @@ export function DayEditor({ analysis, ready, hasPhotos, dateOptions, onBack, onS
                 (selected.size > 0 ? (
                     <SelectionBar count={selected.size} onUnassign={editor.unassignSelected} onMove={() => setMoveOpen(true)} onClear={editor.clearSelection} />
                 ) : (
-                    <SaveBar count={savable.length} disabled={savable.length === 0} saving={saving} onSave={requireDateThenSave} />
+                    <SaveBar count={savable.length} disabled={savable.length === 0} saving={saving} onSave={requireDatesThenSave} />
                 ))}
 
-            <DateSheet open={dateOpen} onOpenChange={setDateOpen} options={dateOptions} value={draft.date} onPick={(date) => {
-                editor.setDate(date);
-                setDateOpen(false);
-            }} />
+            <DateSheet
+                open={dateForGroup !== null}
+                onOpenChange={(open) => !open && setDateForGroup(null)}
+                options={dateOptions}
+                value={dateGroup?.visitedOn ?? null}
+                onPick={(date) => {
+                    if (dateForGroup) editor.setGroupDate(dateForGroup, date);
+                    setDateForGroup(null);
+                }}
+            />
 
             <MoveSheet
                 open={moveOpen}

@@ -29,9 +29,10 @@ async function uploadGroupPhotos(userId: string, group: EditorGroup): Promise<Re
 
 /**
  * 저장 가능한 그룹들의 사진을 모두 업로드한 뒤 기록 생성 입력(RecordGroupInput[])으로 변환한다.
+ * 방문 날짜는 그룹마다 다를 수 있어 group.visitedOn을 그대로 쓴다(호출부가 날짜 누락을 미리 막는다).
  * 호출부에서 이 결과를 useCreateRecordData에 넘겨 Place/Visit/Photo를 한 번에 만든다.
  */
-export async function buildRecordInput(userId: string, groups: EditorGroup[], visitedOn: string): Promise<RecordGroupInput[]> {
+export async function buildRecordInput(userId: string, groups: EditorGroup[]): Promise<RecordGroupInput[]> {
     return Promise.all(
         groups.map(async (group): Promise<RecordGroupInput> => ({
             name: group.name.trim(),
@@ -39,7 +40,7 @@ export async function buildRecordInput(userId: string, groups: EditorGroup[], vi
             lng: group.lng,
             source: group.source,
             kakaoPlaceId: group.kakaoPlaceId,
-            visitedOn,
+            visitedOn: group.visitedOn ?? '',
             note: group.note.trim() || null,
             photos: await uploadGroupPhotos(userId, group)
         }))

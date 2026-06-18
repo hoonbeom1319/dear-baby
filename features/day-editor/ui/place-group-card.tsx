@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import type { PlaceCandidate } from '@/shared/kakao-map';
+import { formatVisitDateShort } from '@/shared/lib';
 import { Icon } from '@/shared/ui';
 
 import type { EditorGroup } from '../model/use-editor-draft';
@@ -20,6 +21,7 @@ type PlaceGroupCardProps = {
     onPinEdit: () => void;
     onDelete: () => void;
     onNote: (note: string) => void;
+    onEditDate: () => void;
 };
 
 /**
@@ -37,7 +39,8 @@ export function PlaceGroupCard({
     onToggleMenu,
     onPinEdit,
     onDelete,
-    onNote
+    onNote,
+    onEditDate
 }: PlaceGroupCardProps) {
     const [candidatesOpen, setCandidatesOpen] = useState(false);
     const isKakao = group.source === 'kakao';
@@ -59,7 +62,7 @@ export function PlaceGroupCard({
                         placeholder="장소 이름"
                         className="w-full border-none bg-transparent p-0 text-[16px] font-bold text-[#0F172A] outline-none placeholder:text-[#94A3B8]"
                     />
-                    <div className="mt-[3px] flex items-center gap-1.5">
+                    <div className="mt-[3px] flex flex-wrap items-center gap-1.5">
                         <span
                             className={
                                 isKakao
@@ -69,6 +72,19 @@ export function PlaceGroupCard({
                         >
                             {isKakao ? '카카오맵' : '직접 추가'}
                         </span>
+                        {/* 그룹별 방문 날짜 — 날짜 미정이면 강조해 지정을 유도한다 */}
+                        <button
+                            type="button"
+                            onClick={onEditDate}
+                            className={
+                                group.visitedOn
+                                    ? 'inline-flex h-5 items-center gap-1 rounded-full bg-neutral-100 px-[7px] text-[11px] font-semibold text-neutral-600 tabular-nums'
+                                    : 'inline-flex h-5 items-center gap-1 rounded-full bg-primary-50 px-[7px] text-[11px] font-semibold text-primary-600'
+                            }
+                        >
+                            <Icon name="clock" size={11} stroke={2} />
+                            {formatVisitDateShort(group.visitedOn)}
+                        </button>
                         <span className="text-[12px] text-[#94A3B8]">사진 {group.photos.length}장</span>
                     </div>
 

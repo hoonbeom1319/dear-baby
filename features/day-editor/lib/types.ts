@@ -23,10 +23,8 @@ export type DayPlaceGroup = {
 
 /** A-3 편집기를 "이미 채워진 상태"로 시작시키는 분석 결과 (PRD F-2/F-3/F-4) */
 export type DayAnalysis = {
-    /** 동선 순서(가장 이른 촬영시각 기준)로 정렬된 장소 그룹들 */
+    /** 동선 순서(가장 이른 촬영시각 기준)로 정렬된 장소 그룹들. 같은 장소라도 날짜가 다르면 별도 그룹(방문). */
     groups: DayPlaceGroup[];
     /** GPS 없는 사진 — 미분류 영역. 메인 흐름과 동등한 무게(PRD F-3) */
     unsorted: AnalyzedPhoto[];
-    /** 전체 대표 날짜 제안 (그룹 방문일의 최빈값). 어떤 사진에도 촬영시각이 없으면 null */
-    date: string | null;
 };

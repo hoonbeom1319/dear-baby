@@ -8,6 +8,7 @@ const PROXIMITY_RADIUS_M = 150;
 
 /**
  * 고른 사진 파일들을 읽어 편집기 초기 상태(장소 그룹 + 미분류)를 만든다. (PRD F-2/F-3)
+ * 위치(GPS)로 묶은 뒤 **날짜별로 다시 쪼갠다** — 같은 장소라도 다른 날 방문이면 별도 그룹(=별도 방문).
  * 네트워크(카카오 후보)는 여기서 붙이지 않는다 — 순수 분석만. 후보는 use-analyze-photos가 붙인다.
  */
 export async function buildDayGroups(files: File[]): Promise<DayAnalysis> {
@@ -15,7 +16,7 @@ export async function buildDayGroups(files: File[]): Promise<DayAnalysis> {
         files.map(async (file) => {
             const { gps, takenAt } = await readExif(file);
             return { file, gps, takenAt };
-        }),
+        })
     );
 
     const located = analyzed.filter((p) => p.gps !== null);
@@ -24,28 +25,48 @@ export async function buildDayGroups(files: File[]): Promise<DayAnalysis> {
     // 클러스터링은 좌표만 보므로 사진을 함께 실어 보낸다(묶인 뒤 원본 사진 복원용).
     const clusters = clusterByProximity(
         located.map((p) => ({ lat: p.gps!.lat, lng: p.gps!.lng, photo: p })),
-        PROXIMITY_RADIUS_M,
+        PROXIMITY_RADIUS_M
     );
 
-    const groups: DayPlaceGroup[] = clusters.map((cluster, i) => {
+    const groups: DayPlaceGroup[] = [];
+    for (const cluster of clusters) {
+        const center = centroid(cluster);
         const photos = cluster.map((c) => c.photo);
-        return {
-            id: `g${i}`,
-            photos: sortByTime(photos),
-            center: centroid(cluster),
-            visitedOn: representativeDate(photos),
-            candidates: [],
-        };
+
+        // 같은 위치를 촬영일(로컬)별로 분리한다.
+        const byDate = new Map<string, AnalyzedPhoto[]>();
+        const undated: AnalyzedPhoto[] = [];
+        for (const p of photos) {
+            const date = p.takenAt ? toLocalDate(p.takenAt) : null;
+            if (!date) {
+                undated.push(p);
+                continue;
+            }
+            const bucket = byDate.get(date);
+            if (bucket) bucket.push(p);
+            else byDate.set(date, [p]);
+        }
+        // 촬영시각 없는 사진: 이 위치에 날짜 그룹이 하나뿐이면 그 날로 흡수, 여러 날이면 '날짜 미정' 그룹으로 둔다.
+        if (undated.length > 0 && byDate.size === 1) {
+            const [only] = [...byDate.values()];
+            only.push(...undated);
+            undated.length = 0;
+        }
+        for (const [date, ps] of byDate) {
+            groups.push({ id: '', photos: sortByTime(ps), center, visitedOn: date, candidates: [] });
+        }
+        if (undated.length > 0) {
+            groups.push({ id: '', photos: sortByTime(undated), center, visitedOn: null, candidates: [] });
+        }
+    }
+
+    // 동선 순서 — 가장 이른 촬영시각 기준. 시각 없는 그룹은 뒤로. id는 정렬 후 부여한다.
+    groups.sort((a, b) => earliestTime(a.photos) - earliestTime(b.photos));
+    groups.forEach((g, i) => {
+        g.id = `g${i}`;
     });
 
-    // 동선 순서 — 가장 이른 촬영시각 기준. 시각 없는 그룹은 뒤로.
-    groups.sort((a, b) => earliestTime(a.photos) - earliestTime(b.photos));
-
-    return {
-        groups,
-        unsorted: sortByTime(unsorted),
-        date: mostCommon(groups.map((g) => g.visitedOn)),
-    };
+    return { groups, unsorted: sortByTime(unsorted) };
 }
 
 const time = (p: AnalyzedPhoto): number => p.takenAt?.getTime() ?? Number.POSITIVE_INFINITY;
@@ -58,26 +79,3 @@ const pad = (n: number): string => String(n).padStart(2, '0');
 
 /** 로컬 타임존 기준 YYYY-MM-DD (방문 날짜는 사용자가 사는 곳의 '그 날'이어야 함) */
 const toLocalDate = (d: Date): string => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-
-/** 그룹 내 사진 촬영일의 최빈값 — 자정 전후로 날짜가 갈리는 경우 다수결로 '그 날'을 정한다 */
-function representativeDate(photos: AnalyzedPhoto[]): string | null {
-    return mostCommon(photos.map((p) => (p.takenAt ? toLocalDate(p.takenAt) : null)));
-}
-
-/** null 제외 최빈값. 동률이면 먼저 등장한 값. 전부 null이면 null */
-function mostCommon(values: (string | null)[]): string | null {
-    const counts = new Map<string, number>();
-    for (const v of values) {
-        if (v === null) continue;
-        counts.set(v, (counts.get(v) ?? 0) + 1);
-    }
-    let best: string | null = null;
-    let bestCount = 0;
-    for (const [value, count] of counts) {
-        if (count > bestCount) {
-            best = value;
-            bestCount = count;
-        }
-    }
-    return best;
-}
