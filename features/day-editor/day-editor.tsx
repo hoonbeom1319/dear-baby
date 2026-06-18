@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 
+import { AddPlaceSheet } from '@/shared/kakao-map';
 import { toast } from '@/shared/lib';
 import { DateSheet, Icon } from '@/shared/ui';
 
 import type { DayAnalysis } from './lib/types';
 import { useEditorDraft, type EditorGroup } from './model/use-editor-draft';
-import { AddPlaceSheet } from './ui/add-place-sheet';
 import { AnalyzingState } from './ui/analyzing-state';
 import { MoveSheet } from './ui/move-sheet';
 import { PlaceGroupCard } from './ui/place-group-card';

@@ -9,6 +9,15 @@ export type PlaceSearchResult = {
     kakaoPlaceId: string;
 };
 
+/** 검색·지도에서 고른 장소 — 새 장소 추가/장소 수정의 입력. (기록 편집기·장소 상세 공용) */
+export type PickedPlace = {
+    name: string;
+    source: 'kakao' | 'manual';
+    lat: number;
+    lng: number;
+    kakaoPlaceId: string | null;
+};
+
 /**
  * 키워드로 카카오 장소를 검색한다(지도 없이). 장소 추가 시트의 검색 모드용.
  * `near`가 있으면 그 좌표 거리순으로(그날 동선 근처 우선), 없으면 정확도순.

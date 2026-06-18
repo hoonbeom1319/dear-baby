@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { PlaceSource } from '@/entities/place';
 
-import type { PlaceCandidate } from '@/shared/kakao-map';
+import type { PickedPlace, PlaceCandidate } from '@/shared/kakao-map';
 
 import type { DayAnalysis } from '../lib/types';
 
@@ -34,15 +34,6 @@ export type EditorGroup = {
 export type EditorDraft = {
     groups: EditorGroup[];
     unassigned: EditorPhoto[];
-};
-
-/** 새 장소를 만들 때 필요한 좌표·출처 정보 (장소 추가 시트가 채운다) */
-export type NewGroupSeed = {
-    name: string;
-    source: PlaceSource;
-    lat: number;
-    lng: number;
-    kakaoPlaceId: string | null;
 };
 
 let photoSeq = 0;
@@ -172,7 +163,7 @@ export function useEditorDraft(analysis: DayAnalysis | null, ready: boolean) {
 
     /** 새 그룹 생성. pullCurrentSelection=true면 선택된 사진을 끌어와 담는다(이동 시트 "새 장소"). */
     const addGroup = useCallback(
-        (seed: NewGroupSeed, pullCurrentSelection = false) => {
+        (seed: PickedPlace, pullCurrentSelection = false) => {
             setDraft((d) => {
                 const base = pullCurrentSelection ? pullSelected(d, selected) : { pulled: [], groups: d.groups, unassigned: d.unassigned };
                 const group: EditorGroup = {

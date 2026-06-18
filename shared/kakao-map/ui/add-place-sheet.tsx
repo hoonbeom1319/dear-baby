@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react';
 
-import { PinPicker, searchPlacesByKeyword, type PlaceSearchResult } from '@/shared/kakao-map';
 import { Icon } from '@/shared/ui';
 
 import { Sheet } from '@/hbds/overlay/sheet';
 
-import type { NewGroupSeed } from '../model/use-editor-draft';
+import { searchPlacesByKeyword, type PickedPlace, type PlaceSearchResult } from '../lib/search-places';
+
+import { PinPicker } from './pin-picker';
 
 const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 };
 
@@ -15,17 +16,18 @@ type AddPlaceSheetProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     title: string;
-    /** 'place' = 이름+좌표로 새 장소 추가 / 'pin' = 좌표만 수정(핀 위치 수정) */
+    /** 'place' = 이름+좌표로 장소 선택(검색/수동) / 'pin' = 좌표만 수정(핀 위치 수정) */
     mode: 'place' | 'pin';
-    /** 검색 거리 기준·지도 초기 중심 (그날 동선 근처). 없으면 서울 기본값. */
+    /** 검색 거리 기준·지도 초기 중심. 없으면 서울 기본값. */
     near: { lat: number; lng: number } | null;
-    onSubmitPlace: (seed: NewGroupSeed) => void;
+    onSubmitPlace: (picked: PickedPlace) => void;
     onSubmitPin: (lat: number, lng: number) => void;
 };
 
 /**
- * 장소 추가 시트 — 카카오 검색으로 고르거나(검색 모드), 지도에서 직접 찍는다(수동 모드, F-4).
+ * 장소 선택 시트 — 카카오 검색으로 고르거나(검색 모드), 지도에서 직접 찍는다(수동 모드, F-4).
  * mode='pin'이면 검색 없이 지도만 — 기존 장소의 핀 위치 수정.
+ * 기록 편집기(새 장소 추가)와 장소 상세(장소 수정)가 함께 쓴다.
  * (Radix Dialog가 닫힐 때 내용을 언마운트하므로 열 때마다 내부 상태가 초기화된다.)
  */
 export function AddPlaceSheet({ open, onOpenChange, title, mode, near, onSubmitPlace, onSubmitPin }: AddPlaceSheetProps) {
@@ -59,7 +61,7 @@ function SearchMode({
     onGoManual
 }: {
     near: { lat: number; lng: number } | null;
-    onPick: (seed: NewGroupSeed) => void;
+    onPick: (picked: PickedPlace) => void;
     onGoManual: () => void;
 }) {
     const [query, setQuery] = useState('');
