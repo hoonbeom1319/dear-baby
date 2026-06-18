@@ -77,7 +77,7 @@ export function DayEditorScreen() {
             ready={ready}
             hasPhotos={hasPhotos}
             dateOptions={dateOptions}
-            onBack={() => router.push('/record')}
+            onBack={() => router.back()}
             onSave={handleSave}
             saving={saving}
         />
