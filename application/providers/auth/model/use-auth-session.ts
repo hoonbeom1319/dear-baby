@@ -8,7 +8,7 @@ import { getSupabaseBrowser } from '@/shared/lib';
 import { useAuth } from './store';
 
 export function useAuthSession() {
-    const [recentProvider, setRecentProvider] = useStorageState<'kakao' | 'naver'>('recent_login_provider', 'kakao');
+    const [recentProvider, setRecentProvider] = useStorageState<'kakao' | 'naver' | 'google'>('recent_login_provider', 'kakao');
 
     useEffect(() => {
         const supabase = getSupabaseBrowser();
@@ -33,8 +33,9 @@ export function useAuthSession() {
         } = supabase.auth.onAuthStateChange((_event, session) => {
             if (session) {
                 applySession(session);
-                const p = session.user.user_metadata?.provider;
-                setRecentProvider(p === 'naver' ? 'naver' : 'kakao');
+                // 커스텀 OAuth(카카오·네이버)는 user_metadata.provider를, 네이티브 OAuth(구글)는 app_metadata.provider를 채운다.
+                const p = session.user.user_metadata?.provider ?? session.user.app_metadata?.provider;
+                setRecentProvider(p === 'naver' ? 'naver' : p === 'google' ? 'google' : 'kakao');
             } else {
                 useAuth.setState({ loggedIn: false, userId: null, displayName: null, avatarUrl: null });
             }

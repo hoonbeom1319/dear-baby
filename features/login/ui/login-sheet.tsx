@@ -6,7 +6,7 @@ import { getSupabaseBrowser } from '@/shared/lib';
 
 import { Sheet } from '@/hbds/overlay/sheet';
 
-type Provider = 'kakao' | 'naver' | 'apple';
+type Provider = 'kakao' | 'naver' | 'google' | 'apple';
 
 type LoginSheetProps = {
     open: boolean;
@@ -24,7 +24,9 @@ type ProviderDef = {
 
 const PROVIDERS: ProviderDef[] = [
     { id: 'kakao', name: '카카오로 시작하기', mark: 'K', style: { background: '#FEE500', color: '#191600' }, kind: 'custom', href: '/api/auth/kakao' },
-    { id: 'naver', name: '네이버로 시작하기', mark: 'N', style: { background: '#03C75A', color: '#ffffff' }, kind: 'custom', href: '/api/auth/naver' }
+    { id: 'naver', name: '네이버로 시작하기', mark: 'N', style: { background: '#03C75A', color: '#ffffff' }, kind: 'custom', href: '/api/auth/naver' },
+    // 구글: Supabase 네이티브 OAuth(signInWithOAuth) — code 콜백을 /auth/callback 이 처리한다.
+    { id: 'google', name: 'Google로 시작하기', mark: 'G', style: { background: '#ffffff', color: '#4285F4', border: '1px solid #E2E8F0' }, kind: 'supabase', supabaseId: 'google' }
     // { id: 'apple', name: 'Apple로 시작하기',  mark: '', style: { background: '#000000', color: '#ffffff' }, kind: 'supabase', supabaseId: 'apple' },
 ];
 
