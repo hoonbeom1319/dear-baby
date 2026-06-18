@@ -38,7 +38,7 @@ export function AddPlaceSheet({ open, onOpenChange, title, mode, near, onSubmitP
         <Sheet open={open} onOpenChange={onOpenChange} title={title}>
             <div className="max-h-[72vh] overflow-y-auto">
                 {tab === 'search' && mode === 'place' ? (
-                    <SearchMode near={near} onPick={onSubmitPlace} onGoManual={() => setTab('manual')} />
+                    <SearchMode onPick={onSubmitPlace} onGoManual={() => setTab('manual')} />
                 ) : (
                     <ManualMode
                         center={center}
@@ -55,15 +55,7 @@ export function AddPlaceSheet({ open, onOpenChange, title, mode, near, onSubmitP
     );
 }
 
-function SearchMode({
-    near,
-    onPick,
-    onGoManual
-}: {
-    near: { lat: number; lng: number } | null;
-    onPick: (picked: PickedPlace) => void;
-    onGoManual: () => void;
-}) {
+function SearchMode({ onPick, onGoManual }: { onPick: (picked: PickedPlace) => void; onGoManual: () => void }) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<PlaceSearchResult[]>([]);
     const [searching, setSearching] = useState(false);
@@ -82,7 +74,7 @@ function SearchMode({
         if (!q) return; // 입력 핸들러가 결과를 비운다 — effect 본문 동기 setState 회피
         let cancelled = false;
         const timer = setTimeout(() => {
-            searchPlacesByKeyword(q, near ?? undefined)
+            searchPlacesByKeyword(q)
                 .then((r) => {
                     if (cancelled) return;
                     setResults(r);
@@ -98,7 +90,7 @@ function SearchMode({
             cancelled = true;
             clearTimeout(timer);
         };
-    }, [query, near]);
+    }, [query]);
 
     const trimmed = query.trim();
 

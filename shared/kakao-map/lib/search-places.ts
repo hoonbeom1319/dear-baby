@@ -19,10 +19,11 @@ export type PickedPlace = {
 };
 
 /**
- * 키워드로 카카오 장소를 검색한다(지도 없이). 장소 추가 시트의 검색 모드용.
- * `near`가 있으면 그 좌표 거리순으로(그날 동선 근처 우선), 없으면 정확도순.
+ * 키워드로 카카오 장소를 검색한다(지도 없이). 사용자가 직접 하는 장소 검색용.
+ * 항상 정확도순 — 거리순으로 하면 좌표 근처(예: 몰 안)의 입점 매장이 대표 장소보다 위로 올라온다.
+ * (좌표 기반 자동 제안은 역지오코딩 suggestPlaceCandidates가 따로 담당한다.)
  */
-export async function searchPlacesByKeyword(keyword: string, near?: { lat: number; lng: number }): Promise<PlaceSearchResult[]> {
+export async function searchPlacesByKeyword(keyword: string): Promise<PlaceSearchResult[]> {
     const q = keyword.trim();
     if (!q) return [];
 
@@ -51,7 +52,7 @@ export async function searchPlacesByKeyword(keyword: string, near?: { lat: numbe
                     }))
                 );
             },
-            near ? { x: String(near.lng), y: String(near.lat), sort: kakao.maps.services.SortBy.DISTANCE, size: 15 } : { sort: kakao.maps.services.SortBy.ACCURACY, size: 15 }
+            { sort: kakao.maps.services.SortBy.ACCURACY, size: 15 }
         );
     });
 }

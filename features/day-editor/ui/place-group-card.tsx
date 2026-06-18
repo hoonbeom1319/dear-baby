@@ -54,14 +54,15 @@ export function PlaceGroupCard({
         if (!value.trim()) setResults([]);
     };
 
-    // 포커스 중 이름이 바뀌면 그룹 좌표 근처로 카카오 검색(디바운스).
+    // 포커스 중 이름이 바뀌면 카카오 검색(디바운스). 거리순(near)을 쓰면 그룹 좌표(예: 몰 안)에
+    // 가까운 입점 매장이 위로 올라와 정작 "스타필드 하남" 같은 대표 장소가 밀린다 → 키워드 정확도순으로.
     useEffect(() => {
         if (!focused) return;
         const q = group.name.trim();
         if (!q) return;
         let cancelled = false;
         const timer = setTimeout(() => {
-            searchPlacesByKeyword(q, { lat: group.lat, lng: group.lng })
+            searchPlacesByKeyword(q)
                 .then((r) => {
                     if (cancelled) return;
                     setResults(r);
@@ -77,7 +78,7 @@ export function PlaceGroupCard({
             cancelled = true;
             clearTimeout(timer);
         };
-    }, [focused, group.name, group.lat, group.lng]);
+    }, [focused, group.name]);
 
     return (
         <div className="relative rounded-2xl border border-[#E2E8F0] bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.05)]">
