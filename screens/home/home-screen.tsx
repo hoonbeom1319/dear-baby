@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/application/providers';
 
 import { AccountSheet } from '@/features/account-menu';
+import { VisitTimelineSheet } from '@/features/visit-timeline';
 
 import { useLogRecall } from '@/entities/event';
 import { usePlacesData } from '@/entities/place';
@@ -33,6 +34,7 @@ export function HomeScreen() {
     const { places, isLoading } = usePlacesData(userId);
 
     const [accountOpen, setAccountOpen] = useState(false);
+    const [timelineOpen, setTimelineOpen] = useState(false);
 
     // 저장 완료(A-4)에서 "지도에서 보기"로 넘어오면 ?new=id,id → 그 핀들을 펄스시킨다.
     const newParam = searchParams.get('new');
@@ -72,6 +74,13 @@ export function HomeScreen() {
                 onAddRecord={goRecord}
                 onPinClick={(place) => router.push(`/place/${place.id}`)}
                 onAvatar={() => setAccountOpen(true)}
+                onOpenList={() => setTimelineOpen(true)}
+            />
+            <VisitTimelineSheet
+                open={timelineOpen}
+                onOpenChange={setTimelineOpen}
+                userId={userId}
+                onSelectPlace={(placeId) => router.push(`/place/${placeId}`)}
             />
             <AccountSheet
                 open={accountOpen}

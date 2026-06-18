@@ -20,10 +20,12 @@ type MapHomeViewProps = {
     onAddRecord: () => void;
     onPinClick: (place: PlaceSummary) => void;
     onAvatar: () => void;
+    /** 하단 "날짜별 기록" 필 → 타임라인 시트 열기 */
+    onOpenList: () => void;
 };
 
 /** A-1/B-1 지도 홈 — 핀이 박힌 전체 지도. 되새김의 메인 무대(PRD F-6). */
-export function MapHomeView({ places, newPlaceIds, onAddRecord, onPinClick, onAvatar }: MapHomeViewProps) {
+export function MapHomeView({ places, newPlaceIds, onAddRecord, onPinClick, onAvatar, onOpenList }: MapHomeViewProps) {
     const [map, setMap] = useState<kakao.maps.Map | null>(null);
     const savedViewport = useMapViewport((s) => s.viewport);
     const saveViewport = useMapViewport((s) => s.save);
@@ -74,6 +76,17 @@ export function MapHomeView({ places, newPlaceIds, onAddRecord, onPinClick, onAv
                     <Icon name="user" size={20} stroke={1.9} />
                 </button>
             </div>
+
+            {/* 하단 중앙 "날짜별 기록" 필 — 핀 중첩으로 고르기 어려운 방문을 리스트로. 손잡이 느낌의 진입점. */}
+            <button
+                type="button"
+                onClick={onOpenList}
+                className="absolute bottom-9 left-1/2 z-10 flex h-12 -translate-x-1/2 items-center gap-1.5 rounded-full bg-white pr-4 pl-3.5 text-[14px] font-bold text-[#334155] transition-colors hover:bg-neutral-50"
+                style={{ boxShadow: '0 8px 22px -8px rgba(15,23,42,0.35)' }}
+            >
+                <Icon name="clock" size={18} stroke={2} />
+                날짜별 기록
+            </button>
 
             {/* FAB 기록 추가 */}
             <button

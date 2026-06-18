@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
 // 인증이 필요한 API 경로 목록 — 새 보호 라우트 추가 시 여기에만 추가
-const PROTECTED_API_PREFIXES: string[] = ['/api/places', '/api/records', '/api/events', '/api/visits', '/api/photos'];
+const PROTECTED_API_PREFIXES: string[] = ['/api/places', '/api/records', '/api/events', '/api/visits', '/api/photos', '/api/timeline'];
 
 function isProtectedApi(pathname: string) {
     return PROTECTED_API_PREFIXES.some((prefix) => pathname.startsWith(prefix));

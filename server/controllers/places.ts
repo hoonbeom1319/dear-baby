@@ -1,6 +1,6 @@
 import { deletePlace, findPlaceDetail, findPlacesByUser, updatePlace, type PlacePatch, type PlaceSummary } from '../dao/places';
-import { createSupabaseAdmin } from '../db/supabase';
 import { NotFoundError } from '../lib/error';
+import { signPhotoPaths } from '../lib/sign-photos';
 
 export type { PlaceSummary, PlacePatch } from '../dao/places';
 
@@ -29,8 +29,6 @@ export type PlaceDetailView = {
     visits: VisitView[];
 };
 
-const SIGNED_URL_TTL = 60 * 60; // 1시간
-
 export async function fetchPlacesForMap(userId: string): Promise<PlaceSummary[]> {
     return findPlacesByUser(userId);
 }
@@ -44,7 +42,7 @@ export async function fetchPlaceDetail(userId: string, placeId: string): Promise
     if (!place) throw new NotFoundError();
 
     const paths = place.visits.flatMap((v) => v.photos.map((p) => p.storagePath));
-    const urlByPath = await signPaths(paths);
+    const urlByPath = await signPhotoPaths(paths);
 
     return {
         id: place.id,
@@ -70,18 +68,4 @@ export async function modifyPlace(userId: string, placeId: string, patch: PlaceP
 
 export async function removePlace(userId: string, placeId: string): Promise<void> {
     return deletePlace(userId, placeId);
-}
-
-async function signPaths(paths: string[]): Promise<Map<string, string>> {
-    const result = new Map<string, string>();
-    if (paths.length === 0) return result;
-
-    const supabase = createSupabaseAdmin();
-    const { data, error } = await supabase.storage.from('photos').createSignedUrls(paths, SIGNED_URL_TTL);
-    if (error) throw new Error(error.message);
-
-    for (const item of data ?? []) {
-        if (item.path && item.signedUrl) result.set(item.path, item.signedUrl);
-    }
-    return result;
 }
