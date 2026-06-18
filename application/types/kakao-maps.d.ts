@@ -37,7 +37,14 @@ declare namespace kakao {
             setCenter(latlng: LatLng): void;
             setLevel(level: number): void;
             setBounds(bounds: LatLngBounds, paddingTop?: number, paddingRight?: number, paddingBottom?: number, paddingLeft?: number): void;
+            getProjection(): MapProjection;
             relayout(): void;
+        }
+
+        /** 좌표 ↔ 컨테이너 픽셀 변환 — 줌별 미터당 px 실측에 쓴다. */
+        interface MapProjection {
+            containerPointFromCoords(latlng: LatLng): Point;
+            coordsFromContainerPoint(point: Point): LatLng;
         }
 
         class Size {
@@ -46,6 +53,8 @@ declare namespace kakao {
 
         class Point {
             constructor(x: number, y: number);
+            x: number;
+            y: number;
         }
 
         class MarkerImage {

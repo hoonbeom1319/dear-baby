@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { PlaceSummary } from '@/entities/place';
 
 import { KakaoMap, toLatLng } from '@/shared/kakao-map';
 import { Icon } from '@/shared/ui';
 
+import { useMapViewport } from '../model/use-map-viewport';
 import { usePinOverlays } from '../model/use-pin-overlays';
 
 const SEOUL = toLatLng(37.5665, 126.978)!;
+const DEFAULT_LEVEL = 6;
 
 type MapHomeViewProps = {
     places: PlaceSummary[];
@@ -23,16 +25,34 @@ type MapHomeViewProps = {
 /** A-1/B-1 지도 홈 — 핀이 박힌 전체 지도. 되새김의 메인 무대(PRD F-6). */
 export function MapHomeView({ places, newPlaceIds, onAddRecord, onPinClick, onAvatar }: MapHomeViewProps) {
     const [map, setMap] = useState<kakao.maps.Map | null>(null);
-    usePinOverlays(map, places, { newPlaceIds, onPinClick });
+    const savedViewport = useMapViewport((s) => s.viewport);
+    const saveViewport = useMapViewport((s) => s.save);
+
+    // 저장된 뷰포트가 있고 저장 직후(새 핀 강조)가 아니면, 사용자가 보던 화면을 그대로 둔다.
+    const fromSave = (newPlaceIds?.length ?? 0) > 0;
+    usePinOverlays(map, places, { newPlaceIds, onPinClick, fit: !savedViewport || fromSave });
+
+    // 사용자가 지도를 움직이거나 줌하면 중심·줌을 저장 — 장소 상세를 다녀와도 복원되게.
+    useEffect(() => {
+        if (!map) return;
+        const save = () => {
+            const c = map.getCenter();
+            saveViewport({ lat: c.getLat(), lng: c.getLng(), level: map.getLevel() });
+        };
+        kakao.maps.event.addListener(map, 'idle', save);
+        return () => kakao.maps.event.removeListener(map, 'idle', save);
+    }, [map, saveViewport]);
 
     const visitTotal = places.reduce((sum, p) => sum + p.visitCount, 0);
-    const center = toLatLng(places[0]?.lat ?? SEOUL.lat, places[0]?.lng ?? SEOUL.lng) ?? SEOUL;
+    // KakaoMap은 center/level을 최초 생성 시 한 번만 쓴다 → 복귀(재마운트) 시 저장된 뷰포트로 복원.
+    const initialCenter = savedViewport ? (toLatLng(savedViewport.lat, savedViewport.lng) ?? SEOUL) : (toLatLng(places[0]?.lat ?? SEOUL.lat, places[0]?.lng ?? SEOUL.lng) ?? SEOUL);
+    const initialLevel = savedViewport?.level ?? DEFAULT_LEVEL;
 
     return (
         <div className="relative h-dvh w-full overflow-hidden">
             {/* isolate: 카카오가 핀(CustomOverlay clickable) 레이어에 주는 높은 z-index를 이 박스 안에 가둔다.
                 안 그러면 오버레이가 아래의 카드·FAB 위로 올라와 가리고 클릭을 가로챈다. */}
-            <KakaoMap center={center} level={6} onReady={setMap} className="h-full w-full isolate" />
+            <KakaoMap center={initialCenter} level={initialLevel} onReady={setMap} className="h-full w-full isolate" />
 
             {/* 떠있는 상단 카드 */}
             <div
