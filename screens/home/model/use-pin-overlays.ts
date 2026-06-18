@@ -2,7 +2,7 @@ import { useEffect, useEffectEvent } from 'react';
 
 import type { PlaceSummary } from '@/entities/place';
 
-import { createPinElement } from '../lib/map-pin';
+import { createDotElement, createHeatBlob } from '../lib/map-pin';
 
 // 단일 핀일 때 setBounds는 과도하게 확대된다 → 적당한 줌으로 고정.
 const SINGLE_PIN_LEVEL = 5;
@@ -28,8 +28,28 @@ export function usePinOverlays(map: kakao.maps.Map | null, places: PlaceSummary[
         if (!map || places.length === 0) return;
 
         const isNew = newIds();
-        const overlays = places.map((place) => {
-            const element = createPinElement(place, {
+        // 방문수 정규화 — 분모 하한 2로 둬서 1회 방문이 100%로 타오르지 않게 한다.
+        const maxVisits = Math.max(2, ...places.map((p) => p.visitCount));
+        const intensity = (place: PlaceSummary) => Math.min(1, place.visitCount / maxVisits);
+
+        // 히트 블롭(아래, zIndex 1) — 겹치는 글로우가 짙어져 "자주 가는 동네"를 드러낸다.
+        const heatOverlays = places.map((place) => {
+            const overlay = new kakao.maps.CustomOverlay({
+                content: createHeatBlob(intensity(place)),
+                position: new kakao.maps.LatLng(place.lat, place.lng),
+                xAnchor: 0.5,
+                yAnchor: 0.5,
+                zIndex: 1,
+                clickable: false
+            });
+            overlay.setMap(map);
+            return overlay;
+        });
+
+        // 도트 마커(위, zIndex 10) — 좌표 중앙 정렬, 탭하면 장소 상세로.
+        const dotOverlays = places.map((place) => {
+            const element = createDotElement(place, {
+                t: intensity(place),
                 isNew: isNew.has(place.id),
                 onClick: () => handleClick(place)
             });
@@ -37,12 +57,15 @@ export function usePinOverlays(map: kakao.maps.Map | null, places: PlaceSummary[
                 content: element,
                 position: new kakao.maps.LatLng(place.lat, place.lng),
                 xAnchor: 0.5,
-                yAnchor: 1, // 핀 끝(아래)이 좌표에 닿게
+                yAnchor: 0.5,
+                zIndex: 10,
                 clickable: true
             });
             overlay.setMap(map);
             return overlay;
         });
+
+        const overlays = [...heatOverlays, ...dotOverlays];
 
         if (places.length === 1) {
             map.setCenter(new kakao.maps.LatLng(places[0].lat, places[0].lng));
