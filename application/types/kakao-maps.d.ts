@@ -62,12 +62,19 @@ declare namespace kakao {
         class Marker {
             constructor(options: MarkerOptions);
             setMap(map: Map | null): void;
+            setPosition(position: LatLng): void;
             getPosition(): LatLng;
         }
 
+        /** 지도/마커 클릭 등에서 콜백으로 넘어오는 마우스 이벤트 */
+        interface MouseEvent {
+            latLng: LatLng;
+        }
+
         namespace event {
-            function addListener<T extends object>(target: T, type: string, handler: () => void): void;
-            function removeListener<T extends object>(target: T, type: string, handler: () => void): void;
+            // 핸들러는 클릭류 이벤트에서 MouseEvent를 받는다. 인자 없는 핸들러(()=>void)도 할당 가능.
+            function addListener<T extends object>(target: T, type: string, handler: (mouseEvent: MouseEvent) => void): void;
+            function removeListener<T extends object>(target: T, type: string, handler: (mouseEvent: MouseEvent) => void): void;
         }
 
         namespace services {
@@ -92,12 +99,18 @@ declare namespace kakao {
                 id: string;
                 place_name: string;
                 category_name: string;
+                /** 카테고리 그룹 코드(예: 'FD6') — 카테고리 검색 시 채워짐 */
+                category_group_code?: string;
+                /** 카테고리 그룹명(예: '음식점') */
+                category_group_name?: string;
                 phone: string;
                 address_name: string;
                 road_address_name: string;
                 x: string;
                 y: string;
                 place_url: string;
+                /** 기준 좌표(location/x·y)로부터의 거리(m) — 좌표 기반 검색 시에만 */
+                distance?: string;
             }
 
             interface KeywordSearchOptions {
@@ -114,12 +127,58 @@ declare namespace kakao {
                 page?: number;
             }
 
+            /** 카테고리 그룹 검색 — keyword 없이 좌표 주변 POI를 카테고리로 훑는다 */
+            interface CategorySearchOptions {
+                location?: LatLng;
+                /** 반경(m), location 또는 x·y와 함께 사용 */
+                radius?: number;
+                /** 거리 정렬 기준점 경도 */
+                x?: string;
+                /** 거리 정렬 기준점 위도 */
+                y?: string;
+                /** 사각형 검색 영역: "SW_LNG,SW_LAT,NE_LNG,NE_LAT" */
+                rect?: string;
+                sort?: SortBy;
+                size?: number;
+                page?: number;
+            }
+
             class Places {
                 constructor(map?: Map);
                 keywordSearch(
                     keyword: string,
                     callback: (result: PlacesSearchDocument[], status: Status, pagination: Pagination) => void,
                     options?: KeywordSearchOptions
+                ): void;
+                categorySearch(
+                    code: string,
+                    callback: (result: PlacesSearchDocument[], status: Status, pagination: Pagination) => void,
+                    options?: CategorySearchOptions
+                ): void;
+            }
+
+            /** 좌표 → 주소 변환 결과의 주소 객체 */
+            interface Coord2AddressDocument {
+                address: {
+                    address_name: string;
+                    region_1depth_name: string;
+                    region_2depth_name: string;
+                    region_3depth_name: string;
+                } | null;
+                road_address: {
+                    address_name: string;
+                    /** 건물명 — 대형 건물/몰의 대표 장소명 후보 */
+                    building_name: string;
+                } | null;
+            }
+
+            class Geocoder {
+                constructor();
+                /** 좌표(경도 x, 위도 y) → 주소. building_name 후보 확보용 */
+                coord2Address(
+                    x: number,
+                    y: number,
+                    callback: (result: Coord2AddressDocument[], status: Status) => void
                 ): void;
             }
         }

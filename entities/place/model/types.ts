@@ -50,6 +50,14 @@ export type RecordPhotoInput = {
     sortOrder: number;
 };
 
+// ─── 저장 후 편집 입력 (장소 상세 → BFF) ─────────────────────────────────────
+
+/** 핀을 옮기면 카카오 연결이 끊겨 source='manual'로 내려간다. */
+export type PlacePatch = { name?: string; lat?: number; lng?: number; source?: 'manual'; kakaoPlaceId?: string | null };
+export type VisitPatch = { visitedOn?: string; note?: string | null };
+/** 기존 장소에 새 방문 추가 */
+export type VisitInput = { visitedOn: string; note: string | null };
+
 /** 한 장소 그룹 = Place 1개 + Visit 1개(+ 사진들) */
 export type RecordGroupInput = {
     name: string;

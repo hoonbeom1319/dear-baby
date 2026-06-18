@@ -1,8 +1,17 @@
+import { Suspense } from 'react';
+
+import { MobileShell } from '@/shared/ui';
+
+import { HomeScreen } from '@/screens/home';
+
+
 export default function Page() {
-    // V2 재설계 — 지도 홈(되새김 메인 무대)을 여기에 구현 예정 (PRD §6 A-1/B-1)
     return (
-        <main className="flex min-h-dvh items-center justify-center p-6 text-center">
-            <p className="text-sm text-neutral-500">추억 지도 — 준비 중</p>
-        </main>
+        <MobileShell>
+            {/* useSearchParams(저장 직후 ?new= 핀 펄스)를 쓰므로 Suspense 경계가 필요 */}
+            <Suspense fallback={<div className="h-dvh w-full bg-[#EAEEF3]" />}>
+                <HomeScreen />
+            </Suspense>
+        </MobileShell>
     );
 }

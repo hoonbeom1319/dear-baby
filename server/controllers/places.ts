@@ -1,8 +1,8 @@
-import { findPlaceDetail, findPlacesByUser, type PlaceSummary } from '../dao/places';
+import { deletePlace, findPlaceDetail, findPlacesByUser, updatePlace, type PlacePatch, type PlaceSummary } from '../dao/places';
 import { createSupabaseAdmin } from '../db/supabase';
 import { NotFoundError } from '../lib/error';
 
-export type { PlaceSummary } from '../dao/places';
+export type { PlaceSummary, PlacePatch } from '../dao/places';
 
 // 클라이언트로 내보내는 상세 — 사진은 storagePath 대신 즉시 표시 가능한 서명 URL
 export type PhotoView = {
@@ -62,6 +62,14 @@ export async function fetchPlaceDetail(userId: string, placeId: string): Promise
             photos: v.photos.map((p) => ({ id: p.id, url: urlByPath.get(p.storagePath) ?? null, takenAt: p.takenAt, sortOrder: p.sortOrder }))
         }))
     };
+}
+
+export async function modifyPlace(userId: string, placeId: string, patch: PlacePatch): Promise<void> {
+    return updatePlace(userId, placeId, patch);
+}
+
+export async function removePlace(userId: string, placeId: string): Promise<void> {
+    return deletePlace(userId, placeId);
 }
 
 async function signPaths(paths: string[]): Promise<Map<string, string>> {

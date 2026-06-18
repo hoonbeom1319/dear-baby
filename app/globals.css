@@ -18,18 +18,21 @@
         var(--font-pretendard), 'Noto Sans KR', 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, ui-sans-serif, system-ui, 'Segoe UI', Roboto,
         'Helvetica Neue', Arial, sans-serif;
 
-    /* Primary → Tangerine (interactive / brand) */
-    --color-primary-50: oklch(97% 0.025 60);
-    --color-primary-100: oklch(94% 0.06 58);
-    --color-primary-200: oklch(88% 0.11 55);
-    --color-primary-300: oklch(82% 0.16 52);
-    --color-primary-400: oklch(76% 0.19 50);
-    --color-primary-500: oklch(73% 0.2 50);
-    --color-primary-600: oklch(68% 0.2 48);
-    --color-primary-700: oklch(58% 0.18 45);
-    --color-primary-800: oklch(48% 0.15 42);
-    --color-primary-900: oklch(40% 0.12 40);
-    --color-primary-950: oklch(26% 0.08 38);
+    /* Primary → Tangerine (interactive / brand).
+       50·100·500·600·700 are the exact values from the V2 design handoff
+       (dear-baby-v2 README §Design Tokens — the single source of truth for color);
+       200–400 are interpolated for ramp continuity. 600 is the "기본" brand step. */
+    --color-primary-50: oklch(95.4% 0.038 75.164);
+    --color-primary-100: oklch(90.1% 0.076 70.697);
+    --color-primary-200: oklch(85% 0.108 62);
+    --color-primary-300: oklch(79% 0.15 54);
+    --color-primary-400: oklch(74% 0.193 49);
+    --color-primary-500: oklch(70.5% 0.213 47.604);
+    --color-primary-600: oklch(64.6% 0.222 41.116);
+    --color-primary-700: oklch(55.3% 0.195 38.402);
+    --color-primary-800: oklch(48% 0.16 39);
+    --color-primary-900: oklch(40% 0.12 38);
+    --color-primary-950: oklch(26% 0.08 37);
 
     /* Neutral scale (slate-derived) */
     --color-neutral-50: oklch(98.4% 0.003 247.858);
@@ -133,6 +136,54 @@
     from {
         opacity: 0;
         transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* db-ring — 신규 핀 펄스 링 (저장 직후 3초). 지도 CustomOverlay 안에서 쓰이므로
+   Tailwind 유틸 대신 전역 클래스로 둔다(오버레이는 raw DOM). */
+@keyframes db-ring {
+    from {
+        opacity: 0.55;
+        transform: translate(-50%, -50%) scale(0.55);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(2.5);
+    }
+}
+
+.db-ring {
+    animation: db-ring 1.7s ease-out infinite;
+}
+
+/* db-pop — 선택 체크 배지·저장완료 체크 등장(scale 0→1.2→1). */
+@keyframes db-pop {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.db-pop {
+    animation: db-pop 0.3s var(--ease-spring) both;
+}
+
+/* db-up — 편집기 사진 선택바 등장(아래에서 살짝 올라오며 페이드). */
+@keyframes db-up {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
     }
     to {
         opacity: 1;

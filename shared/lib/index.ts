@@ -1,5 +1,10 @@
 export { getDevice, isAndroid, isApp, isIOS, isMobile, isStandalone, isWebView } from './device';
 export type { Device } from './device';
+export { formatVisitDateShort, formatVisitDateLong } from './date';
+export { readExif } from './exif';
+export type { PhotoExif, PhotoGps } from './exif';
+export { haversineMeters, centroid, clusterByProximity } from './geo';
+export type { GeoPoint } from './geo';
 export { stripHtml } from './strip-html';
 export { getSupabaseBrowser } from './supabase-browser';
 export { toast } from './toast';
