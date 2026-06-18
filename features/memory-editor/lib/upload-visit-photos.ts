@@ -1,6 +1,6 @@
 import type { RecordPhotoInput } from '@/entities/place';
 
-import { getSupabaseBrowser } from '@/shared/lib';
+import { getSupabaseBrowser, prepareUploadFile } from '@/shared/lib';
 
 const BUCKET = 'photos';
 
@@ -15,7 +15,8 @@ const safeName = (name: string): string => name.replace(/[^a-zA-Z0-9._-]/g, '_')
 export async function uploadVisitPhotos(userId: string, visitId: string, files: File[]): Promise<RecordPhotoInput[]> {
     const supabase = getSupabaseBrowser();
     return Promise.all(
-        files.map(async (file, i): Promise<RecordPhotoInput> => {
+        files.map(async (original, i): Promise<RecordPhotoInput> => {
+            const file = await prepareUploadFile(original);
             const path = `${userId}/${visitId}/${crypto.randomUUID()}-${safeName(file.name)}`;
             const { error } = await supabase.storage.from(BUCKET).upload(path, file, { contentType: file.type, upsert: false });
             if (error) throw new Error(`사진 업로드 실패: ${error.message}`);

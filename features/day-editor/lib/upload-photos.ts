@@ -1,6 +1,6 @@
 import type { RecordGroupInput, RecordPhotoInput } from '@/entities/place';
 
-import { getSupabaseBrowser } from '@/shared/lib';
+import { getSupabaseBrowser, prepareUploadFile } from '@/shared/lib';
 
 import type { EditorGroup } from '../model/use-editor-draft';
 
@@ -19,8 +19,9 @@ async function uploadGroupPhotos(userId: string, group: EditorGroup): Promise<Re
 
     return Promise.all(
         group.photos.map(async (photo, i): Promise<RecordPhotoInput> => {
-            const path = `${userId}/${folder}/${i}-${safeName(photo.file.name)}`;
-            const { error } = await supabase.storage.from(BUCKET).upload(path, photo.file, { contentType: photo.file.type, upsert: false });
+            const file = await prepareUploadFile(photo.file);
+            const path = `${userId}/${folder}/${i}-${safeName(file.name)}`;
+            const { error } = await supabase.storage.from(BUCKET).upload(path, file, { contentType: file.type, upsert: false });
             if (error) throw new Error(`사진 업로드 실패: ${error.message}`);
             return { storagePath: path, takenAt: photo.takenAt ? photo.takenAt.toISOString() : null, sortOrder: i };
         })

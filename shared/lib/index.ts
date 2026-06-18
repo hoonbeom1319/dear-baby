@@ -5,6 +5,8 @@ export { readExif } from './exif';
 export type { PhotoExif, PhotoGps } from './exif';
 export { haversineMeters, centroid, clusterByProximity } from './geo';
 export type { GeoPoint } from './geo';
+export { compressImage, prepareUploadFile } from './image';
+export type { CompressOptions } from './image';
 export { stripHtml } from './strip-html';
 export { getSupabaseBrowser } from './supabase-browser';
 export { toast } from './toast';
