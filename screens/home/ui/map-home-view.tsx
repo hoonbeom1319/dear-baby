@@ -57,7 +57,9 @@ export function MapHomeView({ places, newPlaceIds, onAddRecord, onPinClick, onAv
 
             {/* 힌트 알약 */}
             <div className="pointer-events-none absolute bottom-[118px] left-1/2 z-10 -translate-x-1/2">
-                <span className="rounded-full bg-[rgba(15,23,42,0.84)] px-3.5 py-2 text-[13px] font-medium text-white">핀을 눌러 그날의 추억을 다시 보세요</span>
+                <span className="whitespace-nowrap rounded-full bg-[rgba(15,23,42,0.84)] px-3.5 py-2 text-[13px] font-medium text-white">
+                    핀을 눌러 그날의 추억을 다시 보세요
+                </span>
             </div>
 
             {/* FAB 기록 추가 */}

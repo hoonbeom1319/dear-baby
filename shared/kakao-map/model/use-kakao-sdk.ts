@@ -12,7 +12,7 @@ export function useKakaoSdk(): boolean {
         let alive = true;
         loadKakaoSdk()
             .then(() => alive && setReady(true))
-            .catch(() => {});
+            .catch((error) => console.error('[kakao-map]', error)); // 조용히 삼키지 않고 원인을 콘솔에 남긴다
         return () => {
             alive = false;
         };

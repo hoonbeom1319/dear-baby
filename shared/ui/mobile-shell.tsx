@@ -10,7 +10,7 @@ import { cn } from '@/hbds/lib/utils';
  */
 export const MobileShell = ({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) => (
     <div className="flex min-h-dvh justify-center bg-neutral-100">
-        <div className={cn('min-h-dvh w-full max-w-[480px] bg-surface', className)} {...props}>
+        <div className={cn('min-h-dvh w-full max-w-[1280px] bg-surface', className)} {...props}>
             {children}
         </div>
     </div>
