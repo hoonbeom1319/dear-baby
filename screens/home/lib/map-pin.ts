@@ -71,13 +71,23 @@ export function createDotElement(place: PlaceSummary, opts: { t: number; isNew: 
 /**
  * 히트맵 블롭 DOM — 마커 아래 레이어. mix-blend-mode:multiply라 겹치는 글로우가 곱연산으로 짙어진다
  * ("자주 가는 동네"가 드러남). 크기·중심 불투명도가 방문수(t)에 비례한다.
+ *
+ * 반환은 { root, blob } 두 겹이다. CustomOverlay 가 앵커로 잡는 root 는 0×0 "점"으로 두고,
+ * 실제 글로우(blob)는 그 점에 CSS transform 으로 중앙정렬한다. 줌이 바뀔 때 blob 크기만
+ * 바꿔도 앵커가 0×0 이라 흔들리지 않는다 (root 크기로 앵커 오프셋을 잡는 kakao 특성상,
+ * 앵커 엘리먼트를 직접 리사이즈하면 위치가 절반씩 어긋난다).
  */
-export function createHeatBlob(t: number): HTMLElement {
+export function createHeatBlob(t: number): { root: HTMLElement; blob: HTMLElement } {
     const size = Math.round(92 + t * 138); // 92~230px
     const i = 0.55 + t * 0.45;
     const bg = `radial-gradient(circle, oklch(60% 0.21 38 / ${(0.32 * i).toFixed(3)}) 0%, oklch(68% 0.2 46 / ${(0.18 * i).toFixed(3)}) 42%, oklch(74% 0.17 52 / 0) 72%)`;
 
-    const el = document.createElement('div');
-    el.style.cssText = `width:${size}px;height:${size}px;border-radius:9999px;background:${bg};mix-blend-mode:multiply;pointer-events:none;`;
-    return el;
+    const root = document.createElement('div');
+    root.style.cssText = 'position:relative;width:0;height:0;';
+
+    const blob = document.createElement('div');
+    blob.style.cssText = `position:absolute;left:0;top:0;transform:translate(-50%,-50%);width:${size}px;height:${size}px;border-radius:9999px;background:${bg};mix-blend-mode:multiply;pointer-events:none;`;
+    root.appendChild(blob);
+
+    return { root, blob };
 }

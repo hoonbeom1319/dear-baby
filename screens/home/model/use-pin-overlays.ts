@@ -53,11 +53,12 @@ export function usePinOverlays(map: kakao.maps.Map | null, places: PlaceSummary[
         const basePpm = pixelsPerMeter(map);
         const heatOverlays = places.map((place) => {
             const t = intensity(place);
-            const el = createHeatBlob(t);
+            const { root, blob } = createHeatBlob(t);
             const baseSize = Math.round(92 + t * 138);
-            heatBlobs.push({ el, meters: basePpm > 0 ? baseSize / basePpm : baseSize });
+            // 리사이즈는 안쪽 blob 만 — root(앵커)는 0×0 으로 둬서 위치가 안 어긋난다.
+            heatBlobs.push({ el: blob, meters: basePpm > 0 ? baseSize / basePpm : baseSize });
             const overlay = new kakao.maps.CustomOverlay({
-                content: el,
+                content: root,
                 position: new kakao.maps.LatLng(place.lat, place.lng),
                 xAnchor: 0.5,
                 yAnchor: 0.5,
