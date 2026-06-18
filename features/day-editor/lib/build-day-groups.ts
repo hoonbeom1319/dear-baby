@@ -6,18 +6,26 @@ import type { AnalyzedPhoto, DayAnalysis, DayPlaceGroup } from './types';
 // 인접한 다른 장소(옆 건물)와는 갈라질 만한 값. 셀프 베타에서 조정 여지.
 const PROXIMITY_RADIUS_M = 150;
 
+// 하루치로 수백 장을 고를 수 있어, EXIF 파싱을 한꺼번에 띄우지 않고 배치로 제한한다(메인 스레드·메모리 스파이크 방지).
+const EXIF_CONCURRENCY = 8;
+
 /**
  * 고른 사진 파일들을 읽어 편집기 초기 상태(장소 그룹 + 미분류)를 만든다. (PRD F-2/F-3)
  * 위치(GPS)로 묶은 뒤 **날짜별로 다시 쪼갠다** — 같은 장소라도 다른 날 방문이면 별도 그룹(=별도 방문).
  * 네트워크(카카오 후보)는 여기서 붙이지 않는다 — 순수 분석만. 후보는 use-analyze-photos가 붙인다.
  */
 export async function buildDayGroups(files: File[]): Promise<DayAnalysis> {
-    const analyzed: AnalyzedPhoto[] = await Promise.all(
-        files.map(async (file) => {
-            const { gps, takenAt } = await readExif(file);
-            return { file, gps, takenAt };
-        })
-    );
+    // 입력 순서를 유지하며 EXIF_CONCURRENCY개씩 끊어 파싱한다(아래 클러스터링은 순서 무관하지만 sortByTime이 안정적이도록).
+    const analyzed: AnalyzedPhoto[] = [];
+    for (let i = 0; i < files.length; i += EXIF_CONCURRENCY) {
+        const batch = await Promise.all(
+            files.slice(i, i + EXIF_CONCURRENCY).map(async (file) => {
+                const { gps, takenAt } = await readExif(file);
+                return { file, gps, takenAt };
+            })
+        );
+        analyzed.push(...batch);
+    }
 
     const located = analyzed.filter((p) => p.gps !== null);
     const unsorted = analyzed.filter((p) => p.gps === null);
