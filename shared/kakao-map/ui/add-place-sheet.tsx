@@ -20,6 +20,8 @@ type AddPlaceSheetProps = {
     mode: 'place' | 'pin';
     /** 검색 거리 기준·지도 초기 중심. 없으면 서울 기본값. */
     near: { lat: number; lng: number } | null;
+    /** place 모드에서 검색 대신 지도(수동)부터 연다. 인라인 검색을 이미 거친 '직접 찍기' 폴백용. */
+    startManual?: boolean;
     onSubmitPlace: (picked: PickedPlace) => void;
     onSubmitPin: (lat: number, lng: number) => void;
 };
@@ -30,8 +32,8 @@ type AddPlaceSheetProps = {
  * 기록 편집기(새 장소 추가)와 장소 상세(장소 수정)가 함께 쓴다.
  * (Radix Dialog가 닫힐 때 내용을 언마운트하므로 열 때마다 내부 상태가 초기화된다.)
  */
-export function AddPlaceSheet({ open, onOpenChange, title, mode, near, onSubmitPlace, onSubmitPin }: AddPlaceSheetProps) {
-    const [tab, setTab] = useState<'search' | 'manual'>(mode === 'pin' ? 'manual' : 'search');
+export function AddPlaceSheet({ open, onOpenChange, title, mode, near, startManual = false, onSubmitPlace, onSubmitPin }: AddPlaceSheetProps) {
+    const [tab, setTab] = useState<'search' | 'manual'>(mode === 'pin' || startManual ? 'manual' : 'search');
     const center = near ?? DEFAULT_CENTER;
 
     return (

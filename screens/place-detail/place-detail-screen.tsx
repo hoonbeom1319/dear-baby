@@ -10,10 +10,45 @@ import { useMemoryEditor } from '@/features/memory-editor';
 
 import { usePlaceDetailData } from '@/entities/place';
 
-import { AddPlaceSheet } from '@/shared/kakao-map';
+import { AddPlaceSheet, PlaceSearchInput, type PickedPlace } from '@/shared/kakao-map';
 import { ConfirmSheet, DateSheet, Icon } from '@/shared/ui';
 
 import { VisitCard, type VisitCardHandlers } from './ui/visit-card';
+
+/**
+ * 편집모드 장소 이름 = 검색 입력. 등록 카드와 같은 인라인 검색(PlaceSearchInput)을 쓴다.
+ * 자유 입력은 blur 때 이름만 변경(renamePlace), 카카오 결과 선택은 좌표까지 교체(changePlace).
+ * draft를 따로 두는 이유: rename은 서버 mutation이라 매 타건마다 쏘지 않고 확정(blur) 때만 보낸다.
+ * (현재 이름으로 key를 주므로 changePlace로 이름이 바뀌면 draft가 새 이름으로 리셋된다.)
+ */
+function PlaceNameSearch({
+    name,
+    onRename,
+    onPick,
+    onManual
+}: {
+    name: string;
+    onRename: (name: string) => void;
+    onPick: (picked: PickedPlace) => void;
+    onManual: () => void;
+}) {
+    const [draft, setDraft] = useState(name);
+
+    return (
+        <PlaceSearchInput
+            value={draft}
+            onChange={setDraft}
+            onCommit={(value) => {
+                const next = value.trim();
+                if (next && next !== name) onRename(next);
+            }}
+            onPick={onPick}
+            onManual={onManual}
+            placeholder="장소 이름 (검색하거나 직접 입력)"
+            inputClassName="w-full rounded-lg border border-[#e2e8f0] bg-white px-3 py-2 text-[18px] font-extrabold text-[#0f172a] outline-none focus:border-primary-300 placeholder:text-[#94A3B8]"
+        />
+    );
+}
 
 /** 뒤로(지도) + 편집 토글. 핀 탭으로 들어온 흐름이라 history back이 지도 상태를 그대로 복원한다. */
 function BackBar({ onBack, editMode, onToggleEdit, canEdit }: { onBack: () => void; editMode: boolean; onToggleEdit: () => void; canEdit: boolean }) {
@@ -102,25 +137,15 @@ export function PlaceDetailScreen() {
                             <span className="shrink-0 text-primary-600">
                                 <Icon name="pin" size={24} />
                             </span>
-                            <input
+                            <PlaceNameSearch
                                 key={place.name}
-                                defaultValue={place.name}
-                                onBlur={(e) => {
-                                    const name = e.target.value.trim();
-                                    if (name && name !== place.name) editor.renamePlace(name);
-                                }}
-                                className="min-w-0 flex-1 rounded-lg border border-[#e2e8f0] bg-white px-3 py-2 text-[18px] font-extrabold text-[#0f172a] outline-none focus:border-primary-300"
+                                name={place.name}
+                                onRename={editor.renamePlace}
+                                onPick={editor.changePlace}
+                                onManual={() => setPlaceEditOpen(true)}
                             />
                         </div>
                         <div className="flex gap-2 pl-8">
-                            <button
-                                type="button"
-                                onClick={() => setPlaceEditOpen(true)}
-                                className="flex items-center gap-1.5 rounded-lg border border-[#e2e8f0] bg-white px-3 py-2 text-[13px] font-semibold text-[#334155] transition-colors hover:bg-[#f8fafc]"
-                            >
-                                <Icon name="search" size={15} />
-                                장소 변경
-                            </button>
                             <button
                                 type="button"
                                 onClick={() => setConfirm({ kind: 'place' })}
@@ -181,8 +206,9 @@ export function PlaceDetailScreen() {
             <AddPlaceSheet
                 open={placeEditOpen}
                 onOpenChange={setPlaceEditOpen}
-                title="장소 변경"
+                title="지도에서 직접 찍기"
                 mode="place"
+                startManual
                 near={{ lat: place.lat, lng: place.lng }}
                 onSubmitPlace={(picked) => {
                     editor.changePlace(picked);

@@ -1,6 +1,7 @@
 export { KakaoMap, type KakaoMapProps } from './ui/kakao-map';
 export { PinPicker } from './ui/pin-picker';
 export { AddPlaceSheet } from './ui/add-place-sheet';
+export { PlaceSearchInput } from './ui/place-search-input';
 export { useMarkers } from './model/use-markers';
 export { toLatLng } from './lib/helper';
 export type { LatLng, Latitude, Longitude } from './lib/type';
